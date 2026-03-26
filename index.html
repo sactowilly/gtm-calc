@@ -1,0 +1,96 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Packaging GTM Calculator</title>
+    <meta
+      name="description"
+      content="Calculate packaging sell-price ranges from item cost, freight, quantity, and GTM targets."
+    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <h1>Packaging GTM Calculator</h1>
+        <p>See a sell-price range instantly instead of calculating one GTM at a time.</p>
+      </header>
+
+      <section class="card" aria-labelledby="calculator-heading">
+        <h2 id="calculator-heading">Quote Inputs</h2>
+        <form id="gtm-form" novalidate>
+          <div class="form-grid">
+            <label>
+              Item Cost / Unit
+              <input id="itemCost" name="itemCost" type="number" step="0.00001" min="0" required>
+            </label>
+
+            <label>
+              Freight (Total)
+              <input id="freightTotal" name="freightTotal" type="number" step="0.00001" min="0" required>
+            </label>
+
+            <label>
+              Quantity Requested
+              <input id="quantity" name="quantity" type="number" step="1" min="1" required>
+            </label>
+
+            <label>
+              Minimum GTM %
+              <input id="minGtm" name="minGtm" type="number" step="0.01" min="0.01" max="99.99" placeholder="30">
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button type="submit">Generate Pricing Table</button>
+            <button id="saveQuote" type="button" class="secondary">Save Quote</button>
+          </div>
+        </form>
+
+        <p id="validationMessage" class="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="results-heading">
+        <h2 id="results-heading">GTM Recommendations</h2>
+        <div id="summary" class="summary"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>GTM %</th>
+                <th>Freight / Unit</th>
+                <th>Total Cost / Unit</th>
+                <th>Sell Price / Unit</th>
+                <th>Margin $ / Unit</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody">
+              <tr>
+                <td colspan="5" class="empty-state">Run a calculation to see pricing rows.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="button-row">
+          <button id="nextRows" type="button" class="secondary" disabled>See next 25</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="saved-heading">
+        <h2 id="saved-heading">Saved Quotes</h2>
+        <p class="saved-note">Saved in this browser only. Re-open later to review previous runs.</p>
+        <ul id="savedList" class="saved-list"></ul>
+      </section>
+    </main>
+
+    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
