@@ -43,7 +43,7 @@
 
             <label>
               Minimum GTM %
-              <input id="minGtm" name="minGtm" type="number" step="0.01" min="0.01" max="99.99" placeholder="30">
+              <input id="minGtm" name="minGtm" type="number" step="0.25" min="0.01" max="99.99" placeholder="30">
             </label>
           </div>
 
@@ -64,15 +64,14 @@
             <thead>
               <tr>
                 <th>GTM %</th>
-                <th>Freight / Unit</th>
-                <th>Total Cost / Unit</th>
                 <th>Sell Price / Unit</th>
                 <th>Margin $ / Unit</th>
+                <th>Margin $ / Total</th>
               </tr>
             </thead>
             <tbody id="resultsBody">
               <tr>
-                <td colspan="5" class="empty-state">Run a calculation to see pricing rows.</td>
+                <td colspan="4" class="empty-state">Run a calculation to see pricing rows.</td>
               </tr>
             </tbody>
           </table>
