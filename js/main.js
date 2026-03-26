@@ -2,6 +2,7 @@
   const DEFAULT_MIN_GTM = 30;
   const PAGE_SIZE = 25;
   const MAX_GTM_ROWS = 300;
+  const GTM_INCREMENT = 0.25;
   const STORAGE_KEY = 'packaging_gtm_saved_quotes_v1';
 
   const form = document.getElementById('gtm-form');
@@ -71,7 +72,7 @@
     const rows = [];
 
     for (let i = 0; i < MAX_GTM_ROWS; i += 1) {
-      const gtmPercent = input.minGtm + (i * 0.01);
+      const gtmPercent = input.minGtm + (i * GTM_INCREMENT);
 
       if (gtmPercent >= 99.99) {
         break;
@@ -83,10 +84,9 @@
 
       rows.push({
         gtmPercent,
-        freightPerUnit,
-        totalUnitCost,
         sellPrice,
-        marginPerUnit
+        marginPerUnit,
+        marginTotal: marginPerUnit * input.quantity
       });
     }
 
@@ -117,10 +117,9 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${format3(row.gtmPercent)}</td>
-        <td>${format3(row.freightPerUnit)}</td>
-        <td>${format3(row.totalUnitCost)}</td>
         <td>${format3(row.sellPrice)}</td>
         <td>${format3(row.marginPerUnit)}</td>
+        <td>${format3(row.marginTotal)}</td>
       `;
       resultsBody.appendChild(tr);
     }
@@ -198,7 +197,7 @@
     rowsShown = 0;
 
     if (currentRows.length === 0) {
-      resultsBody.innerHTML = '<tr><td colspan="5" class="empty-state">No rows could be generated with those values.</td></tr>';
+      resultsBody.innerHTML = '<tr><td colspan="4" class="empty-state">No rows could be generated with those values.</td></tr>';
       nextRowsButton.disabled = true;
       return;
     }
