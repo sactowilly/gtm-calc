@@ -151,9 +151,16 @@ button:focus-visible {
 .result-strip,
 .totals-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
+}
+
+.result-strip {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.totals-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .result-strip div,
@@ -224,7 +231,7 @@ button:focus-visible {
 
 table {
   width: 100%;
-  min-width: 760px;
+  min-width: 960px;
   border-collapse: collapse;
 }
 

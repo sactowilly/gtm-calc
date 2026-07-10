@@ -20,8 +20,10 @@
 
   const outputs = {
     landedCost: document.getElementById('landedCost'),
-    gtmDollars: document.getElementById('gtmDollars'),
-    gtmPercent: document.getElementById('gtmPercent'),
+    gtmEachDollars: document.getElementById('gtmEachDollars'),
+    gtmEachPercent: document.getElementById('gtmEachPercent'),
+    gtmTotalDollars: document.getElementById('gtmTotalDollars'),
+    gtmTotalPercent: document.getElementById('gtmTotalPercent'),
     orderTotal: document.getElementById('orderTotal'),
     totalCost: document.getElementById('totalCost'),
     totalGtm: document.getElementById('totalGtm')
@@ -110,8 +112,10 @@
 
     const totalCost = landedUnitCost * quantity;
     const orderTotal = price * quantity;
-    const gtmDollars = orderTotal - totalCost;
-    const gtmPercent = ((price - landedUnitCost) / landedUnitCost) * 100;
+    const gtmEachDollars = price - landedUnitCost;
+    const gtmTotalDollars = gtmEachDollars * quantity;
+    const gtmEachPercent = (gtmEachDollars / landedUnitCost) * 100;
+    const gtmTotalPercent = totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0;
 
     return {
       item: {
@@ -126,9 +130,32 @@
         landedUnitCost,
         totalCost,
         orderTotal,
-        gtmDollars,
-        gtmPercent
+        gtmEachDollars,
+        gtmTotalDollars,
+        gtmEachPercent,
+        gtmTotalPercent
       }
+    };
+  }
+
+  function normalizeItem(item) {
+    const landedUnitCost = Number.isFinite(item.landedUnitCost) ? item.landedUnitCost : item.unitCost + item.freightPerUnit;
+    const totalCost = Number.isFinite(item.totalCost) ? item.totalCost : landedUnitCost * item.quantity;
+    const orderTotal = Number.isFinite(item.orderTotal) ? item.orderTotal : item.price * item.quantity;
+    const gtmEachDollars = Number.isFinite(item.gtmEachDollars) ? item.gtmEachDollars : item.price - landedUnitCost;
+    const gtmTotalDollars = Number.isFinite(item.gtmTotalDollars) ? item.gtmTotalDollars : orderTotal - totalCost;
+    const gtmEachPercent = Number.isFinite(item.gtmEachPercent) ? item.gtmEachPercent : (landedUnitCost > 0 ? (gtmEachDollars / landedUnitCost) * 100 : 0);
+    const gtmTotalPercent = Number.isFinite(item.gtmTotalPercent) ? item.gtmTotalPercent : (totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0);
+
+    return {
+      ...item,
+      landedUnitCost,
+      totalCost,
+      orderTotal,
+      gtmEachDollars,
+      gtmTotalDollars,
+      gtmEachPercent,
+      gtmTotalPercent
     };
   }
 
@@ -149,26 +176,34 @@
       freight < 0
     ) {
       outputs.landedCost.textContent = '$0.00';
-      outputs.gtmDollars.textContent = '$0.00';
-      outputs.gtmPercent.textContent = '0.00%';
+      outputs.gtmEachDollars.textContent = '$0.00';
+      outputs.gtmEachPercent.textContent = '0.00%';
+      outputs.gtmTotalDollars.textContent = '$0.00';
+      outputs.gtmTotalPercent.textContent = '0.00%';
       return;
     }
 
     const freightPerUnit = getFreightMode() === 'total' ? freight / quantity : freight;
     const landedUnitCost = unitCost + freightPerUnit;
-    const gtmDollars = (price - landedUnitCost) * quantity;
-    const gtmPercent = landedUnitCost > 0 ? ((price - landedUnitCost) / landedUnitCost) * 100 : 0;
+    const totalCost = landedUnitCost * quantity;
+    const gtmEachDollars = price - landedUnitCost;
+    const gtmTotalDollars = gtmEachDollars * quantity;
+    const gtmEachPercent = landedUnitCost > 0 ? (gtmEachDollars / landedUnitCost) * 100 : 0;
+    const gtmTotalPercent = totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0;
 
     outputs.landedCost.textContent = formatMoney(landedUnitCost);
-    outputs.gtmDollars.textContent = formatMoney(gtmDollars);
-    outputs.gtmPercent.textContent = formatPercent(gtmPercent);
+    outputs.gtmEachDollars.textContent = formatMoney(gtmEachDollars);
+    outputs.gtmEachPercent.textContent = formatPercent(gtmEachPercent);
+    outputs.gtmTotalDollars.textContent = formatMoney(gtmTotalDollars);
+    outputs.gtmTotalPercent.textContent = formatPercent(gtmTotalPercent);
   }
 
   function getTotals() {
     return quote.items.reduce(function (totals, item) {
-      totals.orderTotal += item.orderTotal;
-      totals.totalCost += item.totalCost;
-      totals.totalGtm += item.gtmDollars;
+      const normalized = normalizeItem(item);
+      totals.orderTotal += normalized.orderTotal;
+      totals.totalCost += normalized.totalCost;
+      totals.totalGtm += normalized.gtmTotalDollars;
       return totals;
     }, {
       orderTotal: 0,
@@ -190,22 +225,25 @@
     outputs.totalGtm.textContent = formatMoney(totals.totalGtm);
 
     if (quote.items.length === 0) {
-      quoteItems.innerHTML = '<tr><td colspan="7" class="empty-state">No quote items yet.</td></tr>';
+      quoteItems.innerHTML = '<tr><td colspan="9" class="empty-state">No quote items yet.</td></tr>';
       return;
     }
 
     quoteItems.innerHTML = '';
 
     quote.items.forEach(function (item) {
+      const normalized = normalizeItem(item);
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${escapeHtml(item.name)}</td>
-        <td>${item.quantity}</td>
-        <td>${formatMoney(item.price)}</td>
-        <td>${formatMoney(item.landedUnitCost)}</td>
-        <td>${formatMoney(item.gtmDollars)}</td>
-        <td>${formatPercent(item.gtmPercent)}</td>
-        <td><button type="button" class="delete-button" data-id="${item.id}">Delete</button></td>
+        <td>${escapeHtml(normalized.name)}</td>
+        <td>${normalized.quantity}</td>
+        <td>${formatMoney(normalized.price)}</td>
+        <td>${formatMoney(normalized.landedUnitCost)}</td>
+        <td>${formatMoney(normalized.gtmEachDollars)}</td>
+        <td>${formatMoney(normalized.gtmTotalDollars)}</td>
+        <td>${formatPercent(normalized.gtmEachPercent)}</td>
+        <td>${formatPercent(normalized.gtmTotalPercent)}</td>
+        <td><button type="button" class="delete-button" data-id="${normalized.id}">Delete</button></td>
       `;
       quoteItems.appendChild(row);
     });
@@ -272,20 +310,23 @@
       `Total Cost: ${formatMoney(totals.totalCost)}`,
       `Total GTM$: ${formatMoney(totals.totalGtm)}`,
       '',
-      'Item | QTY | Price | Cost | GTM$ | GTM%'
+      'Item | QTY | Price | Cost EA | GTM$ EA | GTM$ Total | GTM% EA | GTM% Total'
     ];
 
     if (quote.items.length === 0) {
       lines.push('No items added.');
     } else {
       quote.items.forEach(function (item) {
+        const normalized = normalizeItem(item);
         lines.push([
-          item.name,
-          item.quantity,
-          formatMoney(item.price),
-          formatMoney(item.landedUnitCost),
-          formatMoney(item.gtmDollars),
-          formatPercent(item.gtmPercent)
+          normalized.name,
+          normalized.quantity,
+          formatMoney(normalized.price),
+          formatMoney(normalized.landedUnitCost),
+          formatMoney(normalized.gtmEachDollars),
+          formatMoney(normalized.gtmTotalDollars),
+          formatPercent(normalized.gtmEachPercent),
+          formatPercent(normalized.gtmTotalPercent)
         ].join(' | '));
       });
     }
