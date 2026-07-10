@@ -1,220 +1,391 @@
 (function () {
-  const DEFAULT_MIN_GTM = 30;
-  const PAGE_SIZE = 25;
-  const MAX_GTM_ROWS = 300;
-  const GTM_INCREMENT = 0.25;
-  const STORAGE_KEY = 'packaging_gtm_saved_quotes_v1';
+  const STORAGE_KEY = 'gtm_quote_calculator_v1';
 
-  const form = document.getElementById('gtm-form');
-  const resultsBody = document.getElementById('resultsBody');
-  const summary = document.getElementById('summary');
-  const validationMessage = document.getElementById('validationMessage');
-  const nextRowsButton = document.getElementById('nextRows');
-  const saveQuoteButton = document.getElementById('saveQuote');
-  const savedList = document.getElementById('savedList');
+  const itemForm = document.getElementById('itemForm');
+  const customerName = document.getElementById('customerName');
+  const quoteDate = document.getElementById('quoteDate');
+  const statusMessage = document.getElementById('statusMessage');
+  const savedState = document.getElementById('savedState');
+  const quoteItems = document.getElementById('quoteItems');
+  const quoteDialog = document.getElementById('quoteDialog');
+  const quotePreview = document.getElementById('quotePreview');
 
-  let currentRows = [];
-  let rowsShown = 0;
-  let currentInputSnapshot = null;
+  const fields = {
+    itemName: document.getElementById('itemName'),
+    quantity: document.getElementById('quantity'),
+    unitCost: document.getElementById('unitCost'),
+    price: document.getElementById('price'),
+    freight: document.getElementById('freight')
+  };
+
+  const outputs = {
+    landedCost: document.getElementById('landedCost'),
+    gtmDollars: document.getElementById('gtmDollars'),
+    gtmPercent: document.getElementById('gtmPercent'),
+    orderTotal: document.getElementById('orderTotal'),
+    totalCost: document.getElementById('totalCost'),
+    totalGtm: document.getElementById('totalGtm')
+  };
+
+  const moneyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
+
+  const percentFormatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  let quote = {
+    customerName: '',
+    date: new Date().toISOString().slice(0, 10),
+    items: []
+  };
+
+  function formatMoney(value) {
+    return moneyFormatter.format(value);
+  }
+
+  function formatPercent(value) {
+    return `${percentFormatter.format(value)}%`;
+  }
 
   function parseNumber(value) {
+    if (String(value).trim() === '') {
+      return 0;
+    }
+
     return Number.parseFloat(value);
   }
 
-  function format3(value) {
-    return value.toFixed(3);
+  function getFreightMode() {
+    const checked = itemForm.querySelector('input[name="freightMode"]:checked');
+    return checked ? checked.value : 'perItem';
   }
 
-  function clearValidation() {
-    validationMessage.textContent = '';
+  function setStatus(message, isError) {
+    statusMessage.textContent = message;
+    statusMessage.style.color = isError ? '#a23333' : '';
   }
 
-  function setValidation(message) {
-    validationMessage.textContent = message;
+  function markUnsaved() {
+    savedState.textContent = 'Not saved';
   }
 
-  function readInputs() {
-    const itemCost = parseNumber(form.itemCost.value);
-    const freightTotal = parseNumber(form.freightTotal.value);
-    const quantity = Number.parseInt(form.quantity.value, 10);
-    const enteredMin = form.minGtm.value.trim();
-    const minGtm = enteredMin ? parseNumber(enteredMin) : DEFAULT_MIN_GTM;
+  function readCurrentItem() {
+    const name = fields.itemName.value.trim();
+    const quantity = Number.parseInt(fields.quantity.value, 10);
+    const unitCost = parseNumber(fields.unitCost.value);
+    const price = parseNumber(fields.price.value);
+    const freight = parseNumber(fields.freight.value);
+    const freightMode = getFreightMode();
 
-    if (!Number.isFinite(itemCost) || itemCost < 0) {
-      return { error: 'Enter a valid non-negative item cost.' };
-    }
-
-    if (!Number.isFinite(freightTotal) || freightTotal < 0) {
-      return { error: 'Enter a valid non-negative freight total.' };
+    if (!name) {
+      return { error: 'Enter an item name.' };
     }
 
     if (!Number.isInteger(quantity) || quantity <= 0) {
-      return { error: 'Quantity must be a whole number greater than 0.' };
+      return { error: 'Qty must be a whole number greater than 0.' };
     }
 
-    if (!Number.isFinite(minGtm) || minGtm <= 0 || minGtm >= 100) {
-      return { error: 'Minimum GTM % must be greater than 0 and less than 100.' };
+    if (!Number.isFinite(unitCost) || unitCost < 0) {
+      return { error: 'Unit cost must be a valid USD amount.' };
     }
+
+    if (!Number.isFinite(price) || price < 0) {
+      return { error: 'Price must be a valid USD amount.' };
+    }
+
+    if (!Number.isFinite(freight) || freight < 0) {
+      return { error: 'Freight must be blank or a valid USD amount.' };
+    }
+
+    const freightPerUnit = freightMode === 'total' ? freight / quantity : freight;
+    const landedUnitCost = unitCost + freightPerUnit;
+
+    if (landedUnitCost <= 0) {
+      return { error: 'Landed cost must be greater than $0.00 to calculate GTM%.' };
+    }
+
+    const totalCost = landedUnitCost * quantity;
+    const orderTotal = price * quantity;
+    const gtmDollars = orderTotal - totalCost;
+    const gtmPercent = ((price - landedUnitCost) / landedUnitCost) * 100;
 
     return {
-      values: {
-        itemCost,
-        freightTotal,
+      item: {
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+        name,
         quantity,
-        minGtm
+        unitCost,
+        price,
+        freight,
+        freightMode,
+        freightPerUnit,
+        landedUnitCost,
+        totalCost,
+        orderTotal,
+        gtmDollars,
+        gtmPercent
       }
     };
   }
 
-  function buildRows(input) {
-    const freightPerUnit = input.freightTotal / input.quantity;
-    const totalUnitCost = input.itemCost + freightPerUnit;
-    const rows = [];
+  function updateCalculatorPreview() {
+    const quantity = Number.parseInt(fields.quantity.value, 10);
+    const unitCost = parseNumber(fields.unitCost.value);
+    const price = parseNumber(fields.price.value);
+    const freight = parseNumber(fields.freight.value);
 
-    for (let i = 0; i < MAX_GTM_ROWS; i += 1) {
-      const gtmPercent = input.minGtm + (i * GTM_INCREMENT);
-
-      if (gtmPercent >= 99.99) {
-        break;
-      }
-
-      const gtmDecimal = gtmPercent / 100;
-      const sellPrice = totalUnitCost / (1 - gtmDecimal);
-      const marginPerUnit = sellPrice - totalUnitCost;
-
-      rows.push({
-        gtmPercent,
-        sellPrice,
-        marginPerUnit,
-        marginTotal: marginPerUnit * input.quantity
-      });
-    }
-
-    return rows;
-  }
-
-  function renderSummary(input, rowCount) {
-    const freightPerUnit = input.freightTotal / input.quantity;
-    const totalUnitCost = input.itemCost + freightPerUnit;
-
-    summary.innerHTML = [
-      `<span><strong>Quantity:</strong> ${input.quantity}</span>`,
-      `<span><strong>Freight / Unit:</strong> ${format3(freightPerUnit)}</span>`,
-      `<span><strong>Total Cost / Unit:</strong> ${format3(totalUnitCost)}</span>`,
-      `<span><strong>Rows Generated:</strong> ${rowCount}</span>`
-    ].join('');
-  }
-
-  function renderNextRows() {
-    const nextLimit = Math.min(rowsShown + PAGE_SIZE, currentRows.length);
-
-    if (rowsShown === 0) {
-      resultsBody.innerHTML = '';
-    }
-
-    for (let i = rowsShown; i < nextLimit; i += 1) {
-      const row = currentRows[i];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${format3(row.gtmPercent)}</td>
-        <td>${format3(row.sellPrice)}</td>
-        <td>${format3(row.marginPerUnit)}</td>
-        <td>${format3(row.marginTotal)}</td>
-      `;
-      resultsBody.appendChild(tr);
-    }
-
-    rowsShown = nextLimit;
-    nextRowsButton.disabled = rowsShown >= currentRows.length;
-  }
-
-  function saveCurrentQuote() {
-    if (!currentInputSnapshot || currentRows.length === 0) {
-      setValidation('Generate pricing rows before saving a quote.');
+    if (
+      !Number.isInteger(quantity) ||
+      quantity <= 0 ||
+      !Number.isFinite(unitCost) ||
+      !Number.isFinite(price) ||
+      !Number.isFinite(freight) ||
+      unitCost < 0 ||
+      price < 0 ||
+      freight < 0
+    ) {
+      outputs.landedCost.textContent = '$0.00';
+      outputs.gtmDollars.textContent = '$0.00';
+      outputs.gtmPercent.textContent = '0.00%';
       return;
     }
 
-    const data = readSavedQuotes();
-    data.unshift({
-      id: Date.now(),
-      createdAtIso: new Date().toISOString(),
-      input: currentInputSnapshot,
-      firstSellPrice: currentRows[0] ? currentRows[0].sellPrice : null
-    });
+    const freightPerUnit = getFreightMode() === 'total' ? freight / quantity : freight;
+    const landedUnitCost = unitCost + freightPerUnit;
+    const gtmDollars = (price - landedUnitCost) * quantity;
+    const gtmPercent = landedUnitCost > 0 ? ((price - landedUnitCost) / landedUnitCost) * 100 : 0;
 
-    const capped = data.slice(0, 50);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(capped));
-    renderSavedQuotes();
-    setValidation('Quote saved. Use your phone screenshot to share if needed.');
+    outputs.landedCost.textContent = formatMoney(landedUnitCost);
+    outputs.gtmDollars.textContent = formatMoney(gtmDollars);
+    outputs.gtmPercent.textContent = formatPercent(gtmPercent);
   }
 
-  function readSavedQuotes() {
+  function getTotals() {
+    return quote.items.reduce(function (totals, item) {
+      totals.orderTotal += item.orderTotal;
+      totals.totalCost += item.totalCost;
+      totals.totalGtm += item.gtmDollars;
+      return totals;
+    }, {
+      orderTotal: 0,
+      totalCost: 0,
+      totalGtm: 0
+    });
+  }
+
+  function syncQuoteMeta() {
+    quote.customerName = customerName.value.trim();
+    quote.date = quoteDate.value;
+  }
+
+  function renderQuote() {
+    const totals = getTotals();
+
+    outputs.orderTotal.textContent = formatMoney(totals.orderTotal);
+    outputs.totalCost.textContent = formatMoney(totals.totalCost);
+    outputs.totalGtm.textContent = formatMoney(totals.totalGtm);
+
+    if (quote.items.length === 0) {
+      quoteItems.innerHTML = '<tr><td colspan="7" class="empty-state">No quote items yet.</td></tr>';
+      return;
+    }
+
+    quoteItems.innerHTML = '';
+
+    quote.items.forEach(function (item) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${escapeHtml(item.name)}</td>
+        <td>${item.quantity}</td>
+        <td>${formatMoney(item.price)}</td>
+        <td>${formatMoney(item.landedUnitCost)}</td>
+        <td>${formatMoney(item.gtmDollars)}</td>
+        <td>${formatPercent(item.gtmPercent)}</td>
+        <td><button type="button" class="delete-button" data-id="${item.id}">Delete</button></td>
+      `;
+      quoteItems.appendChild(row);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function clearItemForm() {
+    itemForm.reset();
+    updateCalculatorPreview();
+    fields.itemName.focus();
+    setStatus('', false);
+  }
+
+  function saveQuote() {
+    syncQuoteMeta();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(quote));
+    savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+    setStatus('Quote saved in this browser.', false);
+  }
+
+  function loadQuote() {
     const raw = localStorage.getItem(STORAGE_KEY);
 
     if (!raw) {
-      return [];
+      return false;
     }
 
     try {
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
+
+      if (parsed && Array.isArray(parsed.items)) {
+        quote = {
+          customerName: parsed.customerName || '',
+          date: parsed.date || quote.date,
+          items: parsed.items
+        };
+        return true;
+      }
     } catch (error) {
-      return [];
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    return false;
+  }
+
+  function buildQuoteText() {
+    syncQuoteMeta();
+    const totals = getTotals();
+    const customer = quote.customerName || 'Customer';
+    const date = quote.date || new Date().toISOString().slice(0, 10);
+    const lines = [
+      `Quote for ${customer}`,
+      `Date: ${date}`,
+      '',
+      `Order Total: ${formatMoney(totals.orderTotal)}`,
+      `Total Cost: ${formatMoney(totals.totalCost)}`,
+      `Total GTM$: ${formatMoney(totals.totalGtm)}`,
+      '',
+      'Item | QTY | Price | Cost | GTM$ | GTM%'
+    ];
+
+    if (quote.items.length === 0) {
+      lines.push('No items added.');
+    } else {
+      quote.items.forEach(function (item) {
+        lines.push([
+          item.name,
+          item.quantity,
+          formatMoney(item.price),
+          formatMoney(item.landedUnitCost),
+          formatMoney(item.gtmDollars),
+          formatPercent(item.gtmPercent)
+        ].join(' | '));
+      });
+    }
+
+    return lines.join('\n');
+  }
+
+  async function copyQuoteText() {
+    const text = buildQuoteText();
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus('Quote copied.', false);
+    } catch (error) {
+      quotePreview.textContent = text;
+      setStatus('Copy is unavailable here. Quote text is shown in preview.', true);
+      openQuoteDialog();
     }
   }
 
-  function renderSavedQuotes() {
-    const items = readSavedQuotes();
+  function emailQuoteText() {
+    const subjectParts = ['GTM Quote'];
 
-    if (items.length === 0) {
-      savedList.innerHTML = '<li class="saved-empty">No saved quotes yet.</li>';
-      return;
+    if (quote.customerName) {
+      subjectParts.push(quote.customerName);
     }
 
-    savedList.innerHTML = '';
-
-    items.forEach(function (item) {
-      const li = document.createElement('li');
-      const createdAt = new Date(item.createdAtIso).toLocaleString();
-      li.textContent = `${createdAt} | Qty ${item.input.quantity} | Min GTM ${format3(item.input.minGtm)}% | Cost ${format3(item.input.itemCost)} | Freight ${format3(item.input.freightTotal)} | First Price ${item.firstSellPrice ? format3(item.firstSellPrice) : 'n/a'}`;
-      savedList.appendChild(li);
-    });
+    const url = `mailto:?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(buildQuoteText())}`;
+    window.location.href = url;
   }
 
-  form.addEventListener('submit', function (event) {
+  function openQuoteDialog() {
+    quotePreview.textContent = buildQuoteText();
+
+    if (typeof quoteDialog.showModal === 'function') {
+      quoteDialog.showModal();
+    } else {
+      quoteDialog.setAttribute('open', '');
+    }
+  }
+
+  itemForm.addEventListener('input', updateCalculatorPreview);
+  itemForm.addEventListener('change', updateCalculatorPreview);
+
+  itemForm.addEventListener('submit', function (event) {
     event.preventDefault();
-    clearValidation();
+    const result = readCurrentItem();
 
-    const inputResult = readInputs();
-
-    if (inputResult.error) {
-      setValidation(inputResult.error);
+    if (result.error) {
+      setStatus(result.error, true);
       return;
     }
 
-    currentInputSnapshot = inputResult.values;
-    currentRows = buildRows(inputResult.values);
-    rowsShown = 0;
+    quote.items.push(result.item);
+    renderQuote();
+    markUnsaved();
+    clearItemForm();
+    setStatus('Item added to quote.', false);
+  });
 
-    if (currentRows.length === 0) {
-      resultsBody.innerHTML = '<tr><td colspan="4" class="empty-state">No rows could be generated with those values.</td></tr>';
-      nextRowsButton.disabled = true;
+  quoteItems.addEventListener('click', function (event) {
+    if (!event.target.matches('.delete-button')) {
       return;
     }
 
-    renderSummary(currentInputSnapshot, currentRows.length);
-    renderNextRows();
-    setValidation(`Showing first ${Math.min(PAGE_SIZE, currentRows.length)} rows. Tap "See next 25" for more.`);
+    quote.items = quote.items.filter(function (item) {
+      return String(item.id) !== event.target.dataset.id;
+    });
+    renderQuote();
+    markUnsaved();
+    setStatus('Item deleted.', false);
   });
 
-  nextRowsButton.addEventListener('click', function () {
-    clearValidation();
-    renderNextRows();
+  customerName.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
   });
 
-  saveQuoteButton.addEventListener('click', function () {
-    saveCurrentQuote();
+  quoteDate.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
   });
 
-  renderSavedQuotes();
+  document.getElementById('clearItem').addEventListener('click', clearItemForm);
+  document.getElementById('saveQuote').addEventListener('click', saveQuote);
+  document.getElementById('viewQuote').addEventListener('click', openQuoteDialog);
+  document.getElementById('copyQuote').addEventListener('click', copyQuoteText);
+  document.getElementById('emailQuote').addEventListener('click', emailQuoteText);
+  document.getElementById('copyQuoteDialog').addEventListener('click', copyQuoteText);
+  document.getElementById('emailQuoteDialog').addEventListener('click', emailQuoteText);
+  document.getElementById('closeQuote').addEventListener('click', function () {
+    quoteDialog.close();
+  });
+
+  const loadedSavedQuote = loadQuote();
+  customerName.value = quote.customerName;
+  quoteDate.value = quote.date;
+  if (loadedSavedQuote) {
+    savedState.textContent = 'Saved locally';
+  }
+  renderQuote();
+  updateCalculatorPreview();
 })();

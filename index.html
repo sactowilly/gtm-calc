@@ -1,95 +1,166 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Packaging GTM Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Calculate packaging sell-price ranges from item cost, freight, quantity, and GTM targets."
+      content="Calculate USD landed cost, GTM, and build a simple customer quote."
     >
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="stylesheet" href="css/normalize.css">
+    <title>GTM Quote Calculator</title>
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
     <main class="app-shell">
       <header class="app-header">
-        <h1>Packaging GTM Calculator</h1>
-        <p>See a sell-price range instantly instead of calculating one GTM at a time.</p>
+        <div>
+          <p class="eyebrow">USD Quote Tool</p>
+          <h1>GTM Quote Calculator</h1>
+        </div>
+        <button id="viewQuote" type="button" class="button secondary">View Quote</button>
       </header>
 
-      <section class="card" aria-labelledby="calculator-heading">
-        <h2 id="calculator-heading">Quote Inputs</h2>
-        <form id="gtm-form" novalidate>
+      <section class="panel calculator-panel" aria-labelledby="calculator-heading">
+        <div class="section-heading">
+          <h2 id="calculator-heading">Item Calculator</h2>
+          <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+        </div>
+
+        <form id="itemForm" novalidate>
           <div class="form-grid">
             <label>
-              Item Cost / Unit
-              <input id="itemCost" name="itemCost" type="number" step="0.00001" min="0" required>
+              Item
+              <input id="itemName" name="itemName" type="text" autocomplete="off" required>
             </label>
 
             <label>
-              Freight (Total)
-              <input id="freightTotal" name="freightTotal" type="number" step="0.00001" min="0" required>
+              Qty
+              <input id="quantity" name="quantity" type="number" inputmode="numeric" step="1" min="1" required>
             </label>
 
             <label>
-              Quantity Requested
-              <input id="quantity" name="quantity" type="number" step="1" min="1" required>
+              Unit Cost USD
+              <input id="unitCost" name="unitCost" type="number" inputmode="decimal" step="0.01" min="0" required>
             </label>
 
             <label>
-              Minimum GTM %
-              <input id="minGtm" name="minGtm" type="number" step="0.25" min="0.01" max="99.99" placeholder="30">
+              Price USD
+              <input id="price" name="price" type="number" inputmode="decimal" step="0.01" min="0" required>
             </label>
+
+            <label>
+              Freight USD
+              <input id="freight" name="freight" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Optional">
+            </label>
+
+            <fieldset class="freight-mode">
+              <legend>Freight Mode</legend>
+              <label>
+                <input type="radio" name="freightMode" value="perItem" checked>
+                Per item
+              </label>
+              <label>
+                <input type="radio" name="freightMode" value="total">
+                Total
+              </label>
+            </fieldset>
+          </div>
+
+          <div class="result-strip" aria-label="Calculated item values">
+            <div>
+              <span>Landed Cost</span>
+              <strong id="landedCost">$0.00</strong>
+            </div>
+            <div>
+              <span>GTM$</span>
+              <strong id="gtmDollars">$0.00</strong>
+            </div>
+            <div>
+              <span>GTM%</span>
+              <strong id="gtmPercent">0.00%</strong>
+            </div>
           </div>
 
           <div class="button-row">
-            <button type="submit">Generate Pricing Table</button>
-            <button id="saveQuote" type="button" class="secondary">Save Quote</button>
+            <button type="submit" class="button primary">Add Item</button>
+            <button id="clearItem" type="button" class="button secondary">Clear</button>
+            <button id="saveQuote" type="button" class="button secondary">Save</button>
           </div>
         </form>
-
-        <p id="validationMessage" class="message" role="status" aria-live="polite"></p>
       </section>
 
-      <section class="card" aria-labelledby="results-heading">
-        <h2 id="results-heading">GTM Recommendations</h2>
-        <div id="summary" class="summary"></div>
+      <section class="panel quote-panel" aria-labelledby="quote-heading">
+        <div class="section-heading">
+          <h2 id="quote-heading">Active Quote</h2>
+          <span id="savedState" class="save-state">Not saved</span>
+        </div>
+
+        <div class="quote-meta">
+          <label>
+            Customer
+            <input id="customerName" type="text" autocomplete="organization">
+          </label>
+          <label>
+            Date
+            <input id="quoteDate" type="date">
+          </label>
+        </div>
+
+        <div class="totals-grid">
+          <div>
+            <span>Order Total</span>
+            <strong id="orderTotal">$0.00</strong>
+          </div>
+          <div>
+            <span>Total Cost</span>
+            <strong id="totalCost">$0.00</strong>
+          </div>
+          <div>
+            <span>Total GTM$</span>
+            <strong id="totalGtm">$0.00</strong>
+          </div>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>GTM %</th>
-                <th>Sell Price / Unit</th>
-                <th>Margin $ / Unit</th>
-                <th>Margin $ / Total</th>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Cost</th>
+                <th>GTM$</th>
+                <th>GTM%</th>
+                <th><span class="visually-hidden">Actions</span></th>
               </tr>
             </thead>
-            <tbody id="resultsBody">
+            <tbody id="quoteItems">
               <tr>
-                <td colspan="4" class="empty-state">Run a calculation to see pricing rows.</td>
+                <td colspan="7" class="empty-state">No quote items yet.</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="button-row">
-          <button id="nextRows" type="button" class="secondary" disabled>See next 25</button>
-        </div>
-      </section>
 
-      <section class="card" aria-labelledby="saved-heading">
-        <h2 id="saved-heading">Saved Quotes</h2>
-        <p class="saved-note">Saved in this browser only. Re-open later to review previous runs.</p>
-        <ul id="savedList" class="saved-list"></ul>
+        <div class="button-row quote-actions">
+          <button id="copyQuote" type="button" class="button secondary">Copy</button>
+          <button id="emailQuote" type="button" class="button primary">Email</button>
+        </div>
       </section>
     </main>
 
-    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
-    <script src="js/plugins.js"></script>
+    <dialog id="quoteDialog">
+      <div class="dialog-heading">
+        <h2>Quote Preview</h2>
+        <button id="closeQuote" type="button" class="icon-button" aria-label="Close quote preview">x</button>
+      </div>
+      <pre id="quotePreview"></pre>
+      <div class="button-row">
+        <button id="copyQuoteDialog" type="button" class="button secondary">Copy</button>
+        <button id="emailQuoteDialog" type="button" class="button primary">Email</button>
+      </div>
+    </dialog>
+
     <script src="js/main.js"></script>
   </body>
 </html>
