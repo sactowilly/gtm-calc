@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">GTM Quote Calculator</title>
+  <desc id="desc">A branded image for a USD quote calculator showing GTM dollars, landed cost, and quote totals.</desc>
+  <rect width="1280" height="640" fill="#f5f6f1"/>
+  <rect x="64" y="64" width="1152" height="512" rx="32" fill="#ffffff" stroke="#d9ded7" stroke-width="4"/>
+  <rect x="64" y="64" width="1152" height="116" rx="32" fill="#0f6b57"/>
+  <path d="M64 148h1152v32H64z" fill="#0f6b57"/>
+  <text x="112" y="138" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="800">GTM Quote Calculator</text>
+  <text x="112" y="226" fill="#42515d" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">USD landed cost, GTM, and quote builder</text>
+  <g transform="translate(112 276)">
+    <rect width="308" height="172" rx="18" fill="#f9faf7" stroke="#d9ded7" stroke-width="3"/>
+    <text x="28" y="52" fill="#66707d" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800">LANDED COST</text>
+    <text x="28" y="118" fill="#20242a" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="800">$15.00</text>
+  </g>
+  <g transform="translate(486 276)">
+    <rect width="308" height="172" rx="18" fill="#f9faf7" stroke="#d9ded7" stroke-width="3"/>
+    <text x="28" y="52" fill="#66707d" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800">GTM$</text>
+    <text x="28" y="118" fill="#20242a" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="800">$15.00</text>
+  </g>
+  <g transform="translate(860 276)">
+    <rect width="308" height="172" rx="18" fill="#f9faf7" stroke="#d9ded7" stroke-width="3"/>
+    <text x="28" y="52" fill="#66707d" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800">GTM%</text>
+    <text x="28" y="118" fill="#20242a" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="800">33.33%</text>
+  </g>
+  <g transform="translate(112 492)">
+    <rect width="1056" height="4" fill="#d9ded7"/>
+    <circle cx="0" cy="2" r="8" fill="#0f6b57"/>
+    <circle cx="352" cy="2" r="8" fill="#0f6b57"/>
+    <circle cx="704" cy="2" r="8" fill="#0f6b57"/>
+    <circle cx="1056" cy="2" r="8" fill="#0f6b57"/>
+  </g>
+  <text x="112" y="548" fill="#42515d" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Price | Cost | Freight | Quote | Email</text>
+</svg>
