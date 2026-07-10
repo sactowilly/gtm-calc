@@ -1,8 +1,8 @@
-# GTM Quote Calculator
+# GTM Calc and Quote Tool
 
 A simple USD quote calculator for packaging sales. It calculates landed cost, GTM dollars, and GTM percent, then builds a quote that can be copied or opened in the default email app.
 
-![GTM Quote Calculator](assets/gtm-calc-icon.png)
+![GTM Calc and Quote Tool](assets/gtm-calc-icon.png)
 
 ## Live App
 

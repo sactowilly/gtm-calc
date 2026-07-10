@@ -8,7 +8,7 @@
   const savedState = document.getElementById('savedState');
   const quoteItems = document.getElementById('quoteItems');
   const quoteDialog = document.getElementById('quoteDialog');
-  const quotePreview = document.getElementById('quotePreview');
+  const quotePdf = document.getElementById('quotePdf');
 
   const fields = {
     itemName: document.getElementById('itemName'),
@@ -21,7 +21,6 @@
   const outputs = {
     landedCost: document.getElementById('landedCost'),
     gtmEachDollars: document.getElementById('gtmEachDollars'),
-    gtmEachPercent: document.getElementById('gtmEachPercent'),
     gtmTotalDollars: document.getElementById('gtmTotalDollars'),
     gtmTotalPercent: document.getElementById('gtmTotalPercent'),
     orderTotal: document.getElementById('orderTotal'),
@@ -44,6 +43,8 @@
     date: new Date().toISOString().slice(0, 10),
     items: []
   };
+  let editingItemId = null;
+  let quotePdfUrl = null;
 
   function formatMoney(value) {
     return moneyFormatter.format(value);
@@ -177,7 +178,6 @@
     ) {
       outputs.landedCost.textContent = '$0.00';
       outputs.gtmEachDollars.textContent = '$0.00';
-      outputs.gtmEachPercent.textContent = '0.00%';
       outputs.gtmTotalDollars.textContent = '$0.00';
       outputs.gtmTotalPercent.textContent = '0.00%';
       return;
@@ -193,7 +193,6 @@
 
     outputs.landedCost.textContent = formatMoney(landedUnitCost);
     outputs.gtmEachDollars.textContent = formatMoney(gtmEachDollars);
-    outputs.gtmEachPercent.textContent = formatPercent(gtmEachPercent);
     outputs.gtmTotalDollars.textContent = formatMoney(gtmTotalDollars);
     outputs.gtmTotalPercent.textContent = formatPercent(gtmTotalPercent);
   }
@@ -225,7 +224,7 @@
     outputs.totalGtm.textContent = formatMoney(totals.totalGtm);
 
     if (quote.items.length === 0) {
-      quoteItems.innerHTML = '<tr><td colspan="9" class="empty-state">No quote items yet.</td></tr>';
+      quoteItems.innerHTML = '<tr><td colspan="8" class="empty-state">No quote items yet.</td></tr>';
       return;
     }
 
@@ -241,9 +240,11 @@
         <td>${formatMoney(normalized.landedUnitCost)}</td>
         <td>${formatMoney(normalized.gtmEachDollars)}</td>
         <td>${formatMoney(normalized.gtmTotalDollars)}</td>
-        <td>${formatPercent(normalized.gtmEachPercent)}</td>
         <td>${formatPercent(normalized.gtmTotalPercent)}</td>
-        <td><button type="button" class="delete-button" data-id="${normalized.id}">Delete</button></td>
+        <td class="row-actions">
+          <button type="button" class="edit-button" data-id="${normalized.id}">Edit</button>
+          <button type="button" class="delete-button" data-id="${normalized.id}">Delete</button>
+        </td>
       `;
       quoteItems.appendChild(row);
     });
@@ -260,6 +261,8 @@
 
   function clearItemForm() {
     itemForm.reset();
+    editingItemId = null;
+    document.getElementById('itemSubmit').textContent = 'Add Item';
     updateCalculatorPreview();
     fields.itemName.focus();
     setStatus('', false);
@@ -310,7 +313,7 @@
       `Total Cost: ${formatMoney(totals.totalCost)}`,
       `Total GTM$: ${formatMoney(totals.totalGtm)}`,
       '',
-      'Item | QTY | Price | Cost EA | GTM$ EA | GTM$ Total | GTM% EA | GTM% Total'
+      'Item | QTY | Price | Cost EA | GTM$ EA | GTM$ Total | GTM%'
     ];
 
     if (quote.items.length === 0) {
@@ -325,7 +328,6 @@
           formatMoney(normalized.landedUnitCost),
           formatMoney(normalized.gtmEachDollars),
           formatMoney(normalized.gtmTotalDollars),
-          formatPercent(normalized.gtmEachPercent),
           formatPercent(normalized.gtmTotalPercent)
         ].join(' | '));
       });
@@ -341,14 +343,13 @@
       await navigator.clipboard.writeText(text);
       setStatus('Quote copied.', false);
     } catch (error) {
-      quotePreview.textContent = text;
-      setStatus('Copy is unavailable here. Quote text is shown in preview.', true);
+      setStatus('Copy is unavailable here. Use the rendered PDF preview.', true);
       openQuoteDialog();
     }
   }
 
   function emailQuoteText() {
-    const subjectParts = ['GTM Quote'];
+    const subjectParts = ['GTM Calc and Quote Tool'];
 
     if (quote.customerName) {
       subjectParts.push(quote.customerName);
@@ -359,13 +360,160 @@
   }
 
   function openQuoteDialog() {
-    quotePreview.textContent = buildQuoteText();
+    if (quotePdfUrl) {
+      URL.revokeObjectURL(quotePdfUrl);
+    }
+
+    quotePdfUrl = URL.createObjectURL(buildQuotePdfBlob());
+    quotePdf.src = quotePdfUrl;
 
     if (typeof quoteDialog.showModal === 'function') {
       quoteDialog.showModal();
     } else {
       quoteDialog.setAttribute('open', '');
     }
+  }
+
+  function editItem(itemId) {
+    const item = quote.items.find(function (candidate) {
+      return String(candidate.id) === itemId;
+    });
+
+    if (!item) {
+      return;
+    }
+
+    const normalized = normalizeItem(item);
+    editingItemId = itemId;
+    fields.itemName.value = normalized.name;
+    fields.quantity.value = normalized.quantity;
+    fields.unitCost.value = normalized.unitCost;
+    fields.price.value = normalized.price;
+    fields.freight.value = normalized.freight || '';
+    const freightModeInput = itemForm.querySelector(`input[name="freightMode"][value="${normalized.freightMode || 'perItem'}"]`);
+
+    if (freightModeInput) {
+      freightModeInput.checked = true;
+    }
+
+    document.getElementById('itemSubmit').textContent = 'Update Item';
+    updateCalculatorPreview();
+    fields.itemName.focus();
+    setStatus('Editing item. Update Item will replace this row.', false);
+  }
+
+  function escapePdfText(value) {
+    return String(value)
+      .replaceAll('\\', '\\\\')
+      .replaceAll('(', '\\(')
+      .replaceAll(')', '\\)');
+  }
+
+  function buildQuotePdfLines() {
+    syncQuoteMeta();
+    const totals = getTotals();
+    const customer = quote.customerName || 'Customer';
+    const date = quote.date || new Date().toISOString().slice(0, 10);
+    const lines = [
+      { text: 'GTM Calc and Quote Tool', size: 18 },
+      { text: `Customer: ${customer}`, size: 11 },
+      { text: `Date: ${date}`, size: 11 },
+      { text: `Order Total: ${formatMoney(totals.orderTotal)}    Total Cost: ${formatMoney(totals.totalCost)}    Total GTM$: ${formatMoney(totals.totalGtm)}`, size: 11 },
+      { text: '', size: 11 },
+      { text: 'Item                 Qty     Price       Cost EA     GTM$ EA     GTM$ Total     GTM%', size: 10 }
+    ];
+
+    if (quote.items.length === 0) {
+      lines.push({ text: 'No items added.', size: 10 });
+    } else {
+      quote.items.forEach(function (item) {
+        const normalized = normalizeItem(item);
+        lines.push({
+          text: [
+            normalized.name.padEnd(20).slice(0, 20),
+            String(normalized.quantity).padStart(5),
+            formatMoney(normalized.price).padStart(10),
+            formatMoney(normalized.landedUnitCost).padStart(10),
+            formatMoney(normalized.gtmEachDollars).padStart(10),
+            formatMoney(normalized.gtmTotalDollars).padStart(12),
+            formatPercent(normalized.gtmTotalPercent).padStart(9)
+          ].join('  '),
+          size: 9
+        });
+      });
+    }
+
+    return lines;
+  }
+
+  function buildQuotePdfBlob() {
+    const pageWidth = 612;
+    const pageHeight = 792;
+    const left = 42;
+    const top = 742;
+    const lineHeight = 18;
+    const lines = buildQuotePdfLines();
+    const pages = [];
+    let pageLines = [];
+    let y = top;
+
+    lines.forEach(function (line) {
+      if (y < 58 && pageLines.length > 0) {
+        pages.push(pageLines);
+        pageLines = [];
+        y = top;
+      }
+
+      pageLines.push({ ...line, y });
+      y -= line.text ? lineHeight : 10;
+    });
+
+    if (pageLines.length > 0) {
+      pages.push(pageLines);
+    }
+
+    const objects = [];
+
+    function addObject(content) {
+      objects.push(content);
+      return objects.length;
+    }
+
+    const fontObject = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    const pageObjectIds = [];
+
+    pages.forEach(function (pageLinesForObject) {
+      const stream = pageLinesForObject.map(function (line) {
+        return `BT /F1 ${line.size} Tf ${left} ${line.y} Td (${escapePdfText(line.text)}) Tj ET`;
+      }).join('\n');
+      const contentObject = addObject(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
+      const pageObject = addObject(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObject} 0 R >> >> /Contents ${contentObject} 0 R >>`);
+      pageObjectIds.push(pageObject);
+    });
+
+    const pagesObject = addObject(`<< /Type /Pages /Kids [${pageObjectIds.map(function (id) { return `${id} 0 R`; }).join(' ')}] /Count ${pageObjectIds.length} >>`);
+
+    pageObjectIds.forEach(function (pageObjectId) {
+      objects[pageObjectId - 1] = objects[pageObjectId - 1].replace('/Parent 0 0 R', `/Parent ${pagesObject} 0 R`);
+    });
+
+    const catalogObject = addObject(`<< /Type /Catalog /Pages ${pagesObject} 0 R >>`);
+    let pdf = '%PDF-1.4\n';
+    const offsets = [0];
+
+    objects.forEach(function (content, index) {
+      offsets.push(pdf.length);
+      pdf += `${index + 1} 0 obj\n${content}\nendobj\n`;
+    });
+
+    const xrefOffset = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    offsets.slice(1).forEach(function (offset) {
+      pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
+    });
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogObject} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+    return new Blob([pdf], { type: 'application/pdf' });
   }
 
   itemForm.addEventListener('input', updateCalculatorPreview);
@@ -380,14 +528,31 @@
       return;
     }
 
-    quote.items.push(result.item);
+    let status = 'Item added to quote.';
+
+    if (editingItemId) {
+      quote.items = quote.items.map(function (item) {
+        return String(item.id) === editingItemId ? { ...result.item, id: editingItemId } : item;
+      });
+      editingItemId = null;
+      document.getElementById('itemSubmit').textContent = 'Add Item';
+      status = 'Item updated.';
+    } else {
+      quote.items.push(result.item);
+    }
+
     renderQuote();
     markUnsaved();
     clearItemForm();
-    setStatus('Item added to quote.', false);
+    setStatus(status, false);
   });
 
   quoteItems.addEventListener('click', function (event) {
+    if (event.target.matches('.edit-button')) {
+      editItem(event.target.dataset.id);
+      return;
+    }
+
     if (!event.target.matches('.delete-button')) {
       return;
     }
@@ -419,6 +584,14 @@
   document.getElementById('emailQuoteDialog').addEventListener('click', emailQuoteText);
   document.getElementById('closeQuote').addEventListener('click', function () {
     quoteDialog.close();
+  });
+
+  quoteDialog.addEventListener('close', function () {
+    if (quotePdfUrl) {
+      URL.revokeObjectURL(quotePdfUrl);
+      quotePdfUrl = null;
+      quotePdf.removeAttribute('src');
+    }
   });
 
   const loadedSavedQuote = loadQuote();

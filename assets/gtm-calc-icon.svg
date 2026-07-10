@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
-  <title id="title">GTM Quote Calculator</title>
+  <title id="title">GTM Calc and Quote Tool</title>
   <desc id="desc">A branded image for a USD quote calculator showing GTM dollars, landed cost, and quote totals.</desc>
   <rect width="1280" height="640" fill="#f5f6f1"/>
   <rect x="64" y="64" width="1152" height="512" rx="32" fill="#ffffff" stroke="#d9ded7" stroke-width="4"/>
   <rect x="64" y="64" width="1152" height="116" rx="32" fill="#0f6b57"/>
   <path d="M64 148h1152v32H64z" fill="#0f6b57"/>
-  <text x="112" y="138" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="800">GTM Quote Calculator</text>
+  <text x="112" y="138" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="800">GTM Calc and Quote Tool</text>
   <text x="112" y="226" fill="#42515d" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">USD landed cost, GTM, and quote builder</text>
   <g transform="translate(112 276)">
     <rect width="308" height="172" rx="18" fill="#f9faf7" stroke="#d9ded7" stroke-width="3"/>

@@ -7,7 +7,7 @@
       name="description"
       content="Calculate USD landed cost, GTM, and build a simple customer quote."
     >
-    <title>GTM Quote Calculator</title>
+    <title>GTM Calc and Quote Tool</title>
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
@@ -15,7 +15,7 @@
       <header class="app-header">
         <div>
           <p class="eyebrow">USD Quote Tool</p>
-          <h1>GTM Quote Calculator</h1>
+          <h1>GTM Calc and Quote Tool</h1>
         </div>
         <button id="viewQuote" type="button" class="button secondary">View Quote</button>
       </header>
@@ -76,21 +76,17 @@
               <strong id="gtmEachDollars">$0.00</strong>
             </div>
             <div>
-              <span>GTM% EA</span>
-              <strong id="gtmEachPercent">0.00%</strong>
-            </div>
-            <div>
-              <span>GTM$ Total Qty</span>
+              <span>GTM$ Total</span>
               <strong id="gtmTotalDollars">$0.00</strong>
             </div>
             <div>
-              <span>GTM% Total Qty</span>
+              <span>GTM%</span>
               <strong id="gtmTotalPercent">0.00%</strong>
             </div>
           </div>
 
           <div class="button-row">
-            <button type="submit" class="button primary">Add Item</button>
+            <button id="itemSubmit" type="submit" class="button primary">Add Item</button>
             <button id="clearItem" type="button" class="button secondary">Clear</button>
             <button id="saveQuote" type="button" class="button secondary">Save</button>
           </div>
@@ -139,14 +135,13 @@
                 <th>Cost</th>
                 <th>GTM$ EA</th>
                 <th>GTM$ Total</th>
-                <th>GTM% EA</th>
-                <th>GTM% Total</th>
+                <th>GTM%</th>
                 <th><span class="visually-hidden">Actions</span></th>
               </tr>
             </thead>
             <tbody id="quoteItems">
               <tr>
-                <td colspan="9" class="empty-state">No quote items yet.</td>
+                <td colspan="8" class="empty-state">No quote items yet.</td>
               </tr>
             </tbody>
           </table>
@@ -161,10 +156,10 @@
 
     <dialog id="quoteDialog">
       <div class="dialog-heading">
-        <h2>Quote Preview</h2>
+        <h2>Quote PDF</h2>
         <button id="closeQuote" type="button" class="icon-button" aria-label="Close quote preview">x</button>
       </div>
-      <pre id="quotePreview"></pre>
+      <iframe id="quotePdf" title="Rendered quote PDF"></iframe>
       <div class="button-row">
         <button id="copyQuoteDialog" type="button" class="button secondary">Copy</button>
         <button id="emailQuoteDialog" type="button" class="button primary">Email</button>

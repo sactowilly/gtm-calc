@@ -156,7 +156,7 @@ button:focus-visible {
 }
 
 .result-strip {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .totals-grid {
@@ -231,7 +231,7 @@ button:focus-visible {
 
 table {
   width: 100%;
-  min-width: 960px;
+  min-width: 920px;
   border-collapse: collapse;
 }
 
@@ -261,18 +261,34 @@ td:first-child {
   text-align: center;
 }
 
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.edit-button,
 .delete-button {
   border: 1px solid #d8b8b8;
   border-radius: 6px;
   padding: 7px 10px;
-  color: var(--danger);
-  background: #fff7f7;
   cursor: pointer;
   font-weight: 800;
 }
 
+.edit-button {
+  border-color: #bfc8be;
+  color: var(--secondary);
+  background: #fff;
+}
+
+.delete-button {
+  color: var(--danger);
+  background: #fff7f7;
+}
+
 dialog {
-  width: min(720px, calc(100% - 28px));
+  width: min(900px, calc(100% - 28px));
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 16px;
@@ -301,14 +317,13 @@ dialog::backdrop {
   font-weight: 800;
 }
 
-pre {
-  max-height: 55vh;
-  overflow: auto;
+#quotePdf {
+  display: block;
+  width: 100%;
+  height: min(70vh, 720px);
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 12px;
   background: #fbfcfa;
-  white-space: pre-wrap;
 }
 
 .visually-hidden {
