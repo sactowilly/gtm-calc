@@ -313,7 +313,7 @@
       `Total Cost: ${formatMoney(totals.totalCost)}`,
       `Total GTM$: ${formatMoney(totals.totalGtm)}`,
       '',
-      'Item | QTY | Price | Cost EA | GTM$ EA | GTM$ Total | GTM%'
+      'QTY | ITEM | PRICE | COST | GTM$ | GTM$ Total | GTM%'
     ];
 
     if (quote.items.length === 0) {
@@ -322,8 +322,8 @@
       quote.items.forEach(function (item) {
         const normalized = normalizeItem(item);
         lines.push([
-          normalized.name,
           normalized.quantity,
+          normalized.name,
           formatMoney(normalized.price),
           formatMoney(normalized.landedUnitCost),
           formatMoney(normalized.gtmEachDollars),
@@ -409,67 +409,58 @@
       .replaceAll(')', '\\)');
   }
 
-  function buildQuotePdfLines() {
+  function buildQuotePdfRows() {
     syncQuoteMeta();
-    const totals = getTotals();
-    const customer = quote.customerName || 'Customer';
-    const date = quote.date || new Date().toISOString().slice(0, 10);
-    const lines = [
-      { text: 'GTM Calc and Quote Tool', size: 18 },
-      { text: `Customer: ${customer}`, size: 11 },
-      { text: `Date: ${date}`, size: 11 },
-      { text: `Order Total: ${formatMoney(totals.orderTotal)}    Total Cost: ${formatMoney(totals.totalCost)}    Total GTM$: ${formatMoney(totals.totalGtm)}`, size: 11 },
-      { text: '', size: 11 },
-      { text: 'Item                 Qty     Price       Cost EA     GTM$ EA     GTM$ Total     GTM%', size: 10 }
-    ];
 
     if (quote.items.length === 0) {
-      lines.push({ text: 'No items added.', size: 10 });
-    } else {
-      quote.items.forEach(function (item) {
-        const normalized = normalizeItem(item);
-        lines.push({
-          text: [
-            normalized.name.padEnd(20).slice(0, 20),
-            String(normalized.quantity).padStart(5),
-            formatMoney(normalized.price).padStart(10),
-            formatMoney(normalized.landedUnitCost).padStart(10),
-            formatMoney(normalized.gtmEachDollars).padStart(10),
-            formatMoney(normalized.gtmTotalDollars).padStart(12),
-            formatPercent(normalized.gtmTotalPercent).padStart(9)
-          ].join('  '),
-          size: 9
-        });
-      });
+      return [];
     }
 
-    return lines;
+    return quote.items.map(function (item) {
+      const normalized = normalizeItem(item);
+      return [
+        String(normalized.quantity),
+        normalized.name,
+        formatMoney(normalized.price),
+        formatMoney(normalized.landedUnitCost),
+        formatMoney(normalized.gtmEachDollars),
+        formatMoney(normalized.gtmTotalDollars),
+        formatPercent(normalized.gtmTotalPercent)
+      ];
+    });
   }
 
   function buildQuotePdfBlob() {
     const pageWidth = 612;
     const pageHeight = 792;
-    const left = 42;
-    const top = 742;
-    const lineHeight = 18;
-    const lines = buildQuotePdfLines();
-    const pages = [];
-    let pageLines = [];
-    let y = top;
+    const margin = 42;
+    const tableWidth = pageWidth - (margin * 2);
+    const rowHeight = 24;
+    const headerHeight = 24;
+    const headerTop = 626;
+    const bottom = 58;
+    const columns = [
+      { label: 'QTY', width: 38, align: 'right' },
+      { label: 'ITEM', width: 150, align: 'left' },
+      { label: 'PRICE', width: 65, align: 'right' },
+      { label: 'COST', width: 65, align: 'right' },
+      { label: 'GTM$', width: 65, align: 'right' },
+      { label: 'GTM$ Total', width: 75, align: 'right' },
+      { label: 'GTM%', width: 70, align: 'right' }
+    ];
+    const rows = buildQuotePdfRows();
+    const totals = getTotals();
+    const customer = quote.customerName || 'Customer';
+    const date = quote.date || new Date().toISOString().slice(0, 10);
+    const rowsPerPage = Math.max(1, Math.floor((headerTop - headerHeight - bottom) / rowHeight));
+    const pagedRows = [];
 
-    lines.forEach(function (line) {
-      if (y < 58 && pageLines.length > 0) {
-        pages.push(pageLines);
-        pageLines = [];
-        y = top;
+    if (rows.length === 0) {
+      pagedRows.push([]);
+    } else {
+      for (let i = 0; i < rows.length; i += rowsPerPage) {
+        pagedRows.push(rows.slice(i, i + rowsPerPage));
       }
-
-      pageLines.push({ ...line, y });
-      y -= line.text ? lineHeight : 10;
-    });
-
-    if (pageLines.length > 0) {
-      pages.push(pageLines);
     }
 
     const objects = [];
@@ -480,14 +471,88 @@
     }
 
     const fontObject = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    const boldFontObject = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
     const pageObjectIds = [];
 
-    pages.forEach(function (pageLinesForObject) {
-      const stream = pageLinesForObject.map(function (line) {
-        return `BT /F1 ${line.size} Tf ${left} ${line.y} Td (${escapePdfText(line.text)}) Tj ET`;
-      }).join('\n');
+    function textCommand(text, x, y, size, font) {
+      return `BT /${font || 'F1'} ${size} Tf ${x} ${y} Td (${escapePdfText(text)}) Tj ET`;
+    }
+
+    function estimatedTextWidth(text, size) {
+      return String(text).length * size * 0.52;
+    }
+
+    function cellTextX(text, column, x, size) {
+      if (column.align !== 'right') {
+        return x + 5;
+      }
+
+      return Math.max(x + 5, x + column.width - estimatedTextWidth(text, size) - 5);
+    }
+
+    function trimCellText(text, maxChars) {
+      const value = String(text);
+
+      if (value.length <= maxChars) {
+        return value;
+      }
+
+      return `${value.slice(0, Math.max(0, maxChars - 3))}...`;
+    }
+
+    function verticalLineCommand(x, y, height) {
+      return `${x} ${y} m ${x} ${y + height} l S`;
+    }
+
+    pagedRows.forEach(function (rowsForPage, pageIndex) {
+      const commands = [
+        textCommand('GTM Calc and Quote Tool', margin, 742, 18, 'F2'),
+        textCommand(`Customer: ${customer}`, margin, 714, 11, 'F1'),
+        textCommand(`Date: ${date}`, margin, 696, 11, 'F1'),
+        textCommand(`Order Total: ${formatMoney(totals.orderTotal)}`, margin, 666, 11, 'F2'),
+        textCommand(`Total Cost: ${formatMoney(totals.totalCost)}`, 230, 666, 11, 'F2'),
+        textCommand(`Total GTM$: ${formatMoney(totals.totalGtm)}`, 405, 666, 11, 'F2'),
+        '0.93 0.96 0.94 rg',
+        `${margin} ${headerTop - headerHeight} ${tableWidth} ${headerHeight} re f`,
+        '0 g',
+        `${margin} ${headerTop - headerHeight} ${tableWidth} ${headerHeight} re S`
+      ];
+      let x = margin;
+
+      columns.forEach(function (column) {
+        commands.push(textCommand(column.label, cellTextX(column.label, column, x, 9), headerTop - 16, 9, 'F2'));
+        commands.push(verticalLineCommand(x, headerTop - headerHeight, headerHeight));
+        x += column.width;
+      });
+      commands.push(verticalLineCommand(margin + tableWidth, headerTop - headerHeight, headerHeight));
+
+      if (rowsForPage.length === 0) {
+        const y = headerTop - headerHeight - rowHeight;
+        commands.push(`${margin} ${y} ${tableWidth} ${rowHeight} re S`);
+        commands.push(textCommand('No items added.', margin + 5, y + 8, 9, 'F1'));
+      }
+
+      rowsForPage.forEach(function (row, rowIndex) {
+        const y = headerTop - headerHeight - ((rowIndex + 1) * rowHeight);
+        x = margin;
+        commands.push(`${margin} ${y} ${tableWidth} ${rowHeight} re S`);
+        row.forEach(function (value, columnIndex) {
+          const column = columns[columnIndex];
+          const displayValue = columnIndex === 1 ? trimCellText(value, 24) : value;
+          commands.push(textCommand(displayValue, cellTextX(displayValue, column, x, 8.5), y + 8, 8.5, 'F1'));
+          commands.push(verticalLineCommand(x, y, rowHeight));
+          x += column.width;
+        });
+        commands.push(verticalLineCommand(margin + tableWidth, y, rowHeight));
+      });
+
+      if (pagedRows.length > 1) {
+        commands.push(textCommand(`Page ${pageIndex + 1} of ${pagedRows.length}`, pageWidth - margin - 70, 30, 9, 'F1'));
+      }
+
+      const stream = commands.join('\n');
       const contentObject = addObject(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
-      const pageObject = addObject(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObject} 0 R >> >> /Contents ${contentObject} 0 R >>`);
+      const pageObject = addObject(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObject} 0 R /F2 ${boldFontObject} 0 R >> >> /Contents ${contentObject} 0 R >>`);
       pageObjectIds.push(pageObject);
     });
 
