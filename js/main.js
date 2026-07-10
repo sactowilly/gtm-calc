@@ -312,8 +312,7 @@
       `Order Total: ${formatMoney(totals.orderTotal)}`,
       `Total Cost: ${formatMoney(totals.totalCost)}`,
       `Total GTM$: ${formatMoney(totals.totalGtm)}`,
-      '',
-      'QTY | ITEM | PRICE | COST | GTM$ | GTM$ Total | GTM%'
+      ''
     ];
 
     if (quote.items.length === 0) {
@@ -321,15 +320,7 @@
     } else {
       quote.items.forEach(function (item) {
         const normalized = normalizeItem(item);
-        lines.push([
-          normalized.quantity,
-          normalized.name,
-          formatMoney(normalized.price),
-          formatMoney(normalized.landedUnitCost),
-          formatMoney(normalized.gtmEachDollars),
-          formatMoney(normalized.gtmTotalDollars),
-          formatPercent(normalized.gtmTotalPercent)
-        ].join(' | '));
+        lines.push(`${normalized.quantity} - ${normalized.name} == ${formatMoney(normalized.price)} | Cost: ${formatMoney(normalized.landedUnitCost)}, GTM$: ${formatMoney(normalized.gtmEachDollars)}, GTM$ Total: ${formatMoney(normalized.gtmTotalDollars)}, GTM%: ${formatPercent(normalized.gtmTotalPercent)}`);
       });
     }
 
