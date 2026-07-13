@@ -1,3 +1,13 @@
+import {
+  buildQuoteItem,
+  calculateItemValues,
+  getQuoteTotals,
+  normalizeItem,
+  parseNumber,
+  parseQuantity
+} from './domain/calculations.js';
+import { formatMoney, formatPercent } from './domain/formatters.js';
+
 (function () {
   const STORAGE_KEY = 'gtm_quote_calculator_v1';
 
@@ -28,16 +38,6 @@
     totalGtm: document.getElementById('totalGtm')
   };
 
-  const moneyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  });
-
-  const percentFormatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
   let quote = {
     customerName: '',
     date: new Date().toISOString().slice(0, 10),
@@ -45,22 +45,6 @@
   };
   let editingItemId = null;
   let quotePdfUrl = null;
-
-  function formatMoney(value) {
-    return moneyFormatter.format(value);
-  }
-
-  function formatPercent(value) {
-    return `${percentFormatter.format(value)}%`;
-  }
-
-  function parseNumber(value) {
-    if (String(value).trim() === '') {
-      return 0;
-    }
-
-    return Number.parseFloat(value);
-  }
 
   function getFreightMode() {
     const checked = itemForm.querySelector('input[name="freightMode"]:checked');
@@ -77,91 +61,22 @@
   }
 
   function readCurrentItem() {
-    const name = fields.itemName.value.trim();
-    const quantity = Number.parseInt(fields.quantity.value, 10);
-    const unitCost = parseNumber(fields.unitCost.value);
-    const price = parseNumber(fields.price.value);
-    const freight = parseNumber(fields.freight.value);
-    const freightMode = getFreightMode();
+    const id = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : String(Date.now() + Math.random());
 
-    if (!name) {
-      return { error: 'Enter an item name.' };
-    }
-
-    if (!Number.isInteger(quantity) || quantity <= 0) {
-      return { error: 'Qty must be a whole number greater than 0.' };
-    }
-
-    if (!Number.isFinite(unitCost) || unitCost < 0) {
-      return { error: 'Unit cost must be a valid USD amount.' };
-    }
-
-    if (!Number.isFinite(price) || price < 0) {
-      return { error: 'Price must be a valid USD amount.' };
-    }
-
-    if (!Number.isFinite(freight) || freight < 0) {
-      return { error: 'Freight must be blank or a valid USD amount.' };
-    }
-
-    const freightPerUnit = freightMode === 'total' ? freight / quantity : freight;
-    const landedUnitCost = unitCost + freightPerUnit;
-
-    if (landedUnitCost <= 0) {
-      return { error: 'Landed cost must be greater than $0.00 to calculate GTM%.' };
-    }
-
-    const totalCost = landedUnitCost * quantity;
-    const orderTotal = price * quantity;
-    const gtmEachDollars = price - landedUnitCost;
-    const gtmTotalDollars = gtmEachDollars * quantity;
-    const gtmEachPercent = (gtmEachDollars / landedUnitCost) * 100;
-    const gtmTotalPercent = totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0;
-
-    return {
-      item: {
-        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
-        name,
-        quantity,
-        unitCost,
-        price,
-        freight,
-        freightMode,
-        freightPerUnit,
-        landedUnitCost,
-        totalCost,
-        orderTotal,
-        gtmEachDollars,
-        gtmTotalDollars,
-        gtmEachPercent,
-        gtmTotalPercent
-      }
-    };
-  }
-
-  function normalizeItem(item) {
-    const landedUnitCost = Number.isFinite(item.landedUnitCost) ? item.landedUnitCost : item.unitCost + item.freightPerUnit;
-    const totalCost = Number.isFinite(item.totalCost) ? item.totalCost : landedUnitCost * item.quantity;
-    const orderTotal = Number.isFinite(item.orderTotal) ? item.orderTotal : item.price * item.quantity;
-    const gtmEachDollars = Number.isFinite(item.gtmEachDollars) ? item.gtmEachDollars : item.price - landedUnitCost;
-    const gtmTotalDollars = Number.isFinite(item.gtmTotalDollars) ? item.gtmTotalDollars : orderTotal - totalCost;
-    const gtmEachPercent = Number.isFinite(item.gtmEachPercent) ? item.gtmEachPercent : (landedUnitCost > 0 ? (gtmEachDollars / landedUnitCost) * 100 : 0);
-    const gtmTotalPercent = Number.isFinite(item.gtmTotalPercent) ? item.gtmTotalPercent : (totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0);
-
-    return {
-      ...item,
-      landedUnitCost,
-      totalCost,
-      orderTotal,
-      gtmEachDollars,
-      gtmTotalDollars,
-      gtmEachPercent,
-      gtmTotalPercent
-    };
+    return buildQuoteItem({
+      name: fields.itemName.value,
+      quantity: fields.quantity.value,
+      unitCost: fields.unitCost.value,
+      price: fields.price.value,
+      freight: fields.freight.value,
+      freightMode: getFreightMode()
+    }, id);
   }
 
   function updateCalculatorPreview() {
-    const quantity = Number.parseInt(fields.quantity.value, 10);
+    const quantity = parseQuantity(fields.quantity.value);
     const unitCost = parseNumber(fields.unitCost.value);
     const price = parseNumber(fields.price.value);
     const freight = parseNumber(fields.freight.value);
@@ -183,32 +98,22 @@
       return;
     }
 
-    const freightPerUnit = getFreightMode() === 'total' ? freight / quantity : freight;
-    const landedUnitCost = unitCost + freightPerUnit;
-    const totalCost = landedUnitCost * quantity;
-    const gtmEachDollars = price - landedUnitCost;
-    const gtmTotalDollars = gtmEachDollars * quantity;
-    const gtmEachPercent = landedUnitCost > 0 ? (gtmEachDollars / landedUnitCost) * 100 : 0;
-    const gtmTotalPercent = totalCost > 0 ? (gtmTotalDollars / totalCost) * 100 : 0;
+    const values = calculateItemValues({
+      quantity,
+      unitCost,
+      price,
+      freight,
+      freightMode: getFreightMode()
+    });
 
-    outputs.landedCost.textContent = formatMoney(landedUnitCost);
-    outputs.gtmEachDollars.textContent = formatMoney(gtmEachDollars);
-    outputs.gtmTotalDollars.textContent = formatMoney(gtmTotalDollars);
-    outputs.gtmTotalPercent.textContent = formatPercent(gtmTotalPercent);
+    outputs.landedCost.textContent = formatMoney(values.landedUnitCost);
+    outputs.gtmEachDollars.textContent = formatMoney(values.gtmEachDollars);
+    outputs.gtmTotalDollars.textContent = formatMoney(values.gtmTotalDollars);
+    outputs.gtmTotalPercent.textContent = formatPercent(values.gtmTotalPercent);
   }
 
   function getTotals() {
-    return quote.items.reduce(function (totals, item) {
-      const normalized = normalizeItem(item);
-      totals.orderTotal += normalized.orderTotal;
-      totals.totalCost += normalized.totalCost;
-      totals.totalGtm += normalized.gtmTotalDollars;
-      return totals;
-    }, {
-      orderTotal: 0,
-      totalCost: 0,
-      totalGtm: 0
-    });
+    return getQuoteTotals(quote.items);
   }
 
   function syncQuoteMeta() {
