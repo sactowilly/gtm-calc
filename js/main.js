@@ -138,17 +138,19 @@ import { formatMoney, formatPercent } from './domain/formatters.js';
     quote.items.forEach(function (item) {
       const normalized = normalizeItem(item);
       const row = document.createElement('tr');
+      const safeItemName = escapeHtml(normalized.name);
+      const safeItemId = escapeHtml(normalized.id);
       row.innerHTML = `
-        <td>${escapeHtml(normalized.name)}</td>
-        <td>${normalized.quantity}</td>
-        <td>${formatMoney(normalized.price)}</td>
-        <td>${formatMoney(normalized.landedUnitCost)}</td>
-        <td>${formatMoney(normalized.gtmEachDollars)}</td>
-        <td>${formatMoney(normalized.gtmTotalDollars)}</td>
-        <td>${formatPercent(normalized.gtmTotalPercent)}</td>
-        <td class="row-actions">
-          <button type="button" class="edit-button" data-id="${normalized.id}">Edit</button>
-          <button type="button" class="delete-button" data-id="${normalized.id}">Delete</button>
+        <th scope="row" data-label="Item">${safeItemName}</th>
+        <td data-label="Qty">${normalized.quantity}</td>
+        <td data-label="Price">${formatMoney(normalized.price)}</td>
+        <td data-label="Cost">${formatMoney(normalized.landedUnitCost)}</td>
+        <td data-label="GTM$ EA">${formatMoney(normalized.gtmEachDollars)}</td>
+        <td data-label="GTM$ Total">${formatMoney(normalized.gtmTotalDollars)}</td>
+        <td data-label="GTM%">${formatPercent(normalized.gtmTotalPercent)}</td>
+        <td class="row-actions" data-label="Actions">
+          <button type="button" class="edit-button" data-id="${safeItemId}" aria-label="Edit ${safeItemName}">Edit</button>
+          <button type="button" class="delete-button" data-id="${safeItemId}" aria-label="Delete ${safeItemName}">Delete</button>
         </td>
       `;
       quoteItems.appendChild(row);

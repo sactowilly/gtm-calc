@@ -13,9 +13,10 @@
   <body>
     <main class="app-shell">
       <header class="app-header">
-        <div>
+        <div class="app-title">
           <p class="eyebrow">USD Quote Tool</p>
           <h1>GTM Calc and Quote Tool</h1>
+          <p class="header-summary">Build and save a quote on this device.</p>
         </div>
         <button id="viewQuote" type="button" class="button secondary">View Quote</button>
       </header>
@@ -28,7 +29,7 @@
 
         <form id="itemForm" novalidate>
           <div class="form-grid">
-            <label>
+            <label class="field-full">
               Item
               <input id="itemName" name="itemName" type="text" autocomplete="off" required>
             </label>
@@ -85,7 +86,7 @@
             </div>
           </div>
 
-          <div class="button-row">
+          <div class="button-row item-actions" aria-label="Item and quote actions">
             <button id="itemSubmit" type="submit" class="button primary">Add Item</button>
             <button id="clearItem" type="button" class="button secondary">Clear</button>
             <button id="saveQuote" type="button" class="button secondary">Save</button>
@@ -125,18 +126,20 @@
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
+        <p id="quoteTableHint" class="mobile-table-hint">Quote items are shown as touch-friendly cards on this screen.</p>
+        <div class="table-wrap" tabindex="0" aria-describedby="quoteTableHint">
+          <table class="quote-table">
+            <caption class="visually-hidden">Active quote line items and internal profitability</caption>
             <thead>
               <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Cost</th>
-                <th>GTM$ EA</th>
-                <th>GTM$ Total</th>
-                <th>GTM%</th>
-                <th><span class="visually-hidden">Actions</span></th>
+                <th scope="col">Item</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Price</th>
+                <th scope="col">Cost</th>
+                <th scope="col">GTM$ EA</th>
+                <th scope="col">GTM$ Total</th>
+                <th scope="col">GTM%</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
               </tr>
             </thead>
             <tbody id="quoteItems">
