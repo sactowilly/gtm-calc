@@ -1,3 +1,5 @@
+import { normalizeUom } from './quote-output.js';
+
 /**
  * Parse an optional money input using the legacy calculator rule: blank is zero.
  * Validation of finite and non-negative values happens at the quote-item boundary.
@@ -56,6 +58,7 @@ export function calculateItemValues({ quantity, unitCost, price, freight, freigh
  */
 export function buildQuoteItem(input, id) {
   const name = String(input.name ?? '').trim();
+  const uom = normalizeUom(input.uom);
   const quantity = parseQuantity(input.quantity);
   const unitCost = parseNumber(input.unitCost);
   const price = parseNumber(input.price);
@@ -92,6 +95,7 @@ export function buildQuoteItem(input, id) {
     item: {
       id,
       name,
+      uom,
       quantity,
       unitCost,
       price,
@@ -107,6 +111,7 @@ export function buildQuoteItem(input, id) {
  * value already persisted by the legacy application.
  */
 export function normalizeItem(item) {
+  const uom = normalizeUom(item.uom);
   const quantity = item.quantity;
   const unitCost = item.unitCost;
   const price = item.price;
@@ -142,6 +147,7 @@ export function normalizeItem(item) {
 
   return {
     ...item,
+    uom,
     freight,
     freightMode,
     freightPerUnit,

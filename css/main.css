@@ -77,6 +77,13 @@ button {
   font-size: 0.875rem;
 }
 
+.app-version {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
 h1,
 h2 {
   margin: 0;
@@ -405,6 +412,7 @@ dialog {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px;
+  overflow: auto;
 }
 
 dialog::backdrop {
@@ -434,7 +442,7 @@ dialog::backdrop {
 #quotePdf {
   display: block;
   width: 100%;
-  height: max(360px, calc(100dvh - 190px));
+  height: max(300px, calc(100dvh - 270px));
   max-height: 720px;
   border: 1px solid var(--line);
   border-radius: 7px;
@@ -444,6 +452,23 @@ dialog::backdrop {
 dialog .button-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pdf-filename,
+.pdf-status {
+  min-height: 1.2rem;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.pdf-status {
+  font-weight: 700;
+}
+
+dialog .pdf-actions {
+  grid-template-columns: 1.25fr 1fr 1fr;
 }
 
 .visually-hidden {

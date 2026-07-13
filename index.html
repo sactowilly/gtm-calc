@@ -16,6 +16,7 @@
         <div class="app-title">
           <p class="eyebrow">USD Quote Tool</p>
           <h1>GTM Calc and Quote Tool</h1>
+          <p id="appVersion" class="app-version" aria-label="Application version"></p>
           <p class="header-summary">Build and save a quote on this device.</p>
         </div>
         <button id="viewQuote" type="button" class="button secondary">View Quote</button>
@@ -40,13 +41,18 @@
             </label>
 
             <label>
+              UOM
+              <input id="uom" name="uom" type="text" value="EA" maxlength="12" autocomplete="off" autocapitalize="characters">
+            </label>
+
+            <label>
               Unit Cost USD
-              <input id="unitCost" name="unitCost" type="number" inputmode="decimal" step="0.01" min="0" required>
+              <input id="unitCost" name="unitCost" type="number" inputmode="decimal" step="0.00001" min="0" required>
             </label>
 
             <label>
               Price USD
-              <input id="price" name="price" type="number" inputmode="decimal" step="0.01" min="0" required>
+              <input id="price" name="price" type="number" inputmode="decimal" step="0.00001" min="0" required>
             </label>
 
             <label>
@@ -106,6 +112,10 @@
             <input id="customerName" type="text" autocomplete="organization">
           </label>
           <label>
+            Sales Rep
+            <input id="salesRep" type="text" autocomplete="name">
+          </label>
+          <label>
             Date
             <input id="quoteDate" type="date">
           </label>
@@ -162,8 +172,11 @@
         <h2>Quote PDF</h2>
         <button id="closeQuote" type="button" class="icon-button" aria-label="Close quote preview">x</button>
       </div>
+      <p id="quotePdfFilename" class="pdf-filename"></p>
+      <p id="pdfStatus" class="pdf-status" role="status" aria-live="polite"></p>
       <iframe id="quotePdf" title="Rendered quote PDF"></iframe>
-      <div class="button-row">
+      <div class="button-row pdf-actions">
+        <button id="downloadQuote" type="button" class="button primary">Download PDF</button>
         <button id="copyQuoteDialog" type="button" class="button secondary">Copy</button>
         <button id="emailQuoteDialog" type="button" class="button primary">Email</button>
       </div>
