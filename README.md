@@ -14,6 +14,8 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 - GTM$ = `(price - landed unit cost) * qty`
 - GTM% = `(price - landed unit cost) / landed unit cost * 100`
 
+The existing GTM% calculation is mathematically a **markup percentage** because landed cost is the denominator. This foundation release preserves both the formula and its current UI label; it does not substitute gross margin.
+
 All costs, prices, freight, totals, and GTM dollar values are USD.
 
 ## Features
@@ -25,17 +27,33 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Save the active quote locally in the browser.
 - Copy quote text or open it in the default email app.
 
-## Run Locally
+## Develop and Test
 
-Open `index.html` in a browser, or serve the folder with any static web server.
+Node.js 20.19 or newer is required. Install the committed dependency versions and start the Vite development server:
 
 ```bash
-npx serve .
+npm ci
+npm run dev
 ```
+
+The development URL uses the repository base path: `http://localhost:5173/gtm-calc/`.
+
+Run the same checks used by pull requests:
+
+```bash
+npm run check
+npm test
+npm run build
+```
+
+`npm run build` writes the production artifact to `dist/` with the `/gtm-calc/` base path. GitHub Pages still uses the legacy `main` branch root in this pull request; deployment is not switched to the Vite artifact yet.
 
 ## Files
 
 - `index.html` - app markup
 - `css/main.css` - responsive styling
-- `js/main.js` - calculator, quote state, local save, copy, and email behavior
+- `js/main.js` - DOM adapter, quote state, local save, PDF, copy, and email behavior
+- `js/domain/` - pure legacy calculations, normalization, totals, and formatting
+- `tests/` - calculation and formatting regression tests
+- `vite.config.js` - production build configuration for the GitHub Pages base path
 - `assets/gtm-calc-icon.png` - 1280x640 project image
