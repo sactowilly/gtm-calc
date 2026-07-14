@@ -315,11 +315,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       return;
     }
 
-    const subjectParts = ['Quote'];
-
-    if (quote.customerName) {
-      subjectParts.push(quote.customerName);
-    }
+    const subjectParts = ['Your Vision Packaging Quote'];
 
     openPreparedEmail(quote.buyerEmail, subjectParts, buildCustomerQuoteText(quote), 'Customer email draft opened. Download and attach the PDF manually.');
   }
