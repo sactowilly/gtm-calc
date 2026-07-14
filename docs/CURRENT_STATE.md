@@ -6,6 +6,8 @@ Audited revision: `f7c35a1b47d3df9b1a9b795a3eaa37b18f249177` (`main` and `origin
 
 Live application: <https://sactowilly.github.io/gtm-calc/>
 
+> Historical baseline: this document records the original `f7c35a1` audit. Subsequent Version 1 pull requests added Vite/ES modules, regression tests, phone-first quote controls, customer/buyer fields, UOM, explicit PDF download, and separate rep/customer email actions. The customer-PDF replacement branch removes the handwritten coordinate renderer in favor of the customer-safe HTML/CSS template documented in `PDF_TEMPLATE_FIELD_MAPPING.md` and `PDF_AND_SHARING.md`. The storage key and calculation formulas remain unchanged.
+
 ## Executive summary
 
 The repository is a dependency-free static application: one HTML document, one stylesheet, one non-module JavaScript file, two brand images, a README, and a CC0 license. The live GitHub Pages files byte-for-byte matched the audited local `index.html`, CSS, JavaScript, SVG, and PNG. The current app successfully calculates a line, adds/edits/deletes items, manually saves one active quote to `localStorage`, copies quote text, opens a `mailto:` draft, and generates a PDF `Blob` for an iframe preview.

@@ -20,16 +20,16 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 ## Features
 
-- Add item name, qty, UOM (`EA`, `CS`, `BND`, `PLT`, or `CL`), unit cost, price, and optional freight.
+- Add item name, qty, UOM (`EA`, `CS`, `BND`, `PLT`, or `CL`), unit cost, price, optional freight, and optional customer-facing lead time.
 - Store UOM with each line item; legacy saved items default to `EA`.
 - Enter/display per-unit cost and price to five decimal places without unnecessary trailing zeroes.
 - Treat freight as either per-item freight or total freight amortized across qty.
 - Add, edit, and delete quote line items.
-- Save customer name, address, buyer name/email, Sales Rep, quote date, order total, total cost, total GTM$, and line-item details.
+- Save customer name/address, buyer contact details, Sales Rep, quote date, ship method, F.O.B. point, terms, customer-facing notes, totals, and line-item details.
 - Save the active quote locally in the browser.
 - Copy the internal quote text, or open a prepared email for the rep or customer. Customer email excludes cost and GTM fields and uses Buyer Email as the recipient.
 - Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
-- Preview and explicitly download a customer-facing PDF quotation. The PDF omits internal cost and GTM values.
+- Preview and explicitly download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
 - Show the current app version/build marker on load.
 
 ## Develop and Test
@@ -48,6 +48,7 @@ Run the same checks used by pull requests:
 ```bash
 npm run check
 npm test
+npm run test:visual
 npm run build
 ```
 
@@ -57,8 +58,10 @@ npm run build
 
 - `index.html` - app markup
 - `css/main.css` - responsive styling
-- `js/main.js` - DOM adapter, quote state, local save, PDF, copy, and email behavior
+- `js/main.js` - DOM adapter, quote state, local save, preview/download, copy, and email behavior
 - `js/domain/` - pure legacy calculations, normalization, totals, and formatting
-- `tests/` - calculation and formatting regression tests
+- `js/pdf/` and `css/quote-pdf.css` - customer-safe document projection, HTML template, pagination, and browser PDF rendering
+- `tests/` - calculation, privacy, fixture, and browser layout regression tests
+- `assets/vision-industrial-packaging-logo.png` - complete logo artwork extracted from the approved quotation reference
 - `vite.config.js` - production build configuration for the GitHub Pages base path
 - `assets/gtm-calc-icon.png` - 1280x640 project image

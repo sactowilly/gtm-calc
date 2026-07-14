@@ -58,6 +58,7 @@ export function calculateItemValues({ quantity, unitCost, price, freight, freigh
  */
 export function buildQuoteItem(input, id) {
   const name = String(input.name ?? '').trim();
+  const leadTime = String(input.leadTime ?? '').trim();
   const uom = normalizeUom(input.uom);
   const quantity = parseQuantity(input.quantity);
   const unitCost = parseNumber(input.unitCost);
@@ -95,6 +96,7 @@ export function buildQuoteItem(input, id) {
     item: {
       id,
       name,
+      leadTime,
       uom,
       quantity,
       unitCost,
@@ -111,6 +113,7 @@ export function buildQuoteItem(input, id) {
  * value already persisted by the legacy application.
  */
 export function normalizeItem(item) {
+  const leadTime = String(item.leadTime ?? '').trim();
   const uom = normalizeUom(item.uom);
   const quantity = item.quantity;
   const unitCost = item.unitCost;
@@ -147,6 +150,7 @@ export function normalizeItem(item) {
 
   return {
     ...item,
+    leadTime,
     uom,
     freight,
     freightMode,

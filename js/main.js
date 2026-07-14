@@ -9,6 +9,7 @@ import {
 import { APP_BUILD_LABEL } from './app-meta.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
+import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 
 (function () {
   const STORAGE_KEY = 'gtm_quote_calculator_v1';
@@ -19,8 +20,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
   const buyerName = document.getElementById('buyerName');
   const buyerEmail = document.getElementById('buyerEmail');
   const buyerPhone = document.getElementById('buyerPhone');
+  const buyerFax = document.getElementById('buyerFax');
   const salesRep = document.getElementById('salesRep');
   const quoteDate = document.getElementById('quoteDate');
+  const shipVia = document.getElementById('shipVia');
+  const fobPoint = document.getElementById('fobPoint');
+  const terms = document.getElementById('terms');
+  const customerNotes = document.getElementById('customerNotes');
   const statusMessage = document.getElementById('statusMessage');
   const savedState = document.getElementById('savedState');
   const quoteItems = document.getElementById('quoteItems');
@@ -35,6 +41,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     uom: document.getElementById('uom'),
     unitCost: document.getElementById('unitCost'),
     price: document.getElementById('price'),
+    leadTime: document.getElementById('leadTime'),
     freight: document.getElementById('freight')
   };
 
@@ -54,13 +61,19 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     buyerName: '',
     buyerEmail: '',
     buyerPhone: '',
+    buyerFax: '',
     salesRep: '',
     date: new Date().toISOString().slice(0, 10),
+    shipVia: 'Our Truck',
+    fobPoint: '',
+    terms: '',
+    customerNotes: '',
     items: []
   };
   let editingItemId = null;
   let quotePdfBlob = null;
   let quotePdfUrl = null;
+  let quotePdfPromise = null;
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
 
@@ -92,6 +105,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       name: fields.itemName.value,
       quantity: fields.quantity.value,
       uom: fields.uom.value,
+      leadTime: fields.leadTime.value,
       unitCost: fields.unitCost.value,
       price: fields.price.value,
       freight: fields.freight.value,
@@ -146,8 +160,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     quote.buyerName = buyerName.value.trim();
     quote.buyerEmail = buyerEmail.value.trim();
     quote.buyerPhone = buyerPhone.value.trim();
+    quote.buyerFax = buyerFax.value.trim();
     quote.salesRep = salesRep.value.trim();
     quote.date = quoteDate.value;
+    quote.shipVia = shipVia.value.trim();
+    quote.fobPoint = fobPoint.value.trim();
+    quote.terms = terms.value.trim();
+    quote.customerNotes = customerNotes.value.trim();
   }
 
   function renderQuote() {
@@ -158,7 +177,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     outputs.totalGtm.textContent = formatMoney(totals.totalGtm);
 
     if (quote.items.length === 0) {
-      quoteItems.innerHTML = '<tr><td colspan="8" class="empty-state">No quote items yet.</td></tr>';
+      quoteItems.innerHTML = '<tr><td colspan="9" class="empty-state">No quote items yet.</td></tr>';
       return;
     }
 
@@ -172,6 +191,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       row.innerHTML = `
         <th scope="row" data-label="Item">${safeItemName}</th>
         <td data-label="Qty">${formatQuantityWithUom(normalized.quantity, normalized.uom)}</td>
+        <td data-label="Lead Time">${escapeHtml(normalized.leadTime || '')}</td>
         <td data-label="Price">${formatUnitMoney(normalized.price)}</td>
         <td data-label="Cost">${formatUnitMoney(normalized.landedUnitCost)}</td>
         <td data-label="GTM$ EA">${formatMoney(normalized.gtmEachDollars)}</td>
@@ -228,8 +248,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
           buyerName: parsed.buyerName || '',
           buyerEmail: parsed.buyerEmail || '',
           buyerPhone: parsed.buyerPhone || '',
+          buyerFax: parsed.buyerFax || '',
           salesRep: parsed.salesRep || '',
           date: parsed.date || quote.date,
+          shipVia: parsed.shipVia ?? 'Our Truck',
+          fobPoint: parsed.fobPoint || '',
+          terms: parsed.terms || '',
+          customerNotes: parsed.customerNotes || '',
           items: parsed.items.map(normalizeItem)
         };
         return true;
@@ -326,16 +351,27 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     }
 
     quotePdfBlob = null;
+    quotePdfPromise = null;
     quotePdfUrl = null;
     quotePdf.removeAttribute('src');
     quotePdfFilename.textContent = '';
   }
 
-  function ensureQuotePdf() {
+  async function ensureQuotePdf() {
     syncQuoteMeta();
 
     if (!quotePdfBlob) {
-      quotePdfBlob = buildQuotePdfBlob();
+      if (!quotePdfPromise) {
+        setPdfStatus('Generating customer quotation PDF...', false);
+        quotePdfPromise = buildCustomerQuotePdfBlob(quote);
+      }
+
+      try {
+        quotePdfBlob = await quotePdfPromise;
+      } finally {
+        quotePdfPromise = null;
+      }
+
       quotePdfUrl = URL.createObjectURL(quotePdfBlob);
     }
 
@@ -345,25 +381,26 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     return { blob: quotePdfBlob, url: quotePdfUrl, filename };
   }
 
-  function openQuoteDialog() {
+  async function openQuoteDialog() {
     try {
-      const pdf = ensureQuotePdf();
-      quotePdf.src = pdf.url;
-      setPdfStatus(`PDF ready. Download ${pdf.filename} to attach it manually.`, false);
-
       if (typeof quoteDialog.showModal === 'function') {
         quoteDialog.showModal();
       } else {
         quoteDialog.setAttribute('open', '');
       }
+
+      const pdf = await ensureQuotePdf();
+      quotePdf.src = pdf.url;
+      setPdfStatus(`PDF ready. Download ${pdf.filename} to attach it manually.`, false);
     } catch (error) {
+      setPdfStatus('PDF preview could not be created. Close the preview and try again.', true);
       setStatus('PDF preview could not be created. Your quote is still available.', true);
     }
   }
 
-  function downloadQuotePdf() {
+  async function downloadQuotePdf() {
     try {
-      const pdf = ensureQuotePdf();
+      const pdf = await ensureQuotePdf();
       const link = document.createElement('a');
       link.href = pdf.url;
       link.download = pdf.filename;
@@ -399,6 +436,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     }
     fields.unitCost.value = normalized.unitCost;
     fields.price.value = normalized.price;
+    fields.leadTime.value = normalized.leadTime;
     fields.freight.value = normalized.freight || '';
     const freightModeInput = itemForm.querySelector(`input[name="freightMode"][value="${normalized.freightMode || 'perItem'}"]`);
 
@@ -412,223 +450,6 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     setStatus('Editing item. Update Item will replace this row.', false);
   }
 
-  function escapePdfText(value) {
-    return String(value)
-      .replaceAll('\\', '\\\\')
-      .replaceAll('(', '\\(')
-      .replaceAll(')', '\\)');
-  }
-
-  function buildQuotePdfRows() {
-    syncQuoteMeta();
-
-    if (quote.items.length === 0) {
-      return [];
-    }
-
-    return quote.items.map(function (item) {
-      const normalized = normalizeItem(item);
-      return [
-        String(normalized.quantity),
-        normalized.name,
-        normalized.uom,
-        formatUnitMoney(normalized.price)
-      ];
-    });
-  }
-
-  function buildQuotePdfBlob() {
-    const pageWidth = 612;
-    const pageHeight = 792;
-    const margin = 42;
-    const tableWidth = pageWidth - (margin * 2);
-    const rowHeight = 30;
-    const headerHeight = 22;
-    const headerTop = 528;
-    const bottom = 128;
-    const columns = [
-      { label: 'MIN', width: 55, align: 'right' },
-      { label: 'DESCRIPTION', width: 275, align: 'left' },
-      { label: 'UNIT', width: 65, align: 'center' },
-      { label: 'UNIT PRICE', width: 133, align: 'right' }
-    ];
-    const rows = buildQuotePdfRows();
-    const customer = quote.customerName || 'Customer';
-    const buyer = quote.buyerName || 'Not set';
-    const buyerContact = [quote.buyerEmail, quote.buyerPhone].filter(Boolean).join(' / ') || 'Not set';
-    const customerAddressLines = (quote.customerAddress || '')
-      .split(/\r?\n/)
-      .map(function (line) { return line.trim(); })
-      .filter(Boolean)
-      .slice(0, 2);
-    const rep = quote.salesRep || 'Not set';
-    const date = quote.date || new Date().toISOString().slice(0, 10);
-    const rowsPerPage = Math.max(1, Math.floor((headerTop - headerHeight - bottom) / rowHeight));
-    const pagedRows = [];
-
-    if (rows.length === 0) {
-      pagedRows.push([]);
-    } else {
-      for (let i = 0; i < rows.length; i += rowsPerPage) {
-        pagedRows.push(rows.slice(i, i + rowsPerPage));
-      }
-    }
-
-    const objects = [];
-
-    function addObject(content) {
-      objects.push(content);
-      return objects.length;
-    }
-
-    const fontObject = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
-    const boldFontObject = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
-    const pageObjectIds = [];
-
-    function textCommand(text, x, y, size, font) {
-      return `BT /${font || 'F1'} ${size} Tf ${x} ${y} Td (${escapePdfText(text)}) Tj ET`;
-    }
-
-    function estimatedTextWidth(text, size) {
-      return String(text).length * size * 0.52;
-    }
-
-    function cellTextX(text, column, x, size) {
-      if (column.align === 'left') {
-        return x + 5;
-      }
-
-      if (column.align === 'center') {
-        return Math.max(x + 5, x + ((column.width - estimatedTextWidth(text, size)) / 2));
-      }
-
-      return Math.max(x + 5, x + column.width - estimatedTextWidth(text, size) - 5);
-    }
-
-    function trimCellText(text, maxChars) {
-      const value = String(text);
-
-      if (value.length <= maxChars) {
-        return value;
-      }
-
-      return `${value.slice(0, Math.max(0, maxChars - 3))}...`;
-    }
-
-    function verticalLineCommand(x, y, height) {
-      return `${x} ${y} m ${x} ${y + height} l S`;
-    }
-
-    pagedRows.forEach(function (rowsForPage, pageIndex) {
-      const commands = [
-        '0.05 0.08 0.28 rg',
-        textCommand('VISION', margin, 742, 28, 'F2'),
-        '0.94 0.33 0.08 rg',
-        textCommand('INDUSTRIAL PACKAGING', 170, 730, 13, 'F1'),
-        '0 g',
-        textCommand('5851 ALDER AVE UNIT A, SACRAMENTO, CA 95828', 95, 712, 8.5, 'F1'),
-        textCommand('www.visionpackaginginc.com', 95, 698, 8.5, 'F1'),
-        textCommand('QUOTATION', 423, 742, 20, 'F2'),
-        textCommand('916-374-9801', 455, 720, 12, 'F2'),
-        textCommand('Fax: 916-374-9802', 456, 704, 9, 'F1'),
-        `${margin} 688 m ${pageWidth - margin} 688 l S`,
-        textCommand('TO:', margin + 6, 664, 10, 'F2'),
-        textCommand(trimCellText(customer, 44), 88, 660, 15, 'F1'),
-        textCommand('BUYER:', margin + 6, 642, 9, 'F2'),
-        textCommand(trimCellText(buyer, 58), 58, 640, 10, 'F1'),
-        textCommand('ADDRESS:', margin + 6, 628, 8, 'F2'),
-        textCommand(trimCellText(customerAddressLines[0] || '', 76), 58, 626, 9, 'F1'),
-        textCommand(trimCellText(customerAddressLines[1] || '', 76), 58, 614, 9, 'F1'),
-        textCommand('EMAIL / PHONE:', margin + 6, 602, 8, 'F2'),
-        textCommand(trimCellText(buyerContact, 68), 110, 600, 9, 'F1'),
-        '0 g',
-        `${margin} 540 ${tableWidth} 40 re S`,
-        '0 g',
-        `${margin} 562 ${tableWidth} 18 re f`,
-        '1 1 1 rg',
-        textCommand('SALES REP', margin + 92, 568, 9, 'F2'),
-        textCommand('DATE', margin + 370, 568, 9, 'F2'),
-        '0 g',
-        `${margin + (tableWidth / 2)} 540 m ${margin + (tableWidth / 2)} 580 l S`,
-        textCommand(trimCellText(rep, 31), margin + 8, 546, 12, 'F2'),
-        textCommand(date, margin + (tableWidth / 2) + 8, 546, 12, 'F2'),
-        '0 g',
-        '0 0 0 rg',
-        `${margin} ${headerTop - headerHeight} ${tableWidth} ${headerHeight} re f`,
-        '1 1 1 rg',
-        `${margin} ${headerTop - headerHeight} ${tableWidth} ${headerHeight} re S`
-      ];
-      let x = margin;
-
-      columns.forEach(function (column) {
-        commands.push(textCommand(column.label, cellTextX(column.label, column, x, 8.5), headerTop - 15, 8.5, 'F2'));
-        commands.push('0 g');
-        commands.push(verticalLineCommand(x, headerTop - headerHeight, headerHeight));
-        commands.push('1 1 1 rg');
-        x += column.width;
-      });
-      commands.push('0 g');
-      commands.push(verticalLineCommand(margin + tableWidth, headerTop - headerHeight, headerHeight));
-
-      if (rowsForPage.length === 0) {
-        const y = headerTop - headerHeight - rowHeight;
-        commands.push(`${margin} ${y} ${tableWidth} ${rowHeight} re S`);
-        commands.push(textCommand('No items added.', margin + 5, y + 10, 9, 'F1'));
-      }
-
-      rowsForPage.forEach(function (row, rowIndex) {
-        const y = headerTop - headerHeight - ((rowIndex + 1) * rowHeight);
-        x = margin;
-        commands.push(`${margin} ${y} ${tableWidth} ${rowHeight} re S`);
-        row.forEach(function (value, columnIndex) {
-          const column = columns[columnIndex];
-          const displayValue = columnIndex === 1 ? trimCellText(value, 48) : value;
-          commands.push(textCommand(displayValue, cellTextX(displayValue, column, x, 9), y + 10, 9, 'F1'));
-          commands.push(verticalLineCommand(x, y, rowHeight));
-          x += column.width;
-        });
-        commands.push(verticalLineCommand(margin + tableWidth, y, rowHeight));
-      });
-
-      commands.push('0 g');
-      commands.push(textCommand('Thanks for the opportunity to quote your packaging supplies!', 130, 98, 12, 'F2'));
-      commands.push(`${margin} 78 m ${pageWidth - margin} 78 l S`);
-      commands.push(textCommand('PRICING IS VALID 30 DAYS FROM THE DATE OF THIS QUOTATION', 142, 62, 9, 'F2'));
-
-      if (pagedRows.length > 1) {
-        commands.push(textCommand(`Page ${pageIndex + 1} of ${pagedRows.length}`, pageWidth - margin - 70, 36, 8, 'F1'));
-      }
-
-      const stream = commands.join('\n');
-      const contentObject = addObject(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
-      const pageObject = addObject(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontObject} 0 R /F2 ${boldFontObject} 0 R >> >> /Contents ${contentObject} 0 R >>`);
-      pageObjectIds.push(pageObject);
-    });
-
-    const pagesObject = addObject(`<< /Type /Pages /Kids [${pageObjectIds.map(function (id) { return `${id} 0 R`; }).join(' ')}] /Count ${pageObjectIds.length} >>`);
-
-    pageObjectIds.forEach(function (pageObjectId) {
-      objects[pageObjectId - 1] = objects[pageObjectId - 1].replace('/Parent 0 0 R', `/Parent ${pagesObject} 0 R`);
-    });
-
-    const catalogObject = addObject(`<< /Type /Catalog /Pages ${pagesObject} 0 R >>`);
-    let pdf = '%PDF-1.4\n';
-    const offsets = [0];
-
-    objects.forEach(function (content, index) {
-      offsets.push(pdf.length);
-      pdf += `${index + 1} 0 obj\n${content}\nendobj\n`;
-    });
-
-    const xrefOffset = pdf.length;
-    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-    offsets.slice(1).forEach(function (offset) {
-      pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
-    });
-    pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogObject} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
-
-    return new Blob([pdf], { type: 'application/pdf' });
-  }
 
   itemForm.addEventListener('input', updateCalculatorPreview);
   itemForm.addEventListener('change', updateCalculatorPreview);
@@ -704,6 +525,11 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     markUnsaved();
   });
 
+  buyerFax.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
+  });
+
   salesRep.addEventListener('input', function () {
     syncQuoteMeta();
     markUnsaved();
@@ -712,6 +538,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
   quoteDate.addEventListener('input', function () {
     syncQuoteMeta();
     markUnsaved();
+  });
+
+  [shipVia, fobPoint, terms, customerNotes].forEach(function (field) {
+    field.addEventListener('input', function () {
+      syncQuoteMeta();
+      markUnsaved();
+    });
   });
 
   document.getElementById('clearItem').addEventListener('click', clearItemForm);
@@ -743,8 +576,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
   buyerName.value = quote.buyerName;
   buyerEmail.value = quote.buyerEmail;
   buyerPhone.value = quote.buyerPhone;
+  buyerFax.value = quote.buyerFax;
   salesRep.value = quote.salesRep;
   quoteDate.value = quote.date;
+  shipVia.value = quote.shipVia;
+  fobPoint.value = quote.fobPoint;
+  terms.value = quote.terms;
+  customerNotes.value = quote.customerNotes;
   if (loadedSavedQuote) {
     savedState.textContent = 'Saved locally';
   }

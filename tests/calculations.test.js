@@ -78,13 +78,14 @@ describe('quote item validation', () => {
     freightMode: 'total'
   };
 
-  it('creates the legacy persisted item shape', () => {
+  it('creates the backward-compatible persisted item shape', () => {
     const result = buildQuoteItem(validInput, 'fixture-id');
 
     expect(result).toEqual({
       item: {
         id: 'fixture-id',
         name: 'Synthetic carton',
+        leadTime: '',
         uom: 'EA',
         quantity: 3,
         unitCost: 10,
@@ -165,6 +166,7 @@ describe('saved item normalization and totals', () => {
 
     expect(normalizeItem(savedItem)).toEqual({
       ...savedItem,
+      leadTime: '',
       uom: 'EA',
       freightPerUnit: 2,
       landedUnitCost: 12,
@@ -196,7 +198,7 @@ describe('saved item normalization and totals', () => {
       gtmTotalPercent: 17.647
     };
 
-    expect(normalizeItem(persisted)).toEqual({ ...persisted, uom: 'EA' });
+    expect(normalizeItem(persisted)).toEqual({ ...persisted, leadTime: '', uom: 'EA' });
   });
 
   it('sums unrounded values across positive and negative lines', () => {
