@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:visual": "playwright test",
     "test:watch": "vitest",
-    "check": "node --check js/main.js && node --check js/app-meta.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check js/domain/quote-output.js && node --check js/pdf/customer-quote-document.js && node --check js/pdf/quote-template.js && node --check js/pdf/customer-quote-pdf.js && node --check vite.config.js && node --check vitest.config.js && node --check playwright.config.js"
+    "check": "node --check js/main.js && node --check js/app-meta.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check js/domain/quote-output.js && node --check js/pdf/customer-quote-document.js && node --check js/pdf/quote-template.js && node --check js/pdf/customer-quote-pdf.js && node --check js/services/email-service.js && node --check js/services/share-service.js && node --check vite.config.js && node --check vitest.config.js && node --check playwright.config.js"
   },
   "engines": {
     "node": ">=20.19.0"

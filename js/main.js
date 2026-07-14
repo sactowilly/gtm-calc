@@ -10,6 +10,8 @@ import { APP_BUILD_LABEL } from './app-meta.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
+import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
+import { createPdfFile, sharePdf } from './services/share-service.js';
 
 (function () {
   const STORAGE_KEY = 'gtm_quote_calculator_v1';
@@ -312,12 +314,11 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
   }
 
   function openPreparedEmail(recipient, subjectParts, text, successMessage) {
-    const url = `mailto:${recipient ? encodeURIComponent(recipient) : ''}?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(text)}`;
-    window.location.href = url;
+    window.location.href = buildMailtoUrl({ recipient, subject: subjectParts.join(' - '), body: text });
     setStatus(successMessage, false);
   }
 
-  function emailRepQuoteText() {
+  function emailRepQuoteText(attachmentInstruction = 'Download the PDF and attach it manually.') {
     syncQuoteMeta();
     const subjectParts = ['GTM Calc and Quote Tool - Internal Quote'];
 
@@ -325,10 +326,10 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
       subjectParts.push(quote.customerName);
     }
 
-    openPreparedEmail('', subjectParts, buildQuoteText(), 'Internal email draft opened. Download and attach the PDF manually.');
+    openPreparedEmail('', subjectParts, `${buildQuoteText()}\n\n${attachmentInstruction}`, 'Internal email draft opened. Attach the downloaded PDF manually.');
   }
 
-  function emailCustomerQuoteText() {
+  function emailCustomerQuoteText(attachmentInstruction = 'Download the PDF and attach it manually.') {
     syncQuoteMeta();
 
     if (!quote.buyerEmail) {
@@ -338,7 +339,7 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 
     const subjectParts = ['Your Vision Packaging Quote'];
 
-    openPreparedEmail(quote.buyerEmail, subjectParts, buildCustomerQuoteText(quote), 'Customer email draft opened. Download and attach the PDF manually.');
+    openPreparedEmail(quote.buyerEmail, subjectParts, `${buildCustomerQuoteText(quote)}\n\n${attachmentInstruction}`, 'Customer email draft opened. Attach the downloaded PDF manually.');
   }
 
   function releaseQuotePdf() {
@@ -410,6 +411,50 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
     } catch (error) {
       setPdfStatus('PDF download could not start. Try opening the preview again.', true);
     }
+  }
+
+  async function shareQuotePdf() {
+    try {
+      const pdf = await ensureQuotePdf();
+      const result = await sharePdf(navigator, createPdfFile(pdf.blob, pdf.filename), quote.customerName);
+
+      if (result.status === 'shared') {
+        setPdfStatus('Share Sheet completed.', false);
+      } else if (result.status === 'cancelled') {
+        setPdfStatus('Sharing cancelled. The quote is still available to download.', false);
+      } else if (result.status === 'unsupported') {
+        setPdfStatus(`File sharing is unavailable here. Download ${pdf.filename}, then open an email and attach it manually.`, true);
+      } else {
+        setPdfStatus(`Sharing failed. Download ${pdf.filename} and attach it manually.`, true);
+      }
+    } catch (error) {
+      setPdfStatus('The PDF could not be prepared for sharing. Try Download PDF.', true);
+    }
+  }
+
+  async function copyBuyerEmail() {
+    syncQuoteMeta();
+    if (!quote.buyerEmail) {
+      setPdfStatus('Add Buyer Email before copying it.', true);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(quote.buyerEmail);
+      setPdfStatus('Buyer email copied.', false);
+    } catch (error) {
+      setPdfStatus(`Copy unavailable. Buyer email: ${quote.buyerEmail}`, true);
+    }
+  }
+
+  async function openEmailWithDownloadedPdf(emailFunction) {
+    syncQuoteMeta();
+    if (emailFunction === emailCustomerQuoteText && !quote.buyerEmail) {
+      setStatus('Add Buyer Email before creating a customer email.', true);
+      return;
+    }
+    const pdf = await ensureQuotePdf();
+    await downloadQuotePdf();
+    emailFunction(buildAttachmentInstruction(pdf.filename));
   }
 
   function editItem(itemId) {
@@ -542,12 +587,14 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
   document.getElementById('saveQuote').addEventListener('click', saveQuote);
   document.getElementById('viewQuote').addEventListener('click', openQuoteDialog);
   document.getElementById('downloadQuote').addEventListener('click', downloadQuotePdf);
+  document.getElementById('shareQuote').addEventListener('click', shareQuotePdf);
+  document.getElementById('copyBuyerEmail').addEventListener('click', copyBuyerEmail);
   document.getElementById('copyQuote').addEventListener('click', copyQuoteText);
-  document.getElementById('emailRep').addEventListener('click', emailRepQuoteText);
-  document.getElementById('emailCustomer').addEventListener('click', emailCustomerQuoteText);
+  document.getElementById('emailRep').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
+  document.getElementById('emailCustomer').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
   document.getElementById('copyQuoteDialog').addEventListener('click', copyQuoteText);
-  document.getElementById('emailRepDialog').addEventListener('click', emailRepQuoteText);
-  document.getElementById('emailCustomerDialog').addEventListener('click', emailCustomerQuoteText);
+  document.getElementById('emailRepDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
+  document.getElementById('emailCustomerDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
   document.getElementById('closeQuote').addEventListener('click', function () {
     if (typeof quoteDialog.close === 'function') {
       quoteDialog.close();

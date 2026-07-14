@@ -226,9 +226,12 @@
       </div>
       <p id="quotePdfFilename" class="pdf-filename"></p>
       <p id="pdfStatus" class="pdf-status" role="status" aria-live="polite"></p>
+      <p class="pdf-sharing-help">On supported phones, Share PDF opens the native Share Sheet with the PDF attached. Email recipients may still need to be selected manually.</p>
       <iframe id="quotePdf" title="Rendered quote PDF"></iframe>
       <div class="button-row pdf-actions">
+        <button id="shareQuote" type="button" class="button primary">Share PDF</button>
         <button id="downloadQuote" type="button" class="button primary">Download PDF</button>
+        <button id="copyBuyerEmail" type="button" class="button secondary">Copy Buyer Email</button>
         <button id="copyQuoteDialog" type="button" class="button secondary">Copy</button>
         <button id="emailRepDialog" type="button" class="button secondary">Email Rep</button>
         <button id="emailCustomerDialog" type="button" class="button primary">Email Customer</button>

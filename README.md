@@ -30,6 +30,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Copy the internal quote text, or open a prepared email for the rep or customer. Customer email excludes cost and GTM fields and uses Buyer Email as the recipient.
 - Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
 - Preview and explicitly download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
+- Share the generated PDF through the native mobile Share Sheet when file sharing is supported; otherwise download it and open a prepared email with the exact attachment filename.
 - Show the current app version/build marker on load.
 
 ## Develop and Test
