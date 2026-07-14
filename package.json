@@ -1,6 +1,6 @@
 {
   "name": "gtm-calc",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "node --check js/main.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check vite.config.js"
+    "check": "node --check js/main.js && node --check js/app-meta.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check js/domain/quote-output.js && node --check vite.config.js"
   },
   "engines": {
     "node": ">=20.19.0"

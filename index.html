@@ -16,6 +16,7 @@
         <div class="app-title">
           <p class="eyebrow">USD Quote Tool</p>
           <h1>GTM Calc and Quote Tool</h1>
+          <p id="appVersion" class="app-version" aria-label="Application version"></p>
           <p class="header-summary">Build and save a quote on this device.</p>
         </div>
         <button id="viewQuote" type="button" class="button secondary">View Quote</button>
@@ -40,13 +41,24 @@
             </label>
 
             <label>
+              UOM
+              <select id="uom" name="uom" autocomplete="off">
+                <option value="EA">EA</option>
+                <option value="CS">CS</option>
+                <option value="BND">BND</option>
+                <option value="PLT">PLT</option>
+                <option value="CL">CL</option>
+              </select>
+            </label>
+
+            <label>
               Unit Cost USD
-              <input id="unitCost" name="unitCost" type="number" inputmode="decimal" step="0.01" min="0" required>
+              <input id="unitCost" name="unitCost" type="number" inputmode="decimal" step="0.00001" min="0" required>
             </label>
 
             <label>
               Price USD
-              <input id="price" name="price" type="number" inputmode="decimal" step="0.01" min="0" required>
+              <input id="price" name="price" type="number" inputmode="decimal" step="0.00001" min="0" required>
             </label>
 
             <label>
@@ -105,11 +117,37 @@
             Customer
             <input id="customerName" type="text" autocomplete="organization">
           </label>
+        </div>
+
+        <details class="quote-details">
+          <summary>Customer &amp; Quote Details</summary>
+          <div class="quote-meta quote-meta-details">
+          <label class="field-full">
+            Customer Address
+            <textarea id="customerAddress" rows="3" autocomplete="street-address"></textarea>
+          </label>
+          <label>
+            Buyer Name
+            <input id="buyerName" type="text" autocomplete="name">
+          </label>
+          <label>
+            Buyer Email
+            <input id="buyerEmail" type="email" inputmode="email" autocomplete="email">
+          </label>
+          <label>
+            Buyer Phone
+            <input id="buyerPhone" type="tel" inputmode="tel" autocomplete="tel">
+          </label>
+          <label>
+            Sales Rep
+            <input id="salesRep" type="text" autocomplete="name">
+          </label>
           <label>
             Date
             <input id="quoteDate" type="date">
           </label>
-        </div>
+          </div>
+        </details>
 
         <div class="totals-grid">
           <div>
@@ -152,7 +190,8 @@
 
         <div class="button-row quote-actions">
           <button id="copyQuote" type="button" class="button secondary">Copy</button>
-          <button id="emailQuote" type="button" class="button primary">Email</button>
+          <button id="emailRep" type="button" class="button secondary">Email Rep</button>
+          <button id="emailCustomer" type="button" class="button primary">Email Customer</button>
         </div>
       </section>
     </main>
@@ -162,10 +201,14 @@
         <h2>Quote PDF</h2>
         <button id="closeQuote" type="button" class="icon-button" aria-label="Close quote preview">x</button>
       </div>
+      <p id="quotePdfFilename" class="pdf-filename"></p>
+      <p id="pdfStatus" class="pdf-status" role="status" aria-live="polite"></p>
       <iframe id="quotePdf" title="Rendered quote PDF"></iframe>
-      <div class="button-row">
+      <div class="button-row pdf-actions">
+        <button id="downloadQuote" type="button" class="button primary">Download PDF</button>
         <button id="copyQuoteDialog" type="button" class="button secondary">Copy</button>
-        <button id="emailQuoteDialog" type="button" class="button primary">Email</button>
+        <button id="emailRepDialog" type="button" class="button secondary">Email Rep</button>
+        <button id="emailCustomerDialog" type="button" class="button primary">Email Customer</button>
       </div>
     </dialog>
 

@@ -20,12 +20,17 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 ## Features
 
-- Add item name, qty, unit cost, price, and optional freight.
+- Add item name, qty, UOM (`EA`, `CS`, `BND`, `PLT`, or `CL`), unit cost, price, and optional freight.
+- Store UOM with each line item; legacy saved items default to `EA`.
+- Enter/display per-unit cost and price to five decimal places without unnecessary trailing zeroes.
 - Treat freight as either per-item freight or total freight amortized across qty.
-- Add and delete quote line items.
-- View customer name, quote date, order total, total cost, total GTM$, and line-item details.
+- Add, edit, and delete quote line items.
+- Save customer name, address, buyer name/email, Sales Rep, quote date, order total, total cost, total GTM$, and line-item details.
 - Save the active quote locally in the browser.
-- Copy quote text or open it in the default email app.
+- Copy the internal quote text, or open a prepared email for the rep or customer. Customer email excludes cost and GTM fields and uses Buyer Email as the recipient.
+- Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
+- Preview and explicitly download a customer-facing PDF quotation. The PDF omits internal cost and GTM values.
+- Show the current app version/build marker on load.
 
 ## Develop and Test
 

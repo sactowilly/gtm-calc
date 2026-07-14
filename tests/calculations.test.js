@@ -8,7 +8,13 @@ import {
   parseNumber,
   parseQuantity
 } from '../js/domain/calculations.js';
-import { formatMoney, formatPercent } from '../js/domain/formatters.js';
+import { formatMoney, formatPercent, formatUnitMoney } from '../js/domain/formatters.js';
+import {
+  buildCustomerQuoteText,
+  formatQuantityWithUom,
+  getQuotePdfFilename,
+  normalizeUom
+} from '../js/domain/quote-output.js';
 import { legacyCalculationFixtures } from './fixtures/legacy-calculations.js';
 
 describe('legacy calculation fixtures', () => {
@@ -79,6 +85,7 @@ describe('quote item validation', () => {
       item: {
         id: 'fixture-id',
         name: 'Synthetic carton',
+        uom: 'EA',
         quantity: 3,
         unitCost: 10,
         price: 20,
@@ -158,6 +165,7 @@ describe('saved item normalization and totals', () => {
 
     expect(normalizeItem(savedItem)).toEqual({
       ...savedItem,
+      uom: 'EA',
       freightPerUnit: 2,
       landedUnitCost: 12,
       totalCost: 36,
@@ -188,7 +196,7 @@ describe('saved item normalization and totals', () => {
       gtmTotalPercent: 17.647
     };
 
-    expect(normalizeItem(persisted)).toEqual(persisted);
+    expect(normalizeItem(persisted)).toEqual({ ...persisted, uom: 'EA' });
   });
 
   it('sums unrounded values across positive and negative lines', () => {
@@ -230,5 +238,70 @@ describe('legacy display formatting', () => {
   it('locks the current Intl negative-zero representation', () => {
     expect(formatMoney(-0)).toBe('-$0.00');
     expect(formatPercent(-0)).toBe('-0.00%');
+  });
+
+  it('formats per-unit cost and price with up to five decimals, without padding zeroes', () => {
+    expect(formatUnitMoney(46.27)).toBe('$46.27');
+    expect(formatUnitMoney(1.2)).toBe('$1.2');
+    expect(formatUnitMoney(1.23456)).toBe('$1.23456');
+    expect(formatUnitMoney(1.234567)).toBe('$1.23457');
+  });
+});
+
+describe('quote output helpers', () => {
+  it('defaults legacy items to EA and normalizes provided UOM values', () => {
+    expect(normalizeUom()).toBe('EA');
+    expect(normalizeUom(' rl ')).toBe('RL');
+    expect(formatQuantityWithUom(40, 'rl')).toBe('40 RL');
+  });
+
+  it('stores normalized UOM on newly created items', () => {
+    const result = buildQuoteItem({
+      name: 'Single face roll',
+      uom: ' rl ',
+      quantity: '40',
+      unitCost: '1.23456',
+      price: '46.27',
+      freight: '',
+      freightMode: 'perItem'
+    }, 'uom-item');
+
+    expect(result.item.uom).toBe('RL');
+    expect(result.item.unitCost).toBe(1.23456);
+  });
+
+  it('creates stable, download-safe quote PDF filenames', () => {
+    expect(getQuotePdfFilename({
+      customerName: 'Vintage Design, Inc.',
+      date: '2026-05-29'
+    })).toBe('2026-05-29-vintage-design-inc-quotation.pdf');
+    expect(getQuotePdfFilename({ customerName: '', date: 'not-a-date' }))
+      .toBe('undated-customer-quotation.pdf');
+  });
+
+  it('builds a customer email without internal cost or profitability values', () => {
+    const customerText = buildCustomerQuoteText({
+      customerName: 'Vintage Design, Inc.',
+      customerAddress: '101 First St\nSacramento, CA 95814',
+      buyerName: 'Jamie Buyer',
+      buyerEmail: 'jamie@example.com',
+      buyerPhone: '916-555-0100',
+      salesRep: 'Will Z',
+      date: '2026-07-14',
+      items: [{
+        quantity: 40,
+        uom: 'CS',
+        name: 'Single Face',
+        price: 46.27,
+        unitCost: 20,
+        landedUnitCost: 21,
+        gtmEachDollars: 25.27,
+        gtmTotalPercent: 120.33
+      }]
+    });
+
+    expect(customerText).toContain('40 CS - Single Face == $46.27');
+    expect(customerText).toContain('Sales Rep: Will Z');
+    expect(customerText).not.toMatch(/cost|gtm|margin|total/i);
   });
 });
