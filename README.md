@@ -27,7 +27,8 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Add, edit, and delete quote line items.
 - Save customer name, address, buyer name/email, Sales Rep, quote date, order total, total cost, total GTM$, and line-item details.
 - Save the active quote locally in the browser.
-- Copy quote text or open it in the default email app; Buyer Email pre-fills the email recipient when present.
+- Copy the internal quote text, or open a prepared email for the rep or customer. Customer email excludes cost and GTM fields and uses Buyer Email as the recipient.
+- Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
 - Preview and explicitly download a customer-facing PDF quotation. The PDF omits internal cost and GTM values.
 - Show the current app version/build marker on load.
 

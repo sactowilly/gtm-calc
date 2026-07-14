@@ -1,3 +1,5 @@
+import { formatUnitMoney } from './formatters.js';
+
 export const DEFAULT_UOM = 'EA';
 
 export function normalizeUom(value) {
@@ -20,4 +22,28 @@ export function getQuotePdfFilename({ customerName, date }) {
     : 'undated';
 
   return `${safeDate}-${safeCustomer}-quotation.pdf`;
+}
+
+export function buildCustomerQuoteText(quote) {
+  const lines = [
+    `Quote for ${quote.customerName || 'Customer'}`,
+    `Customer Address: ${String(quote.customerAddress || '').replace(/\r?\n/g, ', ') || 'Not set'}`,
+    `Buyer: ${quote.buyerName || 'Not set'}`,
+    `Buyer Email: ${quote.buyerEmail || 'Not set'}`,
+    `Buyer Phone: ${quote.buyerPhone || 'Not set'}`,
+    `Sales Rep: ${quote.salesRep || 'Not set'}`,
+    `Date: ${quote.date || 'Not set'}`,
+    ''
+  ];
+  const items = Array.isArray(quote.items) ? quote.items : [];
+
+  if (items.length === 0) {
+    lines.push('No items added.');
+  } else {
+    items.forEach(function (item) {
+      lines.push(`${formatQuantityWithUom(item.quantity, item.uom)} - ${item.name} == ${formatUnitMoney(item.price)}`);
+    });
+  }
+
+  return lines.join('\n');
 }

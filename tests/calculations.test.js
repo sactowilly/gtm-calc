@@ -10,6 +10,7 @@ import {
 } from '../js/domain/calculations.js';
 import { formatMoney, formatPercent, formatUnitMoney } from '../js/domain/formatters.js';
 import {
+  buildCustomerQuoteText,
   formatQuantityWithUom,
   getQuotePdfFilename,
   normalizeUom
@@ -276,5 +277,31 @@ describe('quote output helpers', () => {
     })).toBe('2026-05-29-vintage-design-inc-quotation.pdf');
     expect(getQuotePdfFilename({ customerName: '', date: 'not-a-date' }))
       .toBe('undated-customer-quotation.pdf');
+  });
+
+  it('builds a customer email without internal cost or profitability values', () => {
+    const customerText = buildCustomerQuoteText({
+      customerName: 'Vintage Design, Inc.',
+      customerAddress: '101 First St\nSacramento, CA 95814',
+      buyerName: 'Jamie Buyer',
+      buyerEmail: 'jamie@example.com',
+      buyerPhone: '916-555-0100',
+      salesRep: 'Will Z',
+      date: '2026-07-14',
+      items: [{
+        quantity: 40,
+        uom: 'CS',
+        name: 'Single Face',
+        price: 46.27,
+        unitCost: 20,
+        landedUnitCost: 21,
+        gtmEachDollars: 25.27,
+        gtmTotalPercent: 120.33
+      }]
+    });
+
+    expect(customerText).toContain('40 CS - Single Face == $46.27');
+    expect(customerText).toContain('Sales Rep: Will Z');
+    expect(customerText).not.toMatch(/cost|gtm|margin|total/i);
   });
 });

@@ -7,7 +7,7 @@ import {
   parseQuantity
 } from './domain/calculations.js';
 import { APP_BUILD_LABEL } from './app-meta.js';
-import { formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
+import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
 
 (function () {
@@ -290,16 +290,38 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     }
   }
 
-  function emailQuoteText() {
-    const subjectParts = ['GTM Calc and Quote Tool'];
+  function openPreparedEmail(recipient, subjectParts, text, successMessage) {
+    const url = `mailto:${recipient ? encodeURIComponent(recipient) : ''}?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(text)}`;
+    window.location.href = url;
+    setStatus(successMessage, false);
+  }
+
+  function emailRepQuoteText() {
+    syncQuoteMeta();
+    const subjectParts = ['GTM Calc and Quote Tool - Internal Quote'];
 
     if (quote.customerName) {
       subjectParts.push(quote.customerName);
     }
 
-    const recipient = quote.buyerEmail ? encodeURIComponent(quote.buyerEmail) : '';
-    const url = `mailto:${recipient}?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(buildQuoteText())}`;
-    window.location.href = url;
+    openPreparedEmail('', subjectParts, buildQuoteText(), 'Internal email draft opened. Download and attach the PDF manually.');
+  }
+
+  function emailCustomerQuoteText() {
+    syncQuoteMeta();
+
+    if (!quote.buyerEmail) {
+      setStatus('Add Buyer Email before creating a customer email.', true);
+      return;
+    }
+
+    const subjectParts = ['Quote'];
+
+    if (quote.customerName) {
+      subjectParts.push(quote.customerName);
+    }
+
+    openPreparedEmail(quote.buyerEmail, subjectParts, buildCustomerQuoteText(quote), 'Customer email draft opened. Download and attach the PDF manually.');
   }
 
   function releaseQuotePdf() {
@@ -701,9 +723,11 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
   document.getElementById('viewQuote').addEventListener('click', openQuoteDialog);
   document.getElementById('downloadQuote').addEventListener('click', downloadQuotePdf);
   document.getElementById('copyQuote').addEventListener('click', copyQuoteText);
-  document.getElementById('emailQuote').addEventListener('click', emailQuoteText);
+  document.getElementById('emailRep').addEventListener('click', emailRepQuoteText);
+  document.getElementById('emailCustomer').addEventListener('click', emailCustomerQuoteText);
   document.getElementById('copyQuoteDialog').addEventListener('click', copyQuoteText);
-  document.getElementById('emailQuoteDialog').addEventListener('click', emailQuoteText);
+  document.getElementById('emailRepDialog').addEventListener('click', emailRepQuoteText);
+  document.getElementById('emailCustomerDialog').addEventListener('click', emailCustomerQuoteText);
   document.getElementById('closeQuote').addEventListener('click', function () {
     if (typeof quoteDialog.close === 'function') {
       quoteDialog.close();
