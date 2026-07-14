@@ -72,8 +72,7 @@ function createCustomerBlock(documentData) {
   right.append(
     createLabeledValue('ATTENTION:', documentData.customer.attention),
     createLabeledValue('EMAIL:', documentData.customer.email),
-    createLabeledValue('PHONE:', documentData.customer.phone),
-    createLabeledValue('FAX:', documentData.customer.fax)
+    createLabeledValue('PHONE:', documentData.customer.phone)
   );
   block.append(left, right);
   return block;

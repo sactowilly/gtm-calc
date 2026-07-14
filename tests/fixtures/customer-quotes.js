@@ -44,12 +44,11 @@ const baseQuote = {
   buyerName: 'Jordan Rivera',
   buyerEmail: 'jordan.rivera@example.test',
   buyerPhone: '916-555-0137',
-  buyerFax: '',
   salesRep: 'Alex Morgan',
   date: '2026-07-14',
   shipVia: 'Our Truck',
   fobPoint: 'Sacramento',
-  terms: 'Net 30',
+  terms: 'NET30',
   customerNotes: '',
   items: []
 };
@@ -101,7 +100,6 @@ export const customerQuoteFixtures = {
   },
   blankOptionalValues: {
     ...onePageQuote,
-    buyerFax: '',
     shipVia: '',
     fobPoint: '',
     terms: '',

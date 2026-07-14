@@ -15,12 +15,11 @@ The saved browser key remains `gtm_quote_calculator_v1`. New properties are opti
 | ATTENTION | `quote.buyerName` | Existing field; blank row is preserved. |
 | EMAIL | `quote.buyerEmail` | Existing field; blank row is preserved. |
 | PHONE | `quote.buyerPhone` | Existing field; blank row is preserved. |
-| FAX | `quote.buyerFax` | New optional field; legacy records load as blank. |
 | SALES REP | `quote.salesRep` | Existing field; blank stays blank. |
 | DATE | `quote.date` | Existing ISO date value is preserved. |
 | SHIP VIA | `quote.shipVia` | New field. New quotes default to `Our Truck`; legacy records without the property load with that default. Users may clear it. |
-| F.O.B. POINT | `quote.fobPoint` | New optional field; legacy records load as blank. |
-| TERMS | `quote.terms` | New optional field; legacy records load as blank. |
+| F.O.B. POINT | `quote.fobPoint` | New quotes and legacy records without this property default to `Sacramento`; users may clear it. |
+| TERMS | `quote.terms` | New quotes and legacy records without this property default to `NET30`; users may clear it. |
 | NOTES | `quote.customerNotes` | New customer-facing field; legacy records load as blank. This is distinct from any future internal notes. |
 
 ## Line-item fields

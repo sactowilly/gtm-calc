@@ -37,8 +37,7 @@ export function toCustomerQuoteDocument(quote) {
       addressLines: splitCustomerAddress(quote?.customerAddress),
       attention: text(quote?.buyerName),
       email: text(quote?.buyerEmail),
-      phone: text(quote?.buyerPhone),
-      fax: text(quote?.buyerFax)
+      phone: text(quote?.buyerPhone)
     },
     sales: {
       salesRep: text(quote?.salesRep),

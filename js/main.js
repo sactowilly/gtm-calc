@@ -20,7 +20,6 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
   const buyerName = document.getElementById('buyerName');
   const buyerEmail = document.getElementById('buyerEmail');
   const buyerPhone = document.getElementById('buyerPhone');
-  const buyerFax = document.getElementById('buyerFax');
   const salesRep = document.getElementById('salesRep');
   const quoteDate = document.getElementById('quoteDate');
   const shipVia = document.getElementById('shipVia');
@@ -61,12 +60,11 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
     buyerName: '',
     buyerEmail: '',
     buyerPhone: '',
-    buyerFax: '',
     salesRep: '',
     date: new Date().toISOString().slice(0, 10),
     shipVia: 'Our Truck',
-    fobPoint: '',
-    terms: '',
+    fobPoint: 'Sacramento',
+    terms: 'NET30',
     customerNotes: '',
     items: []
   };
@@ -160,7 +158,6 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
     quote.buyerName = buyerName.value.trim();
     quote.buyerEmail = buyerEmail.value.trim();
     quote.buyerPhone = buyerPhone.value.trim();
-    quote.buyerFax = buyerFax.value.trim();
     quote.salesRep = salesRep.value.trim();
     quote.date = quoteDate.value;
     quote.shipVia = shipVia.value.trim();
@@ -248,12 +245,11 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
           buyerName: parsed.buyerName || '',
           buyerEmail: parsed.buyerEmail || '',
           buyerPhone: parsed.buyerPhone || '',
-          buyerFax: parsed.buyerFax || '',
           salesRep: parsed.salesRep || '',
           date: parsed.date || quote.date,
           shipVia: parsed.shipVia ?? 'Our Truck',
-          fobPoint: parsed.fobPoint || '',
-          terms: parsed.terms || '',
+          fobPoint: parsed.fobPoint ?? 'Sacramento',
+          terms: parsed.terms ?? 'NET30',
           customerNotes: parsed.customerNotes || '',
           items: parsed.items.map(normalizeItem)
         };
@@ -525,11 +521,6 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
     markUnsaved();
   });
 
-  buyerFax.addEventListener('input', function () {
-    syncQuoteMeta();
-    markUnsaved();
-  });
-
   salesRep.addEventListener('input', function () {
     syncQuoteMeta();
     markUnsaved();
@@ -576,7 +567,6 @@ import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
   buyerName.value = quote.buyerName;
   buyerEmail.value = quote.buyerEmail;
   buyerPhone.value = quote.buyerPhone;
-  buyerFax.value = quote.buyerFax;
   salesRep.value = quote.salesRep;
   quoteDate.value = quote.date;
   shipVia.value = quote.shipVia;
