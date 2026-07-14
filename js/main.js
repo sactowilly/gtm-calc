@@ -15,6 +15,9 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
 
   const itemForm = document.getElementById('itemForm');
   const customerName = document.getElementById('customerName');
+  const customerAddress = document.getElementById('customerAddress');
+  const buyerName = document.getElementById('buyerName');
+  const buyerEmail = document.getElementById('buyerEmail');
   const salesRep = document.getElementById('salesRep');
   const quoteDate = document.getElementById('quoteDate');
   const statusMessage = document.getElementById('statusMessage');
@@ -46,6 +49,9 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
 
   let quote = {
     customerName: '',
+    customerAddress: '',
+    buyerName: '',
+    buyerEmail: '',
     salesRep: '',
     date: new Date().toISOString().slice(0, 10),
     items: []
@@ -134,6 +140,9 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
 
   function syncQuoteMeta() {
     quote.customerName = customerName.value.trim();
+    quote.customerAddress = customerAddress.value.trim();
+    quote.buyerName = buyerName.value.trim();
+    quote.buyerEmail = buyerEmail.value.trim();
     quote.salesRep = salesRep.value.trim();
     quote.date = quoteDate.value;
   }
@@ -212,6 +221,9 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       if (parsed && Array.isArray(parsed.items)) {
         quote = {
           customerName: parsed.customerName || '',
+          customerAddress: parsed.customerAddress || '',
+          buyerName: parsed.buyerName || '',
+          buyerEmail: parsed.buyerEmail || '',
           salesRep: parsed.salesRep || '',
           date: parsed.date || quote.date,
           items: parsed.items.map(normalizeItem)
@@ -229,10 +241,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     syncQuoteMeta();
     const totals = getTotals();
     const customer = quote.customerName || 'Customer';
+    const buyer = quote.buyerName || 'Not set';
     const rep = quote.salesRep || 'Not set';
     const date = quote.date || new Date().toISOString().slice(0, 10);
     const lines = [
       `Quote for ${customer}`,
+      `Buyer: ${buyer}`,
+      `Buyer Email: ${quote.buyerEmail || 'Not set'}`,
       `Date: ${date}`,
       `Sales Rep: ${rep}`,
       '',
@@ -241,6 +256,10 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       `Total GTM$: ${formatMoney(totals.totalGtm)}`,
       ''
     ];
+
+    if (quote.customerAddress) {
+      lines.splice(1, 0, `Customer Address: ${quote.customerAddress.replace(/\r?\n/g, ', ')}`);
+    }
 
     if (quote.items.length === 0) {
       lines.push('No items added.');
@@ -273,7 +292,8 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
       subjectParts.push(quote.customerName);
     }
 
-    const url = `mailto:?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(buildQuoteText())}`;
+    const recipient = quote.buyerEmail ? encodeURIComponent(quote.buyerEmail) : '';
+    const url = `mailto:${recipient}?subject=${encodeURIComponent(subjectParts.join(' - '))}&body=${encodeURIComponent(buildQuoteText())}`;
     window.location.href = url;
   }
 
@@ -350,6 +370,10 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     fields.itemName.value = normalized.name;
     fields.quantity.value = normalized.quantity;
     fields.uom.value = normalized.uom;
+    if (!fields.uom.value) {
+      fields.uom.value = 'EA';
+      setStatus(`Saved UOM ${normalized.uom} is not in the current list. EA is selected for this edit.`, false);
+    }
     fields.unitCost.value = normalized.unitCost;
     fields.price.value = normalized.price;
     fields.freight.value = normalized.freight || '';
@@ -397,7 +421,7 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     const tableWidth = pageWidth - (margin * 2);
     const rowHeight = 30;
     const headerHeight = 22;
-    const headerTop = 568;
+    const headerTop = 528;
     const bottom = 128;
     const columns = [
       { label: 'MIN', width: 55, align: 'right' },
@@ -407,6 +431,13 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     ];
     const rows = buildQuotePdfRows();
     const customer = quote.customerName || 'Customer';
+    const buyer = quote.buyerName || 'Not set';
+    const buyerEmail = quote.buyerEmail || 'Not set';
+    const customerAddressLines = (quote.customerAddress || '')
+      .split(/\r?\n/)
+      .map(function (line) { return line.trim(); })
+      .filter(Boolean)
+      .slice(0, 2);
     const rep = quote.salesRep || 'Not set';
     const date = quote.date || new Date().toISOString().slice(0, 10);
     const rowsPerPage = Math.max(1, Math.floor((headerTop - headerHeight - bottom) / rowHeight));
@@ -480,18 +511,25 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
         `${margin} 688 m ${pageWidth - margin} 688 l S`,
         textCommand('TO:', margin + 6, 664, 10, 'F2'),
         textCommand(trimCellText(customer, 44), 88, 660, 15, 'F1'),
-        `${margin + 72} 642 m ${margin + 72} 680 l S`,
+        textCommand('BUYER:', margin + 6, 642, 9, 'F2'),
+        textCommand(trimCellText(buyer, 58), 58, 640, 10, 'F1'),
+        textCommand('ADDRESS:', margin + 6, 628, 8, 'F2'),
+        textCommand(trimCellText(customerAddressLines[0] || '', 76), 58, 626, 9, 'F1'),
+        textCommand(trimCellText(customerAddressLines[1] || '', 76), 58, 614, 9, 'F1'),
+        textCommand('EMAIL:', margin + 6, 602, 8, 'F2'),
+        textCommand(trimCellText(buyerEmail, 76), 58, 600, 9, 'F1'),
+        `${margin + 50} 590 m ${margin + 50} 680 l S`,
         '0 g',
-        `${margin} 616 ${tableWidth} 40 re S`,
+        `${margin} 540 ${tableWidth} 40 re S`,
         '0 g',
-        `${margin} 638 ${tableWidth} 18 re f`,
+        `${margin} 562 ${tableWidth} 18 re f`,
         '1 1 1 rg',
-        textCommand('SALES REP', margin + 92, 644, 9, 'F2'),
-        textCommand('DATE', margin + 370, 644, 9, 'F2'),
+        textCommand('SALES REP', margin + 92, 568, 9, 'F2'),
+        textCommand('DATE', margin + 370, 568, 9, 'F2'),
         '0 g',
-        `${margin + (tableWidth / 2)} 616 m ${margin + (tableWidth / 2)} 656 l S`,
-        textCommand(trimCellText(rep, 31), margin + 8, 622, 12, 'F2'),
-        textCommand(date, margin + (tableWidth / 2) + 8, 622, 12, 'F2'),
+        `${margin + (tableWidth / 2)} 540 m ${margin + (tableWidth / 2)} 580 l S`,
+        textCommand(trimCellText(rep, 31), margin + 8, 546, 12, 'F2'),
+        textCommand(date, margin + (tableWidth / 2) + 8, 546, 12, 'F2'),
         '0 g',
         '0 0 0 rg',
         `${margin} ${headerTop - headerHeight} ${tableWidth} ${headerHeight} re f`,
@@ -624,6 +662,21 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
     markUnsaved();
   });
 
+  customerAddress.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
+  });
+
+  buyerName.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
+  });
+
+  buyerEmail.addEventListener('input', function () {
+    syncQuoteMeta();
+    markUnsaved();
+  });
+
   salesRep.addEventListener('input', function () {
     syncQuoteMeta();
     markUnsaved();
@@ -657,6 +710,9 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
 
   const loadedSavedQuote = loadQuote();
   customerName.value = quote.customerName;
+  customerAddress.value = quote.customerAddress;
+  buyerName.value = quote.buyerName;
+  buyerEmail.value = quote.buyerEmail;
   salesRep.value = quote.salesRep;
   quoteDate.value = quote.date;
   if (loadedSavedQuote) {

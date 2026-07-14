@@ -138,6 +138,10 @@ h2 {
   grid-column: 1 / -1;
 }
 
+.quote-meta .field-full {
+  grid-column: 1 / -1;
+}
+
 label,
 .freight-mode {
   display: flex;
@@ -149,7 +153,9 @@ label,
   font-weight: 700;
 }
 
-input {
+input,
+select,
+textarea {
   width: 100%;
   min-height: 48px;
   border: 1px solid #aeb9ae;
@@ -160,7 +166,14 @@ input {
   font-size: 1rem;
 }
 
+textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
 input:focus,
+select:focus,
+textarea:focus,
 button:focus-visible,
 .table-wrap:focus-visible {
   outline: 3px solid var(--focus);

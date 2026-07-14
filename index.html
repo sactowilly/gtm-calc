@@ -42,7 +42,13 @@
 
             <label>
               UOM
-              <input id="uom" name="uom" type="text" value="EA" maxlength="12" autocomplete="off" autocapitalize="characters">
+              <select id="uom" name="uom" autocomplete="off">
+                <option value="EA">EA</option>
+                <option value="CS">CS</option>
+                <option value="BND">BND</option>
+                <option value="PLT">PLT</option>
+                <option value="CL">CL</option>
+              </select>
             </label>
 
             <label>
@@ -110,6 +116,18 @@
           <label>
             Customer
             <input id="customerName" type="text" autocomplete="organization">
+          </label>
+          <label class="field-full">
+            Customer Address
+            <textarea id="customerAddress" rows="3" autocomplete="street-address"></textarea>
+          </label>
+          <label>
+            Buyer Name
+            <input id="buyerName" type="text" autocomplete="name">
+          </label>
+          <label>
+            Buyer Email
+            <input id="buyerEmail" type="email" inputmode="email" autocomplete="email">
           </label>
           <label>
             Sales Rep
