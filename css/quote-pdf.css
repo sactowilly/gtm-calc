@@ -1,0 +1,360 @@
+.quote-print-render-host {
+  position: fixed;
+  z-index: -1000;
+  top: 0;
+  left: -10000px;
+  width: 816px;
+  background: #fff;
+  pointer-events: none;
+}
+
+.quote-print-page,
+.quote-print-page * {
+  box-sizing: border-box;
+}
+
+.quote-print-page {
+  width: 816px;
+  height: 1056px;
+  overflow: hidden;
+  color: #000;
+  background: #fff;
+  font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.18;
+}
+
+.quote-print-page__inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 34px 48px 30px;
+}
+
+.quote-print-header {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+  min-height: 112px;
+  border-bottom: 0.75pt solid #000;
+  padding-bottom: 8px;
+}
+
+.quote-print-brand,
+.quote-print-title {
+  min-width: 0;
+}
+
+.quote-print-logo {
+  display: block;
+  width: 365px;
+  max-width: 100%;
+  height: auto;
+}
+
+.quote-print-address,
+.quote-print-website {
+  margin: 2px 0 0 70px;
+  font-size: 10px;
+  line-height: 1.05;
+}
+
+.quote-print-title {
+  padding-top: 2px;
+  text-align: right;
+}
+
+.quote-print-title p {
+  margin: 0;
+}
+
+.quote-print-title__name {
+  font-size: 29px;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+
+.quote-print-title__phone {
+  margin-top: 6px !important;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 900;
+}
+
+.quote-print-title__fax {
+  margin-top: 3px !important;
+  font-size: 12px;
+}
+
+.quote-print-page-label {
+  margin: 5px 0 0;
+  font-size: 8.5px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.quote-print-header--continuation {
+  min-height: 84px;
+}
+
+.quote-print-header--continuation .quote-print-logo {
+  width: 280px;
+}
+
+.quote-print-header--continuation .quote-print-address,
+.quote-print-header--continuation .quote-print-website,
+.quote-print-header--continuation .quote-print-title__phone,
+.quote-print-header--continuation .quote-print-title__fax {
+  display: none;
+}
+
+.quote-print-header--continuation .quote-print-title__name {
+  margin-top: 14px;
+  font-size: 21px;
+}
+
+.quote-print-customer {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(0, 56%) minmax(0, 44%);
+  min-height: 112px;
+}
+
+.quote-print-customer__left,
+.quote-print-customer__right {
+  min-width: 0;
+  padding-top: 5px;
+}
+
+.quote-print-customer__left {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  border-right: 0.5pt solid #000;
+  padding-right: 10px;
+}
+
+.quote-print-customer__right {
+  padding-left: 10px;
+}
+
+.quote-print-field {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 84px minmax(0, 1fr);
+  min-height: 25px;
+  align-items: start;
+}
+
+.quote-print-field__label {
+  padding-right: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.quote-print-customer__left > .quote-print-field__label {
+  text-align: left;
+}
+
+.quote-print-field__value,
+.quote-print-address-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.22;
+  white-space: normal;
+  word-break: normal;
+}
+
+.quote-print-address-value > div + div {
+  margin-top: 3px;
+}
+
+.quote-print-sales {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 14px;
+  border: 0.75pt solid #000;
+}
+
+.quote-print-sales__field {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: auto minmax(30px, auto);
+  border-right: 0.5pt solid #000;
+}
+
+.quote-print-sales__field:last-child {
+  border-right: 0;
+}
+
+.quote-print-sales__heading {
+  padding: 4px 3px 3px;
+  color: #fff;
+  background: #000;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.quote-print-sales__value {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 4px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.08;
+  text-align: center;
+}
+
+.quote-print-table-wrap {
+  flex: 0 0 auto;
+  margin-top: 18px;
+}
+
+.quote-print-header--continuation + .quote-print-table-wrap {
+  margin-top: 14px;
+}
+
+.quote-print-items {
+  width: 100%;
+  border: 0.75pt solid #000;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.quote-print-items th {
+  border-right: 0.65pt solid #fff;
+  padding: 5px 4px 4px;
+  color: #fff;
+  background: #000;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.quote-print-items th:last-child {
+  border-right: 0;
+}
+
+.quote-print-items tbody tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.quote-print-items td {
+  min-width: 0;
+  border-top: 0.4pt solid #000;
+  border-right: 0.4pt solid #000;
+  padding: 8px 6px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.22;
+  text-align: center;
+  vertical-align: middle;
+  white-space: normal;
+  word-break: normal;
+}
+
+.quote-print-items tbody tr:first-child td {
+  border-top: 0;
+}
+
+.quote-print-items td:last-child {
+  border-right: 0;
+}
+
+.quote-print-items__cell--1,
+.quote-print-items__cell--4 {
+  text-align: right !important;
+}
+
+.quote-print-items__cell--2,
+.quote-print-items__cell--5 {
+  text-align: left !important;
+}
+
+.quote-print-items__empty {
+  height: 40px;
+  text-align: center !important;
+}
+
+.quote-print-closing {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 220px;
+  padding-top: 18px;
+}
+
+.quote-print-thanks {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 900;
+  text-align: center;
+}
+
+.quote-print-notes {
+  min-height: 54px;
+  border: 0.5pt solid #000;
+  padding: 6px 8px;
+}
+
+.quote-print-notes__label {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.quote-print-notes__value {
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: pre-wrap;
+}
+
+.quote-print-footer {
+  margin-top: 20px;
+  border-top: 0.5pt solid #000;
+  padding-top: 5px;
+}
+
+.quote-print-validity {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.quote-print-categories {
+  display: grid;
+  grid-template-columns: 1.25fr 1.2fr 1.25fr 1fr 0.72fr;
+  gap: 12px;
+  font-size: 8px;
+  line-height: 1.28;
+}
+
+.quote-print-categories__column,
+.quote-print-categories__more {
+  min-width: 0;
+}
+
+.quote-print-categories__more {
+  align-self: center;
+  font-style: italic;
+  font-weight: 900;
+  text-align: center;
+}

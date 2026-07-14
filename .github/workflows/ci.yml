@@ -30,5 +30,11 @@ jobs:
       - name: Run unit tests
         run: npm test
 
+      - name: Install Chromium for quotation layout checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Run quotation layout checks
+        run: npm run test:visual
+
       - name: Build production artifact
         run: npm run build

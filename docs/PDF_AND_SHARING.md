@@ -1,8 +1,10 @@
-# PDF and Sharing Plan
+# PDF and Sharing
+
+Implementation status: the customer quotation renderer described below is implemented on the Version 1 customer-PDF feature branch. Sharing remains a later Version 1 capability.
 
 ## Non-negotiable privacy boundary
 
-The current `buildQuotePdfRows`, `buildQuotePdfBlob`, and `buildQuoteText` expose cost and profitability. They must be treated as internal legacy output until replaced. Version 1 introduces `toCustomerQuoteDocument(quote)` as an allowlist projection. PDF, clipboard, mailto, and share code accept only that projected type; they must not accept the internal quote object.
+`toCustomerQuoteDocument(quote)` in `js/pdf/customer-quote-document.js` is the customer PDF's allowlist boundary. The HTML template and PDF renderer accept that projection rather than the internal quote object. Existing rep/customer clipboard and mailto behavior remains separate and unchanged by the template replacement.
 
 ### Customer PDF fields
 
@@ -32,16 +34,9 @@ Privacy tests should verify both the object contract and extracted PDF/text outp
 
 ## Template strategy
 
-No supplied customer PDF template currently exists in the repository. Before the PDF PR, the owner must provide/approve:
+The supplied `quote test 2026.docx` and matching PDF are the approved visual references. The complete logo was extracted unchanged to `assets/vision-industrial-packaging-logo.png`; customer examples are not committed.
 
-- Source PDF or exact visual reference, page size, margins, and multi-page continuation design.
-- Logo/artwork at suitable resolution, legal company name/address/contact details, brand colors, and font files/licenses.
-- Required terms, payment/expiration language, tax/shipping statements, and representative short/long quotes.
-- Whether the template itself is safe to publish in a public repository. GitHub Pages assets are public.
-
-Store approved public assets under a versioned path such as `public/pdf-templates/customer-quote-v1.pdf` and record `pdfTemplateVersion` in generated metadata/finalized versions. Do not put customer examples in the repository.
-
-Use the template as a background/imported page and draw data in explicit regions. Define repeatable page rules:
+The implementation builds a fixed US Letter page shell with HTML/CSS flow layout, measures overflow in the browser, and adds continuation pages before capture. Define repeatable page rules:
 
 1. Page 1 header/customer/quote summary.
 2. Item table with wrapped descriptions and repeated column headings.
@@ -51,14 +46,14 @@ Use the template as a background/imported page and draw data in explicit regions
 
 ## Browser PDF library recommendation
 
-Use a pinned, bundled `pdf-lib` dependency in the Vite build. It works locally in the browser, can load an existing PDF template, draw text/images, add pages, and emit `Uint8Array`/`Blob` without a server. Add `@pdf-lib/fontkit` only if approved custom font embedding is required.
+Use pinned, locally vendored `html2canvas` and `jsPDF` browser builds. HTML/CSS supplies wrapping, grid sizing, dynamic row heights, and pagination; each completed Letter page is captured and assembled into the same locally generated `Blob` used by preview and download.
 
 Tradeoffs:
 
-- `pdf-lib`: best fit for filling/drawing over a supplied branded PDF; layout/wrapping helpers must be implemented and tested.
-- `jsPDF`/AutoTable: convenient generated tables but less natural when an existing PDF template is the source of truth.
-- HTML screenshot/canvas approaches: easier CSS reuse but produce less accessible/searchable text, larger files, and more inconsistent pagination; not recommended.
-- Current handwritten PDF: zero dependency but fragile for Unicode, byte offsets, wrapping, template work, and injection safety; replace it.
+- HTML/CSS plus canvas: best fit for the reference's variable-height customer and table content while remaining entirely client-side on GitHub Pages.
+- Playwright/Chromium `page.pdf()`: used for test automation and visual inspection, but unavailable as a runtime browser API and therefore cannot supply an in-app Blob.
+- `pdf-lib` or raw PDF drawing: would reintroduce manual coordinate and wrapping logic that caused the defective layout.
+- Tradeoff: the captured PDF is rasterized, so text selection and tagged-PDF accessibility are not yet available; the source HTML remains available for automated layout and privacy inspection.
 
 Bundle dependencies rather than loading a CDN so builds are reproducible, Content Security Policy is simpler, and Version 3 offline work has a clean path.
 
