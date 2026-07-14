@@ -13,15 +13,14 @@ describe('customer quotation projection', () => {
       addressLines: ['1250 Market Street, Suite 400', 'Sacramento, CA 95814'],
       attention: onePageQuote.buyerName,
       email: onePageQuote.buyerEmail,
-      phone: onePageQuote.buyerPhone,
-      fax: ''
+      phone: onePageQuote.buyerPhone
     });
     expect(documentData.sales).toEqual({
       salesRep: 'Alex Morgan',
       date: '2026-07-14',
       shipVia: 'Our Truck',
       fobPoint: 'Sacramento',
-      terms: 'Net 30'
+      terms: 'NET30'
     });
     expect(documentData.items[0]).toEqual({
       minimum: '250',
@@ -49,7 +48,6 @@ describe('customer quotation projection', () => {
   it('preserves blank optional rows and fields', () => {
     const projected = toCustomerQuoteDocument(customerQuoteFixtures.blankOptionalValues);
 
-    expect(projected.customer.fax).toBe('');
     expect(projected.sales.shipVia).toBe('');
     expect(projected.sales.fobPoint).toBe('');
     expect(projected.sales.terms).toBe('');

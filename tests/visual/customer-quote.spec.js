@@ -81,6 +81,23 @@ test.beforeAll(async () => {
   await mkdir(outputDirectory, { recursive: true });
 });
 
+test('new quote details use the approved defaults and matching multiline blocks', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.quote-details').evaluate((details) => { details.open = true; });
+
+  await expect(page.locator('#leadTime')).toBeVisible();
+  await expect(page.locator('#shipVia')).toHaveValue('Our Truck');
+  await expect(page.locator('#fobPoint')).toHaveValue('Sacramento');
+  await expect(page.locator('#terms')).toHaveValue('NET30');
+  await expect(page.locator('#buyerFax')).toHaveCount(0);
+
+  const multilineHeights = await page.locator('#customerAddress, #customerNotes').evaluateAll((fields) => (
+    fields.map((field) => field.getBoundingClientRect().height)
+  ));
+  expect(multilineHeights).toHaveLength(2);
+  expect(Math.abs(multilineHeights[0] - multilineHeights[1])).toBeLessThanOrEqual(1);
+});
+
 test('one-page quotation renders and downloads without internal data', async ({ page }) => {
   await loadSavedQuote(page, onePageQuote);
   await downloadGeneratedPdf(page, 'vision-quotation-one-page.pdf');
