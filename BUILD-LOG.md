@@ -6,4 +6,5 @@
 - Added [build-docs/DECISIONS.md](build-docs/DECISIONS.md) for locked architecture and workflow choices.
 - Added [build-docs/OPEN_ITEMS.md](build-docs/OPEN_ITEMS.md) for active work and blockers.
 - Added the `build-docs/archive/` folder for retired docs that should be kept, not deleted.
+- Corrected the repo-facing owner name to Will Z after confirming the previous profile name was only a local machine artifact.
 - Next step: keep the log current whenever a milestone closes, a decision locks, or a blocker appears.
