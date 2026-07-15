@@ -98,6 +98,56 @@ test('new quote details use the approved defaults and matching multiline blocks'
   expect(Math.abs(multilineHeights[0] - multilineHeights[1])).toBeLessThanOrEqual(1);
 });
 
+test('New Quote confirms data loss, clears all fields, and removes the saved browser copy', async ({ page }) => {
+  await loadSavedQuote(page, onePageQuote);
+  await page.locator('#itemName').fill('Unsaved item draft');
+  await page.locator('#quantity').fill('5');
+  await page.locator('#unitCost').fill('12.50');
+  await page.locator('#price').fill('20');
+
+  page.once('dialog', async (dialog) => {
+    expect(dialog.message()).toContain('removes its saved copy from this device');
+    await dialog.dismiss();
+  });
+  await page.getByRole('button', { name: 'New Quote' }).click();
+  await expect(page.locator('#customerName')).toHaveValue(onePageQuote.customerName);
+  await expect(page.locator('#statusMessage')).toHaveText('New quote cancelled. The current quote was kept.');
+
+  page.once('dialog', async (dialog) => {
+    await dialog.accept();
+  });
+  await page.getByRole('button', { name: 'New Quote' }).click();
+
+  await expect(page.locator('#customerName')).toHaveValue('');
+  await expect(page.locator('#customerAddress')).toHaveValue('');
+  await expect(page.locator('#buyerName')).toHaveValue('');
+  await expect(page.locator('#buyerEmail')).toHaveValue('');
+  await expect(page.locator('#buyerPhone')).toHaveValue('');
+  await expect(page.locator('#salesRep')).toHaveValue('');
+  await expect(page.locator('#customerNotes')).toHaveValue('');
+  await expect(page.locator('#shipVia')).toHaveValue('Our Truck');
+  await expect(page.locator('#fobPoint')).toHaveValue('Sacramento');
+  await expect(page.locator('#terms')).toHaveValue('NET30');
+  await expect(page.locator('#quoteDate')).toHaveValue(await page.evaluate(() => new Date().toISOString().slice(0, 10)));
+  await expect(page.locator('#itemName')).toHaveValue('');
+  await expect(page.locator('#quantity')).toHaveValue('');
+  await expect(page.locator('#unitCost')).toHaveValue('');
+  await expect(page.locator('#price')).toHaveValue('');
+  await expect(page.locator('input[name="freightMode"][value="perItem"]')).toBeChecked();
+  await expect(page.locator('#quoteItems')).toContainText('No quote items yet.');
+  await expect(page.locator('#orderTotal')).toHaveText('$0.00');
+  await expect(page.locator('#savedState')).toHaveText('Not saved');
+  await expect(page.locator('#statusMessage')).toHaveText('New quote ready.');
+  await expect(page.locator('#customerName')).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem('gtm_quote_calculator_v1'))).toBeNull();
+
+  const reopenedPage = await page.context().newPage();
+  await reopenedPage.goto('./');
+  await expect(reopenedPage.locator('#customerName')).toHaveValue('');
+  await expect(reopenedPage.locator('#quoteItems')).toContainText('No quote items yet.');
+  await reopenedPage.close();
+});
+
 test('one-page quotation renders and downloads without internal data', async ({ page }) => {
   await loadSavedQuote(page, onePageQuote);
   await downloadGeneratedPdf(page, 'vision-quotation-one-page.pdf');

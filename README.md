@@ -50,6 +50,7 @@ Run the same checks used by pull requests:
 npm run check
 npm test
 npm run test:visual
+npm run test:compat
 npm run build
 ```
 

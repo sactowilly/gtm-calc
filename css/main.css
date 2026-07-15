@@ -311,6 +311,14 @@ button:focus-visible,
   flex: 0 0 auto;
 }
 
+.header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .item-actions {
   position: sticky;
   z-index: 5;
@@ -527,14 +535,21 @@ dialog .pdf-actions {
   border: 0;
 }
 
-@media (max-width: 359px) {
+@media (max-width: 559px) {
   .app-header {
     flex-direction: column;
   }
 
-  .app-header .button {
+  .header-actions {
     width: 100%;
   }
+
+  .app-header .button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 359px) {
 
   .form-grid {
     grid-template-columns: 1fr;
