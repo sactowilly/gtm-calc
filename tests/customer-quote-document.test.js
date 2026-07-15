@@ -35,7 +35,7 @@ describe('customer quotation projection', () => {
     const projected = toCustomerQuoteDocument(quote);
     const serialized = JSON.stringify(projected).toLowerCase();
 
-    expect(serialized).not.toMatch(/unitcost|landed|freight|gtm|margin|internal|vendor|itemid/);
+    expect(serialized).not.toMatch(/unitcost|landed|freight|gtm|margin|internal|vendor|itemid|catalogsource/);
     expect(Object.keys(projected.items[0] || {})).toEqual([
       'minimum',
       'description',
@@ -43,6 +43,21 @@ describe('customer quotation projection', () => {
       'unitPrice',
       'leadTime'
     ]);
+  });
+
+  it('does not project catalog source metadata from a saved quote snapshot', () => {
+    const quote = {
+      ...onePageQuote,
+      items: onePageQuote.items.map((item) => ({
+        ...item,
+        catalogItemId: 'catalog:SECRET-1',
+        catalogSource: 'catalog',
+        sku: 'SECRET-1'
+      }))
+    };
+    const serialized = JSON.stringify(toCustomerQuoteDocument(quote)).toLowerCase();
+
+    expect(serialized).not.toMatch(/secret-1|catalogsource|catalogitemid/);
   });
 
   it('preserves blank optional rows and fields', () => {

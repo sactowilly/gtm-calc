@@ -50,7 +50,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 ![GTM Quote Tool Roadmap](docs/assets/gtm-quote-tool-roadmap.png)
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
-- **Version 1.5 - Catalog Search:** CSV catalog import, manual items, SKU/name/description/dimension search, and recent items.
+- **Version 1.5 - Catalog Search (in progress):** the tested CSV normalization/import/search foundation is merged; local catalog storage, phone-friendly import/search, manual items, and recent items are the next delivery slice.
 - **Version 2.0 - Local Quote Library:** IndexedDB-backed quotes and customers, quote statuses, quote numbers, duplication, and revisions.
 - **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.

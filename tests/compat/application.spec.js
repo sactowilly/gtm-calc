@@ -4,6 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 test('loads, exposes accessible controls, and preserves approved defaults', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { name: 'GTM Calc and Quote Tool' })).toBeVisible();
+  await expect(page.locator('#appVersion')).toContainText('v1.5.0 · catalog-preview.1');
   await expect(page.getByRole('button', { name: 'New Quote' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'View Quote' })).toBeVisible();
   await page.locator('.quote-details').evaluate((details) => { details.open = true; });
@@ -22,6 +23,7 @@ test('quarantines a corrupt saved quote without losing its raw data', async ({ p
 
 test('has no serious accessibility violations or undersized primary controls', async ({ page }) => {
   await page.goto('./');
+  await page.locator('#catalogTools').evaluate((details) => { details.open = true; });
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact))).toEqual([]);
 
@@ -32,4 +34,5 @@ test('has no serious accessibility violations or undersized primary controls', a
     })
     .map((button) => button.id || button.textContent.trim()));
   expect(undersized).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

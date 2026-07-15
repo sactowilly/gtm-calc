@@ -7,6 +7,7 @@ import {
   parseQuantity
 } from './domain/calculations.js';
 import { APP_BUILD_LABEL } from './app-meta.js';
+import { initializeCatalogUi } from './catalog/catalog-ui.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
@@ -79,6 +80,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   let quotePdfBlob = null;
   let quotePdfUrl = null;
   let quotePdfPromise = null;
+  let catalogController = null;
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
 
@@ -106,7 +108,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       ? crypto.randomUUID()
       : String(Date.now() + Math.random());
 
-    return buildQuoteItem({
+    const result = buildQuoteItem({
       name: fields.itemName.value,
       quantity: fields.quantity.value,
       uom: fields.uom.value,
@@ -116,6 +118,14 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       freight: fields.freight.value,
       freightMode: getFreightMode()
     }, id);
+
+    const selectedCatalogItem = catalogController?.getSelectedItem();
+    if (result.item && selectedCatalogItem) {
+      result.item.catalogItemId = selectedCatalogItem.id;
+      result.item.catalogSource = selectedCatalogItem.source;
+      result.item.sku = selectedCatalogItem.sku || '';
+    }
+    return result;
   }
 
   function updateCalculatorPreview() {
@@ -221,6 +231,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
   function clearItemForm() {
     itemForm.reset();
+    catalogController?.clearSelection();
     editingItemId = null;
     document.getElementById('itemSubmit').textContent = 'Add Item';
     updateCalculatorPreview();
@@ -553,6 +564,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     fields.price.value = normalized.price;
     fields.leadTime.value = normalized.leadTime;
     fields.freight.value = normalized.freight || '';
+    catalogController?.selectById(normalized.catalogItemId);
     const freightModeInput = itemForm.querySelector(`input[name="freightMode"][value="${normalized.freightMode || 'perItem'}"]`);
 
     if (freightModeInput) {
@@ -582,7 +594,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
     if (editingItemId) {
       quote.items = quote.items.map(function (item) {
-        return String(item.id) === editingItemId ? { ...result.item, id: editingItemId } : item;
+        return String(item.id) === editingItemId ? { ...item, ...result.item, id: editingItemId } : item;
       });
       editingItemId = null;
       document.getElementById('itemSubmit').textContent = 'Add Item';
@@ -591,6 +603,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       quote.items.push(result.item);
     }
 
+    catalogController?.recordSelectedUse();
     renderQuote();
     markUnsaved();
     clearItemForm();
@@ -683,6 +696,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     releaseQuotePdf();
   });
 
+  catalogController = initializeCatalogUi({ storage: localStorage, fields, updateCalculatorPreview });
   const loadedSavedQuote = loadQuote();
   populateQuoteMeta();
   if (loadedSavedQuote) {

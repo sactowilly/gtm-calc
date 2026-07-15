@@ -22,6 +22,12 @@ describe('catalog normalization', () => {
     expect(normalizeDimensions('Mailer 12 1/2 x 10 x 8')).toBe('12.5x10x8');
   });
 
+  it('does not treat two-part or four-part values as valid box dimensions', () => {
+    expect(normalizeDimensions('12x10')).toBe('');
+    expect(normalizeDimensions('12x10x8x4')).toBe('');
+    expect(normalizeDimensions('RSC 12 10 8 4')).toBe('');
+  });
+
   it('normalizes search text and SKU without changing display fields', () => {
     expect(normalizeSearchText('  Café—Carton  ')).toBe('cafe carton');
     expect(normalizeSku(' ab 12-c ')).toBe('AB12-C');

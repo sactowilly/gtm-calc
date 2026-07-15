@@ -59,6 +59,8 @@ Turn the functioning calculator into a dependable phone-first active-quote build
 
 ## Version 1.5 — Catalog search
 
+**Status (2026-07-15): In progress.** PR #9 merged the storage-independent CSV parser, row-level import report, catalog normalization, canonical dimension matching, deterministic unified search, and focused tests. The `feature/v15-catalog-ui` follow-up implements versioned catalog-only local storage, a phone-first import/report/search workflow, My Items, recent selections, and editable item-form population. Quote-library IndexedDB remains Version 2 scope.
+
 ### Objective
 
 Reduce quote-entry time through dependable local search across a standard catalog and rep-created items.

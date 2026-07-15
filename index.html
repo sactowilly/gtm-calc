@@ -33,10 +33,40 @@
         </div>
 
         <form id="itemForm" novalidate>
+          <details id="catalogTools" class="catalog-tools">
+            <summary>
+              <span>Item Catalog</span>
+              <span id="catalogSummary" class="catalog-summary">0 catalog · 0 my items</span>
+            </summary>
+            <div class="catalog-tools__body">
+              <label>
+                Search by SKU, item, description, or dimensions
+                <input id="catalogSearch" type="search" inputmode="search" autocomplete="off" placeholder="Example: RSC 12x10x8">
+              </label>
+
+              <div class="catalog-controls">
+                <label class="catalog-file">
+                  Import Catalog CSV
+                  <input id="catalogFile" type="file" accept=".csv,text/csv">
+                </label>
+                <button id="saveManualItem" type="button" class="button secondary">Save Current as My Item</button>
+                <button id="restoreCatalog" type="button" class="button secondary" disabled>Restore Previous Catalog</button>
+              </div>
+
+              <p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p>
+              <details id="catalogImportReport" class="catalog-import-report" hidden>
+                <summary id="catalogImportSummary">Import report</summary>
+                <ul id="catalogImportErrors"></ul>
+              </details>
+              <div id="catalogResults" class="catalog-results" aria-label="Catalog search results"></div>
+            </div>
+          </details>
+
           <div class="form-grid">
             <label class="field-full">
               Item
               <input id="itemName" name="itemName" type="text" autocomplete="off" required>
+              <span id="catalogSelection" class="catalog-selection" aria-live="polite"></span>
             </label>
 
             <label>

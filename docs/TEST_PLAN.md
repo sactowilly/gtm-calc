@@ -81,6 +81,8 @@ Forbidden vocabulary/value assertions include unit cost, landed cost, total cost
 
 ## Catalog and dimension tests (Version 1.5)
 
+Implementation status as of 2026-07-15: PR #9 covers the roadmap dimension examples, decimals/mixed fractions, normalized search fields, required/missing headers, malformed quoted CSV, row-numbered errors, duplicate SKUs, invalid money/status values, configurable header aliases, exact/prefix/description/dimension ranking, inactive exclusion, recency ordering, and deterministic limits. The PR #10 branch adds BOM/multiline/ambiguous-header/oversized-field and false-positive dimension fixtures; catalog corruption, quota, rollback, manual-item, and usage storage tests; plus end-to-end import/search/persistence checks across Chromium, Firefox, WebKit, Android Chrome emulation, and iPhone Safari emulation.
+
 ### Normalization
 
 The following must extract canonical `12x10x8` while preserving original text:
