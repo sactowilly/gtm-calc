@@ -8,6 +8,18 @@ A simple USD quote calculator for packaging sales. It calculates landed cost, GT
 
 GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
+## Version 1 Release Candidate
+
+Version 1 is ready for final owner testing when the release-candidate branch is merged, GitHub Pages deploys, and the live app passes a short real-device smoke test:
+
+- Android: create, save, reload, edit, preview, download, and share a real quote PDF.
+- Laptop: download the PDF, use Email Rep, and use Email Customer.
+- Privacy: customer PDF, customer email, and customer copy output never include cost, freight cost, GTM dollars, GTM percent, vendor details, internal notes, or other profitability fields.
+- Data safety: New Quote warns before clearing unsaved work, saved legacy quotes still reopen, and corrupt local saves are moved to a recovery key instead of crashing the app.
+- Accessibility: phone controls remain usable at narrow widths, visible buttons meet touch-target expectations, and the app has no serious or critical automated accessibility findings.
+
+After those checks pass, tag the accepted `main` commit as `v1.0.0`.
+
 ## What It Calculates
 
 - Landed unit cost = unit cost + freight per unit
@@ -32,6 +44,18 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Preview and explicitly download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
 - Share the generated PDF through the native mobile Share Sheet when file sharing is supported; otherwise download it and open a prepared email with the exact attachment filename.
 - Show the current app version/build marker on load.
+
+## Roadmap
+
+![GTM Quote Tool Roadmap](docs/assets/gtm-quote-tool-roadmap.png)
+
+- **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
+- **Version 1.5 - Catalog Search:** CSV catalog import, manual items, SKU/name/description/dimension search, and recent items.
+- **Version 2.0 - Local Quote Library:** IndexedDB-backed quotes and customers, quote statuses, quote numbers, duplication, and revisions.
+- **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
+- **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
+- **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
+- **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.
 
 ## Develop and Test
 
