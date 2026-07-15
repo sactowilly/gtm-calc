@@ -16,6 +16,7 @@ Turn the functioning calculator into a dependable phone-first active-quote build
 
 - Framework-free Vite/ES-module foundation, automated tests, and GitHub Actions build/deployment.
 - Mobile quote builder with item add, edit, duplicate, accessible reorder, and delete/undo or confirmation.
+- Prominent **New Quote** action that safely clears the current quote and starts a clean draft, with confirmation when information would be lost.
 - Company, buyer, email, optional address/phone, quote/expiration dates, payment terms, internal notes, and customer notes.
 - Internal cost, profit dollars, markup, and—after terminology approval—gross margin.
 - Versioned single-active-quote localStorage model and safer save/recovery behavior.
@@ -53,6 +54,7 @@ Turn the functioning calculator into a dependable phone-first active-quote build
 - Customer PDF/text/email contain no unit cost, landed cost, total cost, GTM dollars, markup, gross margin, or internal notes.
 - PDF preview/download work; supported devices can invoke file share; fallback names the file to attach.
 - Reload restores the active quote or offers recoverable error guidance.
+- New Quote clears all customer, quote, item, pricing, note, and calculated-result fields, resets applicable defaults such as dates/terms, and does not allow an accidental tap to destroy an in-progress quote.
 - CI tests/build pass and a post-deploy smoke test verifies the `/gtm-calc/` URL.
 
 ## Version 1.5 — Catalog search
@@ -64,6 +66,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 ### Included
 
 - Validated standard catalog CSV import with row-level report.
+- Catalog-backed product costs and pricing inputs, so selecting a product can populate the current approved values from the imported list.
 - Locally stored manual items.
 - Unified search by exact/partial SKU, full/partial name, description, and normalized dimensions.
 - Recently used items and deterministic ranking.
@@ -88,6 +91,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 - Canonical dimension examples return the same relevant item.
 - Exact SKU outranks prefix/substring matches; name/description and recency ranking are tested.
 - Manual items persist locally and are visibly distinguished from standard items.
+- Selecting a catalog item populates its stored cost/pricing inputs while keeping quote-specific values editable and preserving them in saved quote snapshots.
 
 ## Version 2.0 — Local quote library
 
@@ -98,7 +102,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 ### Included
 
 - IndexedDB repositories, schema migrations, validation, and record quarantine/recovery.
-- Draft and finalized quotes, search, customers/contacts, duplicate-as-new, revisions, statuses, PDF regeneration, resend/reshare.
+- Draft and finalized quotes, quote recall/search, remembered customers/contacts, duplicate-as-new, revisions, statuses, PDF regeneration, resend/reshare.
 - Statuses: Draft, Finalized, Sent, Accepted, Declined, Expired, Cancelled.
 - Per-device/year base numbering (`2026-001`) and immutable version revisions (`2026-001-R1`).
 - Separate operations for duplicate-as-new and create-revision with source references.
@@ -124,6 +128,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 - Revisions keep the base number and increment `R#`; the prior PDF regenerates identically.
 - Duplicate creates an independent unnumbered draft and retains source references.
 - Search/status changes/reopen/regenerate/reshare work after reload and database upgrade.
+- A user can start a new quote for a remembered customer, reopen a prior quote, and reuse saved customer and product details without retyping them.
 
 ## Version 2.5 — Backup and restore
 
@@ -222,7 +227,7 @@ Migrate to centralized company operation only when shared access, governance, or
 
 ### Included
 
-- Future capabilities selected only after architecture/business approval: shared database, authentication, synchronization, server-sent email attachments, central numbering, Microsoft 365, CRM/ERP, reporting, and permissions.
+- Future capabilities selected only after architecture/business approval: a Sites-hosted quote workspace, shared quote/customer/product data, authentication, synchronization, centrally managed cost lists, server-sent email attachments, central numbering, Microsoft 365, CRM/ERP, reporting, and permissions.
 
 ### Explicitly excluded
 

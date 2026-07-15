@@ -12,9 +12,10 @@ import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
+import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 
 (function () {
-  const STORAGE_KEY = 'gtm_quote_calculator_v1';
+  const STORAGE_KEY = ACTIVE_QUOTE_STORAGE_KEY;
 
   const itemForm = document.getElementById('itemForm');
   const customerName = document.getElementById('customerName');
@@ -56,20 +57,24 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
     totalGtm: document.getElementById('totalGtm')
   };
 
-  let quote = {
-    customerName: '',
-    customerAddress: '',
-    buyerName: '',
-    buyerEmail: '',
-    buyerPhone: '',
-    salesRep: '',
-    date: new Date().toISOString().slice(0, 10),
-    shipVia: 'Our Truck',
-    fobPoint: 'Sacramento',
-    terms: 'NET30',
-    customerNotes: '',
-    items: []
-  };
+  function createEmptyQuote() {
+    return {
+      customerName: '',
+      customerAddress: '',
+      buyerName: '',
+      buyerEmail: '',
+      buyerPhone: '',
+      salesRep: '',
+      date: new Date().toISOString().slice(0, 10),
+      shipVia: 'Our Truck',
+      fobPoint: 'Sacramento',
+      terms: 'NET30',
+      customerNotes: '',
+      items: []
+    };
+  }
+
+  let quote = createEmptyQuote();
   let editingItemId = null;
   let quotePdfBlob = null;
   let quotePdfUrl = null;
@@ -223,24 +228,92 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
     setStatus('', false);
   }
 
+  function populateQuoteMeta() {
+    customerName.value = quote.customerName;
+    customerAddress.value = quote.customerAddress;
+    buyerName.value = quote.buyerName;
+    buyerEmail.value = quote.buyerEmail;
+    buyerPhone.value = quote.buyerPhone;
+    salesRep.value = quote.salesRep;
+    quoteDate.value = quote.date;
+    shipVia.value = quote.shipVia;
+    fobPoint.value = quote.fobPoint;
+    terms.value = quote.terms;
+    customerNotes.value = quote.customerNotes;
+  }
+
+  function hasActiveQuoteInformation() {
+    syncQuoteMeta();
+    const emptyQuote = createEmptyQuote();
+
+    return Boolean(
+      quote.customerName ||
+      quote.customerAddress ||
+      quote.buyerName ||
+      quote.buyerEmail ||
+      quote.buyerPhone ||
+      quote.salesRep ||
+      quote.customerNotes ||
+      quote.items.length ||
+      quote.date !== emptyQuote.date ||
+      quote.shipVia !== emptyQuote.shipVia ||
+      quote.fobPoint !== emptyQuote.fobPoint ||
+      quote.terms !== emptyQuote.terms ||
+      fields.itemName.value.trim() ||
+      fields.quantity.value ||
+      fields.uom.value !== 'EA' ||
+      fields.unitCost.value ||
+      fields.price.value ||
+      fields.leadTime.value.trim() ||
+      fields.freight.value ||
+      getFreightMode() !== 'perItem'
+    );
+  }
+
+  function startNewQuote() {
+    if (
+      hasActiveQuoteInformation() &&
+      !window.confirm('Start a new quote? This clears the current quote and removes its saved copy from this device. This cannot be undone.')
+    ) {
+      setStatus('New quote cancelled. The current quote was kept.', false);
+      return;
+    }
+
+    quote = createEmptyQuote();
+    const clearResult = clearActiveQuote(localStorage);
+    releaseQuotePdf();
+    clearItemForm();
+    populateQuoteMeta();
+    renderQuote();
+    savedState.textContent = 'Not saved';
+    setPdfStatus('', false);
+    setStatus(
+      clearResult.status === 'cleared'
+        ? 'New quote ready.'
+        : 'New quote ready, but this browser could not remove the previous saved copy. Save this quote before leaving.',
+      clearResult.status !== 'cleared'
+    );
+    customerName.focus();
+  }
+
   function saveQuote() {
     syncQuoteMeta();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(quote));
-    savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
-    setStatus('Quote saved in this browser.', false);
+    if (saveActiveQuote(localStorage, quote).status === 'saved') {
+      savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+      setStatus('Quote saved in this browser.', false);
+    } else {
+      savedState.textContent = 'Not saved';
+      setStatus('This browser could not save the quote. Keep this page open and copy or download it before leaving.', true);
+    }
   }
 
   function loadQuote() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-
-    if (!raw) {
+    const result = loadActiveQuote(localStorage);
+    if (result.status === 'empty') {
       return false;
     }
-
-    try {
-      const parsed = JSON.parse(raw);
-
-      if (parsed && Array.isArray(parsed.items)) {
+    if (result.status === 'loaded') {
+      const parsed = result.quote;
         quote = {
           customerName: parsed.customerName || '',
           customerAddress: parsed.customerAddress || '',
@@ -256,11 +329,12 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
           items: parsed.items.map(normalizeItem)
         };
         return true;
-      }
-    } catch (error) {
-      localStorage.removeItem(STORAGE_KEY);
     }
-
+    if (result.status === 'recovered') {
+      setStatus('The saved quote was damaged. A recovery copy was preserved in this browser and a clean quote was opened.', true);
+    } else {
+      setStatus('Saved quote storage is unavailable. Keep this page open and copy or download your work before leaving.', true);
+    }
     return false;
   }
 
@@ -584,6 +658,7 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
   });
 
   document.getElementById('clearItem').addEventListener('click', clearItemForm);
+  document.getElementById('newQuote').addEventListener('click', startNewQuote);
   document.getElementById('saveQuote').addEventListener('click', saveQuote);
   document.getElementById('viewQuote').addEventListener('click', openQuoteDialog);
   document.getElementById('downloadQuote').addEventListener('click', downloadQuotePdf);
@@ -609,17 +684,7 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
   });
 
   const loadedSavedQuote = loadQuote();
-  customerName.value = quote.customerName;
-  customerAddress.value = quote.customerAddress;
-  buyerName.value = quote.buyerName;
-  buyerEmail.value = quote.buyerEmail;
-  buyerPhone.value = quote.buyerPhone;
-  salesRep.value = quote.salesRep;
-  quoteDate.value = quote.date;
-  shipVia.value = quote.shipVia;
-  fobPoint.value = quote.fobPoint;
-  terms.value = quote.terms;
-  customerNotes.value = quote.customerNotes;
+  populateQuoteMeta();
   if (loadedSavedQuote) {
     savedState.textContent = 'Saved locally';
   }

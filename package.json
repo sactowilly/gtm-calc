@@ -1,6 +1,6 @@
 {
   "name": "gtm-calc",
-  "version": "0.3.0",
+  "version": "1.0.0-rc.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,13 +9,15 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:visual": "playwright test",
+    "test:compat": "playwright test --config=playwright.compat.config.js",
     "test:watch": "vitest",
-    "check": "node --check js/main.js && node --check js/app-meta.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check js/domain/quote-output.js && node --check js/pdf/customer-quote-document.js && node --check js/pdf/quote-template.js && node --check js/pdf/customer-quote-pdf.js && node --check js/services/email-service.js && node --check js/services/share-service.js && node --check vite.config.js && node --check vitest.config.js && node --check playwright.config.js"
+    "check": "node --check js/main.js && node --check js/app-meta.js && node --check js/domain/calculations.js && node --check js/domain/formatters.js && node --check js/domain/quote-output.js && node --check js/pdf/customer-quote-document.js && node --check js/pdf/quote-template.js && node --check js/pdf/customer-quote-pdf.js && node --check js/services/active-quote-storage.js && node --check js/services/email-service.js && node --check js/services/share-service.js && node --check vite.config.js && node --check vitest.config.js && node --check playwright.config.js && node --check playwright.compat.config.js"
   },
   "engines": {
     "node": ">=20.19.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.61.1",
     "vite": "8.1.4",
     "vitest": "4.1.10"
