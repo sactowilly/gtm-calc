@@ -64,8 +64,8 @@
   </g>
   <text class="version" x="225" y="752" fill="#f06400">V2.0</text>
   <text class="heading" x="385" y="750">LOCAL QUOTE LIBRARY</text>
-  <text class="body" x="225" y="800">IndexedDB drafts • Searchable quotes &amp; customers • Highlighted duplicates</text>
-  <text class="body" x="225" y="837">Next: finalization, local quote numbers, revisions &amp; statuses</text>
+  <text class="body" x="225" y="800">IndexedDB library • Local numbers • Immutable versions • Controlled statuses</text>
+  <text class="body" x="225" y="837">Lifecycle candidate in review • Release hardening is next</text>
   <rect x="735" y="693" width="350" height="37" rx="18" fill="#f47a00"/>
   <text class="status" x="910" y="719" fill="#fff" text-anchor="middle">CURRENT • IN PROGRESS</text>
 
@@ -119,5 +119,5 @@
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
   <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V2.0 LOCAL QUOTE LIBRARY</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Draft library usability is ready for review; lifecycle controls are the next milestone.</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Local numbering, immutable history, revisions and statuses are in review.</text>
 </svg>

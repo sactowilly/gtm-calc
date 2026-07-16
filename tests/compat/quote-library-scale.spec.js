@@ -17,7 +17,7 @@ async function fillQuoteCustomer(page, name) {
 
 test('progressively reveals 50 drafts while search still covers the complete result set', async ({ page }) => {
   await page.goto('./');
-  await expect(page.locator('#quoteLibrarySummary')).toHaveText('0 drafts on this device');
+  await expect(page.locator('#quoteLibrarySummary')).toHaveText('0 quotes on this device');
   await page.evaluate(async () => {
     const { createQuoteLibraryRepository } = await import('/gtm-calc/js/services/indexeddb-quote-repository.js');
     let id = 0;
@@ -45,26 +45,26 @@ test('progressively reveals 50 drafts while search still covers the complete res
   await library.locator('#quoteLibrarySearch').fill('Scale Customer');
   await expect(library.locator('.library-card')).toHaveCount(10);
   await expect(library.locator('.library-card h3').first()).toHaveText('Scale Customer 50');
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 drafts · 10 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 10 shown');
 
   const showMore = library.locator('#showMoreQuotes');
   await expect(showMore).toBeVisible();
   expect((await showMore.boundingBox()).height).toBeGreaterThanOrEqual(44);
   await showMore.click();
   await expect(library.locator('.library-card')).toHaveCount(20);
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 drafts · 20 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 20 shown');
 
   await library.locator('#quoteLibrarySearch').fill('Scale Customer 01');
   await expect(library.locator('.library-card')).toHaveCount(1);
   await expect(library.locator('.library-card h3')).toHaveText('Scale Customer 01');
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('1 draft · 1 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('1 quote · 1 shown');
 
   await library.locator('#quoteLibrarySearch').fill('Scale Customer');
   await expect(library.locator('.library-card')).toHaveCount(10);
   for (let click = 0; click < 4; click += 1) await showMore.click();
   await expect(library.locator('.library-card')).toHaveCount(50);
   await expect(showMore).toBeHidden();
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 drafts · 50 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 50 shown');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
@@ -97,6 +97,8 @@ test('highlights a duplicate without changing the customer and clears DUP after 
 
   page.once('dialog', (dialog) => dialog.accept());
   await duplicateCard.getByRole('button', { name: 'Open' }).click();
+  await expect(library.locator('#addCurrentToLibrary')).toHaveAttribute('data-bound-quote-id', duplicateId);
+  await expect(library.locator('#quoteLibraryStatus')).toContainText('Opened Acme Packaging');
   await page.locator('#saveQuote').click();
   await expect(page.locator('#statusMessage')).toContainText('Draft saved to the quote library');
 

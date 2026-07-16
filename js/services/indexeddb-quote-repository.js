@@ -4,6 +4,7 @@ import { deleteDB, openDB } from '../../vendor/idb.js';
 import {
   QUOTE_RECORD_SCHEMA_VERSION,
   buildDisplayNumber,
+  canTransitionQuoteStatus,
   canonicalJson,
   cloneQuoteData,
   createQuoteSearchText,
@@ -564,6 +565,12 @@ export function createQuoteLibraryRepository({
     if (!quote?.baseNumber || quote.workingDraft) {
       throw new Error('Finish or discard the existing working draft before starting a revision.');
     }
+    if (!['finalized', 'sent'].includes(quote.currentStatus)) {
+      throw new Error('Only a finalized or sent quote can be revised. Outcome statuses are terminal.');
+    }
+    if (quote.latestVersionId !== versionId) {
+      throw new Error('Only the latest finalized version can be revised.');
+    }
     const currentSource = await versions.get(versionId);
     if (!currentSource || currentSource.contentHash !== sourceVersion.contentHash) {
       throw new Error('The selected finalized version changed before the revision could start.');
@@ -578,6 +585,7 @@ export function createQuoteLibraryRepository({
       content: cloneQuoteData(sourceVersion.content),
       lastSavedAt: timestamp
     };
+    quote.currentStatus = 'draft';
     quote.draftRevision = (Number.isInteger(quote.draftRevision) ? quote.draftRevision : 0) + 1;
     quote.updatedAt = timestamp;
     await transaction.objectStore(QUOTE_LIBRARY_STORES.quotes).put(quote);
@@ -587,6 +595,39 @@ export function createQuoteLibraryRepository({
       quoteId,
       quoteVersionId: versionId,
       type: 'revision_started'
+    }));
+    await transaction.done;
+    return cloneQuoteData(quote);
+  }
+
+  async function changeStatus(quoteId, toStatus) {
+    const database = await openDatabase();
+    const transaction = database.transaction([
+      QUOTE_LIBRARY_STORES.quotes,
+      QUOTE_LIBRARY_STORES.quoteEvents
+    ], 'readwrite');
+    const quotes = transaction.objectStore(QUOTE_LIBRARY_STORES.quotes);
+    const quote = await quotes.get(quoteId);
+    const errors = validateQuoteRecord(quote);
+    if (errors.length) throw new Error(`Cannot update an invalid quote record: ${errors.join(' ')}`);
+    if (quote.workingDraft || !quote.latestVersionId) {
+      throw new Error('Save and finalize the quote before changing its status.');
+    }
+    const fromStatus = quote.currentStatus;
+    if (!canTransitionQuoteStatus(fromStatus, toStatus)) {
+      throw new Error(`Quote status cannot change from ${fromStatus} to ${toStatus}.`);
+    }
+    const timestamp = now();
+    quote.currentStatus = toStatus;
+    quote.updatedAt = timestamp;
+    await quotes.put(quote);
+    await transaction.objectStore(QUOTE_LIBRARY_STORES.quoteEvents).add(eventRecord({
+      idFactory,
+      now,
+      quoteId,
+      quoteVersionId: quote.latestVersionId,
+      type: 'status_changed',
+      metadata: { fromStatus, toStatus }
     }));
     await transaction.done;
     return cloneQuoteData(quote);
@@ -637,7 +678,11 @@ export function createQuoteLibraryRepository({
     current.latestVersionId = versionId;
     current.versionIds = [...current.versionIds, versionId];
     delete current.workingDraft;
-    current.customerSearchText = createQuoteSearchText(content, current.baseNumber);
+    current.customerSearchText = createQuoteSearchText(content, [
+      current.baseNumber,
+      ...existingVersions.map((existingVersion) => existingVersion.displayNumber),
+      version.displayNumber
+    ].filter(Boolean).join(' '));
     current.updatedAt = timestamp;
     await versions.add(version);
     await quotes.put(current);
@@ -727,6 +772,7 @@ export function createQuoteLibraryRepository({
     listVersions,
     startRevision,
     finalizeRevision,
+    changeStatus,
     duplicateAsNew,
     listEvents,
     getRecoveryRecords,

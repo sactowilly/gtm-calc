@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { buildQuoteItem } from '../js/domain/calculations.js';
 import {
   buildDisplayNumber,
+  canTransitionQuoteStatus,
   canonicalJson,
   formatBaseQuoteNumber,
   hashQuoteContent,
+  getAllowedQuoteStatusTransitions,
   legacyQuoteToQuoteContent,
   quoteContentToLegacyQuote,
   validateQuoteContent
@@ -86,6 +88,15 @@ describe('quote-library domain mapping', () => {
     expect(formatBaseQuoteNumber(2026, 1000)).toBe('2026-1000');
     expect(buildDisplayNumber('2026-001', 0)).toBe('2026-001');
     expect(buildDisplayNumber('2026-001', 2)).toBe('2026-001-R2');
+  });
+
+  it('allows only the approved controlled status transitions', () => {
+    expect(getAllowedQuoteStatusTransitions('finalized')).toEqual(['sent', 'cancelled']);
+    expect(getAllowedQuoteStatusTransitions('sent')).toEqual(['accepted', 'declined', 'expired', 'cancelled']);
+    expect(getAllowedQuoteStatusTransitions('accepted')).toEqual([]);
+    expect(canTransitionQuoteStatus('finalized', 'sent')).toBe(true);
+    expect(canTransitionQuoteStatus('finalized', 'accepted')).toBe(false);
+    expect(canTransitionQuoteStatus('declined', 'sent')).toBe(false);
   });
 
   it('uses canonical SHA-256 content hashes independent of object key order', async () => {

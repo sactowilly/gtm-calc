@@ -214,6 +214,12 @@ h2 {
   display: grid;
 }
 
+.library-search-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(140px, 1fr);
+  gap: 10px;
+}
+
 .quote-library-status,
 .quote-library-recovery,
 .library-empty {
@@ -291,6 +297,36 @@ h2 {
   letter-spacing: 0.04em;
 }
 
+.library-card__status-badge {
+  flex: 0 0 auto;
+  border: 1px solid #aeb9ae;
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: var(--secondary);
+  background: var(--surface-soft);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.library-card__status-badge.is-sent {
+  border-color: #6f93a6;
+  background: #e9f4f9;
+}
+
+.library-card__status-badge.is-accepted {
+  border-color: #6b9a6b;
+  background: #eaf6ea;
+}
+
+.library-card__status-badge.is-declined,
+.library-card__status-badge.is-cancelled,
+.library-card__status-badge.is-expired {
+  border-color: #b88c8c;
+  background: #fff0f0;
+}
+
 .library-card h3,
 .customer-card h3 {
   margin: 0;
@@ -311,6 +347,11 @@ h2 {
   font-size: 0.72rem !important;
 }
 
+.library-card__number {
+  color: var(--secondary) !important;
+  font-weight: 900;
+}
+
 .library-card__actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -322,6 +363,44 @@ h2 {
 .customer-card .button {
   min-width: 0;
   padding-inline: 9px;
+}
+
+.library-card__status-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, auto);
+  gap: 8px;
+  align-items: end;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.library-card__status-control label {
+  min-width: 0;
+}
+
+.library-card__status-control .button {
+  min-height: 44px;
+}
+
+.library-card__history {
+  margin-top: 9px;
+  border-top: 1px solid var(--line);
+  padding-top: 9px;
+}
+
+.library-card__history summary {
+  min-height: 44px;
+  padding: 11px 4px;
+  color: var(--secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.library-card__version-list {
+  display: grid;
+  gap: 8px;
 }
 
 .quote-library-show-more {
@@ -780,6 +859,20 @@ button:focus-visible,
   margin: auto auto auto 0;
 }
 
+.read-only-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: var(--secondary);
+  background: #f1f3ef;
+  opacity: 1;
+}
+
 .edit-button,
 .delete-button {
   min-width: 76px;
@@ -891,6 +984,15 @@ dialog .pdf-actions {
 
   .app-header .button {
     flex: 1 1 0;
+  }
+
+  .library-search-controls,
+  .library-card__status-control {
+    grid-template-columns: 1fr;
+  }
+
+  .library-card__status-control .button {
+    width: 100%;
   }
 }
 

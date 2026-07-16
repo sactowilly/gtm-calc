@@ -31,6 +31,7 @@ export function toCustomerQuoteDocument(quote) {
   const items = Array.isArray(quote?.items) ? quote.items : [];
 
   return {
+    quoteNumber: text(quote?.quoteNumber),
     company: { ...VISION_COMPANY },
     customer: {
       name: text(quote?.customerName),

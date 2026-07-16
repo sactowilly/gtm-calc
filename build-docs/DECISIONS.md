@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 2 Quote Lifecycle Rules
+
+**DECISION:** Allocate a base quote number from the calendar year in which finalization occurs. Allow Finalized → Sent or Cancelled; allow Sent → Accepted, Declined, Expired, or Cancelled; treat Accepted, Declined, Expired, and Cancelled as terminal. Start revisions only from the latest finalized version while retaining every prior version for read-only output and PDF regeneration.
+**RATIONALE:** Finalization-time numbering makes allocation deterministic, the restricted status graph avoids silently reopening business outcomes, and latest-only revision starts keep history linear without sacrificing access to earlier immutable customer documents.
+**DATE:** 2026-07-16
+**PARTIES:** Codex, Will Z
+
 ## Version and Roadmap Documentation Synchronization
 
 **DECISION:** Every application version or milestone-status change must include a roadmap-infographic and product-roadmap review. Every full or half product-version change must update README and all affected release, current-state, implementation, test, build-log, decision, and open-item documentation in the same pull request.

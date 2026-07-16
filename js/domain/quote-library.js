@@ -11,6 +11,24 @@ export const QUOTE_LIBRARY_STATUSES = Object.freeze([
   'cancelled'
 ]);
 
+export const QUOTE_STATUS_TRANSITIONS = Object.freeze({
+  draft: Object.freeze([]),
+  finalized: Object.freeze(['sent', 'cancelled']),
+  sent: Object.freeze(['accepted', 'declined', 'expired', 'cancelled']),
+  accepted: Object.freeze([]),
+  declined: Object.freeze([]),
+  expired: Object.freeze([]),
+  cancelled: Object.freeze([])
+});
+
+export function getAllowedQuoteStatusTransitions(status) {
+  return QUOTE_STATUS_TRANSITIONS[status] || [];
+}
+
+export function canTransitionQuoteStatus(fromStatus, toStatus) {
+  return getAllowedQuoteStatusTransitions(fromStatus).includes(toStatus);
+}
+
 function clone(value) {
   if (typeof structuredClone === 'function') return structuredClone(value);
   return JSON.parse(JSON.stringify(value));
@@ -198,6 +216,8 @@ export function createQuoteSearchText(content, baseNumber = '') {
     normalized.contact.email,
     normalized.contact.phone,
     normalized.salesRep,
+    normalized.quoteDate,
+    normalized.expirationDate,
     ...normalized.lines.flatMap((line) => [line.sku, line.name])
   ]
     .filter(Boolean)

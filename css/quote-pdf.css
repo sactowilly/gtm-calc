@@ -77,6 +77,12 @@
   letter-spacing: -0.4px;
 }
 
+.quote-print-title__number {
+  margin-top: 2px !important;
+  font-size: 11px;
+  font-weight: 800;
+}
+
 .quote-print-title__phone {
   margin-top: 6px !important;
   font-size: 18px;

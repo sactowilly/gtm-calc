@@ -9,7 +9,10 @@
 | Validate catalog storage volume | monitor | The representative CSV fit and worked. Revisit only if a larger catalog approaches the visible import limit or browser quota. |
 | Version 2 quote-library foundation | complete | PR #11 merged with passing CI. |
 | Version 2 draft-library UI | complete | PR #12 merged; opt-in import, draft search/reopen/duplicate, customer recall, fallback save, and stale-tab protection are implemented. |
-| Version 2 library-list usability | ready for review | Branch `feature/v2-library-list-usability` shows ten recent matches at a time and highlights a new duplicate until its first successful save, without changing customer data. |
-| Approve quote-number year policy | owner input needed before PR 15 | Choose quote-date year or finalization-date year. The foundation requires an explicit year and does not decide automatically. |
-| Approve Version 2 status transitions | owner input needed before PR 15 | Define allowed transitions and whether accepted/declined/expired/cancelled records can be reopened. |
+| Version 2 library-list usability | complete | PR #14 merged ten-at-a-time results and the temporary duplicate review state. |
+| Version 2 lifecycle UI | ready for owner review | Branch `feature/v2-quote-lifecycle` adds local numbering, immutable history, revisions, finalized duplication, output regeneration, and controlled statuses; automated cross-browser/PDF/build checks pass. |
+| Approve quote-number year policy | complete | Owner approved the finalization date's year. |
+| Approve Version 2 status transitions | complete | Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcomes are terminal. |
+| Approve revision source policy | complete | Revisions start only from the latest finalized version; historical versions remain viewable for output. |
+| Version 2 release hardening | next | After lifecycle review, run upgrade/failure/recovery and final Android/laptop acceptance before marking Version 2 complete. |
 | Approve customer/contact matching | owner input before V2 stable | Current provisional rule uses exact normalized company name, then contact email (or name when email is blank). |

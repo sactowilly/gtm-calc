@@ -21,8 +21,9 @@ The detailed audit below remains as historical evidence for the original baselin
 - Version 1.5 catalog data uses separate versioned keys: `gtm_catalog_v1`, `gtm_catalog_v1_previous`, `gtm_manual_items_v1`, and `gtm_catalog_usage_v1`. These keys do not replace or mutate the active quote key.
 - The Version 2 foundation branch adds a separate `gtm_quote_manager` IndexedDB schema, lossless legacy-quote bridge, draft repository, search, corrupt-record quarantine, transactional local numbering, immutable finalized snapshots, duplication, and revisions. It is not connected to the visible quote workflow in this slice.
 - PR #11 merged that foundation. The PR #12 branch connects an opt-in phone-first draft library, customer/contact recall, duplicate-as-new, session reopen, and stale-tab conflict protection while continuing to save the original localStorage fallback.
-- PR #12 merged the visible draft library, and PR #13 restored direct GitHub Pages source compatibility. The current usability branch initially shows ten of up to 100 matching drafts, progressively reveals ten more, and highlights unsaved duplicates without changing customer data; the visible marker is `v2.0.0 · draft-library.3`.
-- Finalization/numbering, revisions, status workflow, and finalized-version history remain the next Version 2 slice. Backup/restore, PWA, backend, authentication, and synchronization remain deferred according to the roadmap.
+- PR #12 merged the visible draft library, PR #13 restored direct GitHub Pages source compatibility, and PR #14 merged phone-scale progressive disclosure plus the temporary `DUP` review state.
+- The current PR #15 candidate connects finalization-date-year local numbering, immutable read-only version output, historical version selection, latest-version-only revisions, duplicate-as-new, and the approved controlled status workflow. Its visible marker is `v2.0.0 · lifecycle.1`.
+- Version 2 release hardening and owner acceptance remain after the lifecycle PR. Backup/restore, PWA, backend, authentication, synchronization, deletion, and archiving remain deferred according to the roadmap.
 
 The current verification counts are recorded in `BUILD-LOG.md` after each verified branch. The live GitHub Pages site changes only after a feature branch is reviewed and merged to `main`.
 

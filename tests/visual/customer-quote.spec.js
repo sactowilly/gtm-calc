@@ -149,10 +149,12 @@ test('New Quote confirms data loss, clears all fields, and removes the saved bro
 });
 
 test('one-page quotation renders and downloads without internal data', async ({ page }) => {
-  await loadSavedQuote(page, onePageQuote);
+  const numberedQuote = { ...onePageQuote, quoteNumber: '2026-001' };
+  await loadSavedQuote(page, numberedQuote);
   await downloadGeneratedPdf(page, 'vision-quotation-one-page.pdf');
-  const pageCount = await renderTemplateForInspection(page, onePageQuote, 'vision-quotation-one-page');
+  const pageCount = await renderTemplateForInspection(page, numberedQuote, 'vision-quotation-one-page');
   expect(pageCount).toBe(1);
+  await expect(page.locator('.quote-print-title__number')).toHaveText('Quote 2026-001');
 });
 
 test('multi-page quotation repeats its table header and stays within page bounds', async ({ page }) => {

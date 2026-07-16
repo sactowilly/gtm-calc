@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-16): Draft-library UI in progress.** PR #11 merged the separate IndexedDB schema and tested domain/repository behavior. The PR #12 branch adds opt-in legacy import, searchable/reopenable/duplicable drafts, customer/contact recall, and conflict-aware saves while preserving `gtm_quote_calculator_v1` as a fallback. Finalization, numbering, revisions, statuses, and immutable-history UI follow.
+**Status (2026-07-16): Lifecycle candidate in progress.** PRs #11–#14 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, and duplicate review state. The current PR #15 candidate adds finalization-year local numbering, immutable and historical read-only versions, latest-version-only revisions, duplicate-as-new, and controlled status transitions while preserving `gtm_quote_calculator_v1`. Release hardening and owner acceptance follow before Version 2 is complete.
 
 ### Objective
 
@@ -121,7 +121,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 ### Dependencies
 
 - Stable V1 quote schema/customer projection and V1.5 item references.
-- Approved status transitions, numbering reset/collision policy, revision workflow, and retention rules.
+- Approved status transitions, finalization-year numbering, latest-version revision workflow, and eventual retention rules.
 
 ### Risks
 

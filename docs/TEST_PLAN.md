@@ -107,17 +107,19 @@ Assert deterministic ordering: exact SKU, SKU prefix, exact normalized dimension
 
 ## Quote library tests (Version 2)
 
-Foundation coverage includes lossless conversion from `gtm_quote_calculator_v1`, unnumbered drafts, search, explicit business-year numbering, concurrent base allocation, immutable content hashes, sequential revisions, duplicate lineage, corrupt-record quarantine, and a real-browser IndexedDB smoke test. UI/status/customer behavior remains pending in later Version 2 slices.
+Foundation coverage includes lossless conversion from `gtm_quote_calculator_v1`, unnumbered drafts, search, explicit business-year numbering, concurrent base allocation, immutable content hashes, sequential revisions, duplicate lineage, corrupt-record quarantine, and a real-browser IndexedDB smoke test.
 
 PR #12 adds atomic customer/contact plus draft saves, stale revision-token rollback, customer recall/update, date-reset duplicate behavior, non-destructive legacy import, session reload, draft search/reopen/duplicate, populated phone overflow, and stale-writer UI tests across Chromium, Firefox, WebKit, Pixel 7, and iPhone Safari emulation. Accessibility scans include the expanded Quote Library.
 
 The quote-library usability follow-up seeds 50 deterministically ordered drafts, verifies ten-at-a-time rendering and full-result search, checks summary/open/unsaved states, and proves that the visible `DUP` marker is derived from lineage plus revision zero. A rejected save must preserve that marker; the first successful save must clear it without changing the stored customer name or customer-facing content.
 
+PR #15 adds repository and phone-browser coverage for finalization-date-year base numbers, immutable read-only viewing, customer-safe quote-number output/filenames, historical version selection, sequential revision finalization, latest-version-only revision starts, controlled status events, terminal outcomes, and finalized-version duplication as a new unnumbered `DUP` draft.
+
 ### Numbering
 
 - Draft has no number.
 - First base finalization for 2026 returns `2026-001`; subsequent returns `002`, `003` with padding beyond 999 defined.
-- Year rollover starts the approved counter; backdated quote-date versus finalization-year policy requires owner approval/test.
+- Year rollover starts a new counter based on the finalization date's year, even when the quote date is backdated.
 - Transaction abort leaves no partial quote/version/event/counter write.
 - Committed/cancelled/deleted numbers are never reused.
 - Unique index catches simulated multi-tab collision; one transaction retries/fails safely.

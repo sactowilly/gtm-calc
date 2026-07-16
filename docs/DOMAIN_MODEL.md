@@ -395,5 +395,5 @@ Backups contain sensitive customer/pricing data and must carry a warning. Valida
 
 ### Status changes
 
-Append a `status_changed` event and update the aggregate's cached current status. Content remains immutable. At minimum, block nonsensical transitions such as editing a finalized version in place; the exact transition matrix needs owner approval.
+Append a `status_changed` event and update the aggregate's cached current status. Content remains immutable. The approved initial transition matrix is Finalized → Sent or Cancelled, and Sent → Accepted, Declined, Expired, or Cancelled. Accepted, Declined, Expired, and Cancelled are terminal. Starting a revision is a separate operation available only from the latest finalized version while the aggregate is Finalized or Sent.
 
