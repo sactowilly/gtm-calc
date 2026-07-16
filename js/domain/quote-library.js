@@ -162,6 +162,7 @@ export function validateQuoteRecord(record) {
   if (record.schemaVersion !== QUOTE_RECORD_SCHEMA_VERSION) errors.push('Unsupported quote schema version.');
   if (!text(record.originDeviceId)) errors.push('Origin device ID is required.');
   if (!QUOTE_LIBRARY_STATUSES.includes(record.currentStatus)) errors.push('Quote status is invalid.');
+  if (record.draftRevision != null && (!Number.isInteger(record.draftRevision) || record.draftRevision < 0)) errors.push('Draft revision token is invalid.');
   if (!Array.isArray(record.versionIds)) errors.push('Version IDs must be an array.');
   if (!text(record.createdAt) || !text(record.updatedAt)) errors.push('Quote timestamps are required.');
   if (typeof record.customerSearchText !== 'string') errors.push('Quote search text is required.');

@@ -90,6 +90,20 @@ Implemented guarantees:
 
 Not yet connected or implemented: customer/contact repositories, status-transition rules, active-quote import UI, quote-library screens, catalog migration, backup/restore, and deletion/recovery controls.
 
+### Draft-library UI implementation status — 2026-07-16
+
+The PR #12 branch connects the repository through a collapsible phone-first Quote Library. The transition is opt-in:
+
+- Normal Save continues writing `gtm_quote_calculator_v1`.
+- “Add Current Quote to Library” copies the current quote into IndexedDB and keeps the localStorage fallback.
+- Once a draft is opened/bound in the current tab, Save updates both stores.
+- The active library binding is kept in per-tab `sessionStorage` key `gtm_quote_library_active_v1`; it contains only a quote ID.
+- Cross-tab notifications use `BroadcastChannel` plus non-customer localStorage signal key `gtm_quote_library_signal_v1`. Correctness does not depend on notification support because every library save verifies an atomic integer draft-revision token.
+- A stale writer saves the legacy fallback but cannot overwrite the newer IndexedDB draft. The UI requires the user to reopen the library record.
+- Customer/contact upsert and draft update occur in one IndexedDB transaction for bound drafts, so a conflict cannot partially update customer data.
+
+Customer matching is provisionally exact normalized company name, followed by existing stable IDs. Contacts match normalized email, or normalized name when email is blank. These rules require owner review before Version 2 is called stable. Finalization, quote numbering, revisions, statuses, deletion/archive, backup/restore, and catalog migration remain unconnected.
+
 Proposed object stores:
 
 | Store | Key/indexes | Purpose |

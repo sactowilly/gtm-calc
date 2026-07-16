@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are merged and have passed an owner test with a real CSV. Version 2 quote-library work is beginning behind the existing active-quote workflow.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are merged and have passed an owner test with a real CSV. Version 2 now has an IndexedDB foundation and a phone-first draft-library preview while retaining the original browser save as a fallback.
 
 The release smoke checks remain:
 
@@ -41,6 +41,8 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Add, edit, and delete quote line items.
 - Save customer name/address, buyer contact details, Sales Rep, quote date, ship method, F.O.B. point, terms, customer-facing notes, totals, and line-item details.
 - Save the active quote locally in the browser.
+- Opt into a searchable, device-local draft library without deleting the original `gtm_quote_calculator_v1` browser copy.
+- Reopen and duplicate unnumbered drafts, recall saved customers/contacts, and reject stale-tab saves instead of silently overwriting a newer library draft.
 - Copy the internal quote text, or open a prepared email for the rep or customer. Customer email excludes cost and GTM fields and uses Buyer Email as the recipient.
 - Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
 - Preview and explicitly download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
@@ -53,7 +55,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
-- **Version 2.0 - Local Quote Library (foundation in progress):** IndexedDB-backed quotes and customers, quote statuses, quote numbers, duplication, and revisions.
+- **Version 2.0 - Local Quote Library (draft UI in progress):** IndexedDB-backed searchable drafts and customer recall are implemented on the current branch; finalization, quote numbers, revisions, and statuses remain the next lifecycle slice.
 - **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.

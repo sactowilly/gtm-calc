@@ -62,6 +62,8 @@ Preserve entered state when moving between steps. On laptop (about 900 px+) Deta
 
 Version 2 adds Quote Library, Customer, Quote Detail/Timeline, Duplicate, Revision, and Status screens. Those are not V1 navigation placeholders.
 
+The initial Version 2 draft-library slice uses a collapsed top-level Quote Library panel rather than introducing a route/navigation framework. On phones it provides one primary “Add/Save Draft” action, device-local disclosure, search, stacked draft cards with Open/Duplicate actions, and a nested Saved Customers recall panel. Finalized history, revision, and status screens remain later lifecycle work.
+
 ## Quote-building workflow
 
 1. Load the last active quote. If a legacy `gtm_quote_calculator_v1` record exists, migrate/validate without deleting the raw value on failure.

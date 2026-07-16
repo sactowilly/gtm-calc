@@ -12,6 +12,7 @@ import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } fr
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
+import { initializeQuoteLibraryUi } from './quote-library/quote-library-ui.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 
@@ -75,12 +76,32 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     };
   }
 
+  function normalizeLegacyQuote(source) {
+    const parsed = source && typeof source === 'object' ? source : {};
+    const empty = createEmptyQuote();
+    return {
+      customerName: parsed.customerName || '',
+      customerAddress: parsed.customerAddress || '',
+      buyerName: parsed.buyerName || '',
+      buyerEmail: parsed.buyerEmail || '',
+      buyerPhone: parsed.buyerPhone || '',
+      salesRep: parsed.salesRep || '',
+      date: parsed.date || empty.date,
+      shipVia: parsed.shipVia ?? empty.shipVia,
+      fobPoint: parsed.fobPoint ?? empty.fobPoint,
+      terms: parsed.terms ?? empty.terms,
+      customerNotes: parsed.customerNotes || '',
+      items: Array.isArray(parsed.items) ? parsed.items.map(normalizeItem) : []
+    };
+  }
+
   let quote = createEmptyQuote();
   let editingItemId = null;
   let quotePdfBlob = null;
   let quotePdfUrl = null;
   let quotePdfPromise = null;
   let catalogController = null;
+  let quoteLibraryController = null;
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
 
@@ -101,6 +122,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
   function markUnsaved() {
     savedState.textContent = 'Not saved';
+    quoteLibraryController?.markDirty();
   }
 
   function readCurrentItem() {
@@ -253,6 +275,28 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     customerNotes.value = quote.customerNotes;
   }
 
+  function replaceActiveQuote(source) {
+    quote = normalizeLegacyQuote(source);
+    releaseQuotePdf();
+    itemForm.reset();
+    catalogController?.clearSelection();
+    editingItemId = null;
+    document.getElementById('itemSubmit').textContent = 'Add Item';
+    populateQuoteMeta();
+    renderQuote();
+    updateCalculatorPreview();
+    savedState.textContent = 'Loaded draft';
+    setPdfStatus('', false);
+  }
+
+  function applyCustomerDetails(details) {
+    quote = { ...quote, ...details };
+    releaseQuotePdf();
+    populateQuoteMeta();
+    savedState.textContent = 'Not saved';
+    setPdfStatus('', false);
+  }
+
   function hasActiveQuoteInformation() {
     syncQuoteMeta();
     const emptyQuote = createEmptyQuote();
@@ -282,14 +326,19 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   }
 
   function startNewQuote() {
+    const hadLibraryDraft = Boolean(quoteLibraryController?.hasBoundDraft());
+    const confirmationMessage = hadLibraryDraft
+      ? 'Start a new quote? This clears the active form and original browser fallback. The saved library draft will remain available.'
+      : 'Start a new quote? This clears the current quote and removes its saved copy from this device. This cannot be undone.';
     if (
       hasActiveQuoteInformation() &&
-      !window.confirm('Start a new quote? This clears the current quote and removes its saved copy from this device. This cannot be undone.')
+      !window.confirm(confirmationMessage)
     ) {
       setStatus('New quote cancelled. The current quote was kept.', false);
       return;
     }
 
+    quoteLibraryController?.unbindCurrent();
     quote = createEmptyQuote();
     const clearResult = clearActiveQuote(localStorage);
     releaseQuotePdf();
@@ -300,22 +349,44 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     setPdfStatus('', false);
     setStatus(
       clearResult.status === 'cleared'
-        ? 'New quote ready.'
+        ? (hadLibraryDraft ? 'New quote ready. The previous library draft remains saved.' : 'New quote ready.')
         : 'New quote ready, but this browser could not remove the previous saved copy. Save this quote before leaving.',
       clearResult.status !== 'cleared'
     );
     customerName.focus();
   }
 
-  function saveQuote() {
+  function saveActiveQuoteFallback() {
     syncQuoteMeta();
-    if (saveActiveQuote(localStorage, quote).status === 'saved') {
+    const result = saveActiveQuote(localStorage, quote);
+    if (result.status === 'saved') {
       savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
-      setStatus('Quote saved in this browser.', false);
     } else {
       savedState.textContent = 'Not saved';
-      setStatus('This browser could not save the quote. Keep this page open and copy or download it before leaving.', true);
     }
+    return result;
+  }
+
+  async function saveQuote() {
+    const localResult = saveActiveQuoteFallback();
+    if (localResult.status !== 'saved') {
+      setStatus('This browser could not save the quote. Keep this page open and copy or download it before leaving.', true);
+      return;
+    }
+
+    if (quoteLibraryController?.hasBoundDraft()) {
+      const libraryResult = await quoteLibraryController.saveBoundCurrent(quote);
+      if (libraryResult.status === 'saved') {
+        setStatus('Draft saved to the quote library and browser fallback.', false);
+      } else if (libraryResult.status === 'conflict') {
+        setStatus('The browser fallback was saved, but the library draft changed in another tab. Reopen the library draft before saving it again.', true);
+      } else {
+        setStatus('The browser fallback was saved, but the quote library could not be updated.', true);
+      }
+      return;
+    }
+
+    setStatus('Quote saved in this browser. Add it to the Quote Library when you want searchable draft history.', false);
   }
 
   function loadQuote() {
@@ -324,22 +395,8 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       return false;
     }
     if (result.status === 'loaded') {
-      const parsed = result.quote;
-        quote = {
-          customerName: parsed.customerName || '',
-          customerAddress: parsed.customerAddress || '',
-          buyerName: parsed.buyerName || '',
-          buyerEmail: parsed.buyerEmail || '',
-          buyerPhone: parsed.buyerPhone || '',
-          salesRep: parsed.salesRep || '',
-          date: parsed.date || quote.date,
-          shipVia: parsed.shipVia ?? 'Our Truck',
-          fobPoint: parsed.fobPoint ?? 'Sacramento',
-          terms: parsed.terms ?? 'NET30',
-          customerNotes: parsed.customerNotes || '',
-          items: parsed.items.map(normalizeItem)
-        };
-        return true;
+      quote = normalizeLegacyQuote(result.quote);
+      return true;
     }
     if (result.status === 'recovered') {
       setStatus('The saved quote was damaged. A recovery copy was preserved in this browser and a clean quote was opened.', true);
@@ -704,4 +761,18 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   }
   renderQuote();
   updateCalculatorPreview();
+
+  quoteLibraryController = initializeQuoteLibraryUi({
+    getActiveQuote() {
+      syncQuoteMeta();
+      return typeof structuredClone === 'function'
+        ? structuredClone(quote)
+        : JSON.parse(JSON.stringify(quote));
+    },
+    replaceActiveQuote,
+    applyCustomerDetails,
+    saveActiveFallback: saveActiveQuoteFallback,
+    shouldConfirmReplace: hasActiveQuoteInformation
+  });
+  quoteLibraryController.initialize();
 })();

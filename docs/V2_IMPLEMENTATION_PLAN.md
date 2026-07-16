@@ -29,6 +29,8 @@ Rollback: revert the PR. Since the new repository is not connected to the visibl
 
 ### PR 12 — Draft library, customer recall, and legacy import UI
 
+Status: implemented on `feature/v2-draft-library-ui`; verification and owner review pending.
+
 Goal: let a user opt into the local library, save multiple unnumbered drafts, find/reopen them, and reuse customer/contact data.
 
 Included:
@@ -39,6 +41,7 @@ Included:
 - Customer/contact repositories and customer/contact selection/editing.
 - Unsaved-change, multi-tab revision-token, storage-unavailable, and recovery-count states.
 - Existing calculator/PDF/email/catalog services continue to receive their current shapes through adapters.
+- Conflict-aware saves use an atomic integer draft revision; customer/contact updates and the draft commit share one IndexedDB transaction.
 
 Excluded: finalization/number allocation controls, finalized-version editing, revisions, status workflow, delete/purge, and backup/restore.
 

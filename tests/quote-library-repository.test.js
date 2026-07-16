@@ -94,6 +94,65 @@ describe('IndexedDB quote library repository', () => {
     await expect(repository.saveDraftContent(draft.id, edited)).rejects.toThrow('Start a revision before editing');
   });
 
+  it('rejects a stale draft revision token instead of overwriting another tab', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const firstEdit = structuredClone(draft.workingDraft.content);
+    firstEdit.customer.companyName = 'First Tab Saved';
+    const saved = await repository.saveDraftContent(draft.id, firstEdit, { expectedRevision: 0 });
+    expect(saved.draftRevision).toBe(1);
+
+    const staleEdit = structuredClone(draft.workingDraft.content);
+    staleEdit.customer.companyName = 'Stale Second Tab';
+    await expect(repository.saveDraftContent(draft.id, staleEdit, { expectedRevision: 0 })).rejects.toMatchObject({
+      name: 'QuoteDraftConflictError'
+    });
+    expect((await repository.getQuote(draft.id)).workingDraft.content.customer.companyName).toBe('First Tab Saved');
+  });
+
+  it('rolls back customer changes when an atomic draft save has a stale token', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const first = await repository.saveDraftWithCustomer(draft.id, draft.workingDraft.content, { expectedRevision: 0 });
+    const contactId = first.contactId;
+    expect((await repository.getContact(contactId)).phone).toBe('916-555-0137');
+
+    const stale = structuredClone(draft.workingDraft.content);
+    stale.contact.phone = '916-555-0000';
+    await expect(repository.saveDraftWithCustomer(draft.id, stale, { expectedRevision: 0 })).rejects.toMatchObject({
+      name: 'QuoteDraftConflictError'
+    });
+    expect((await repository.getContact(contactId)).phone).toBe('916-555-0137');
+  });
+
+  it('creates, recalls, and updates customer contacts without duplicating an exact company', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const first = await repository.saveCustomerAndContact(draft.workingDraft.content);
+    expect(await repository.searchCustomers({ query: 'north river' })).toEqual([
+      expect.objectContaining({ id: first.customerId, companyName: 'North River Packaging' })
+    ]);
+    expect(await repository.listContacts(first.customerId)).toEqual([
+      expect.objectContaining({ id: first.contactId, name: 'Jordan Rivera', email: 'jordan@example.test' })
+    ]);
+
+    const edited = structuredClone(draft.workingDraft.content);
+    edited.contact.phone = '916-555-0199';
+    const second = await repository.saveCustomerAndContact(edited, first);
+    expect(second).toEqual(first);
+    expect((await repository.getContact(first.contactId)).phone).toBe('916-555-0199');
+
+    const newBuyer = structuredClone(edited);
+    newBuyer.contact = { buyerName: 'Taylor Buyer', email: 'taylor@example.test', phone: '916-555-0144' };
+    const third = await repository.saveCustomerAndContact(newBuyer, { customerId: first.customerId });
+    expect(third.contactId).not.toBe(first.contactId);
+    expect((await repository.listContacts(first.customerId)).map((contact) => [contact.id, contact.isPrimary])).toEqual([
+      [third.contactId, true],
+      [first.contactId, false]
+    ]);
+    expect(await repository.searchCustomers()).toHaveLength(1);
+  });
+
   it('allocates base numbers atomically and does not consume a number on validation failure', async () => {
     const { repository } = makeRepository();
     const first = await repository.createDraftFromLegacyQuote(makeLegacyQuote('First Company'));
@@ -152,6 +211,14 @@ describe('IndexedDB quote library repository', () => {
     expect(duplicate.baseNumber).toBeUndefined();
     expect(duplicate.workingDraft.content).toEqual(version.content);
     expect((await repository.listEvents(duplicate.id)).map((event) => event.type)).toEqual(['duplicated']);
+  });
+
+  it('can reset the quote date when duplicating for a new draft workflow', async () => {
+    const { repository } = makeRepository();
+    const source = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const duplicate = await repository.duplicateAsNew(source.id, { quoteDate: '2026-08-01' });
+    expect(duplicate.workingDraft.content.quoteDate).toBe('2026-08-01');
+    expect(duplicate.workingDraft.content.expirationDate).toBe('');
   });
 
   it('quarantines malformed quote records without hiding healthy records', async () => {

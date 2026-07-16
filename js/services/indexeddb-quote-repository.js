@@ -109,6 +109,17 @@ function assertValidContent(content) {
   return normalized;
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? '').trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+}
+
+export class QuoteDraftConflictError extends Error {
+  constructor() {
+    super('This draft was changed in another tab. Reopen it before saving again.');
+    this.name = 'QuoteDraftConflictError';
+  }
+}
+
 export function createQuoteLibraryRepository({
   databaseName = QUOTE_LIBRARY_DATABASE_NAME,
   idFactory = defaultIdFactory,
@@ -188,6 +199,7 @@ export function createQuoteLibraryRepository({
       schemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
       originDeviceId: settings.deviceId,
       currentStatus: 'draft',
+      draftRevision: 0,
       versionIds: [],
       workingDraft: {
         kind: 'base',
@@ -226,7 +238,8 @@ export function createQuoteLibraryRepository({
     return validateStoredRecord(QUOTE_LIBRARY_STORES.quotes, record, validateQuoteRecord);
   }
 
-  async function saveDraftContent(quoteId, content) {
+  async function saveDraftContent(quoteId, content, options = {}) {
+    const { expectedRevision } = options;
     const normalized = assertValidContent(content);
     const database = await openDatabase();
     const transaction = database.transaction(QUOTE_LIBRARY_STORES.quotes, 'readwrite');
@@ -238,14 +251,194 @@ export function createQuoteLibraryRepository({
     if (!quote.workingDraft) {
       throw new Error('Finalized quote versions are immutable. Start a revision before editing.');
     }
+    const currentRevision = Number.isInteger(quote.draftRevision) ? quote.draftRevision : 0;
+    if (expectedRevision != null && expectedRevision !== currentRevision) {
+      throw new QuoteDraftConflictError();
+    }
     const timestamp = now();
     quote.workingDraft.content = cloneQuoteData(normalized);
     quote.workingDraft.lastSavedAt = timestamp;
+    quote.draftRevision = currentRevision + 1;
+    if (Object.hasOwn(options, 'customerId')) quote.customerId = options.customerId || undefined;
+    if (Object.hasOwn(options, 'contactId')) quote.contactId = options.contactId || undefined;
     quote.customerSearchText = createQuoteSearchText(normalized, quote.baseNumber);
     quote.updatedAt = timestamp;
     await transaction.store.put(quote);
     await transaction.done;
     return cloneQuoteData(quote);
+  }
+
+  async function upsertCustomerAndContact(customers, contacts, normalized, {
+    customerId,
+    contactId
+  } = {}, timestamp = now()) {
+    const companyName = normalized.customer.companyName;
+    if (!companyName) return { customerId: undefined, contactId: undefined };
+    const normalizedName = normalizeSearchText(companyName);
+    let customer = customerId ? await customers.get(customerId) : undefined;
+    if (!customer) {
+      const matches = await customers.index('normalizedName').getAll(normalizedName);
+      customer = matches[0];
+    }
+    if (customer) {
+      customer.companyName = companyName;
+      customer.normalizedName = normalizedName;
+      customer.addressText = normalized.customer.addressText;
+      customer.defaultPaymentTerms = normalized.paymentTerms;
+      customer.updatedAt = timestamp;
+      await customers.put(customer);
+    } else {
+      customer = {
+        id: idFactory(),
+        schemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
+        companyName,
+        normalizedName,
+        addressText: normalized.customer.addressText,
+        defaultPaymentTerms: normalized.paymentTerms,
+        createdAt: timestamp,
+        updatedAt: timestamp
+      };
+      await customers.add(customer);
+    }
+
+    const hasContact = Boolean(
+      normalized.contact.buyerName ||
+      normalized.contact.email ||
+      normalized.contact.phone
+    );
+    let contact;
+    if (hasContact) {
+      const customerContacts = await contacts.index('customerId').getAll(customer.id);
+      contact = contactId ? await contacts.get(contactId) : undefined;
+      if (!contact || contact.customerId !== customer.id) {
+        const normalizedEmail = normalizeSearchText(normalized.contact.email);
+        const normalizedContactName = normalizeSearchText(normalized.contact.buyerName);
+        contact = customerContacts.find((candidate) => (
+          (normalizedEmail && candidate.normalizedEmail === normalizedEmail) ||
+          (!normalizedEmail && normalizedContactName && candidate.normalizedName === normalizedContactName)
+        ));
+      }
+      if (contact) {
+        contact.name = normalized.contact.buyerName;
+        contact.normalizedName = normalizeSearchText(normalized.contact.buyerName);
+        contact.email = normalized.contact.email;
+        contact.normalizedEmail = normalizeSearchText(normalized.contact.email);
+        contact.phone = normalized.contact.phone;
+        contact.isPrimary = true;
+        contact.updatedAt = timestamp;
+        await contacts.put(contact);
+      } else {
+        contact = {
+          id: idFactory(),
+          schemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
+          customerId: customer.id,
+          name: normalized.contact.buyerName,
+          normalizedName: normalizeSearchText(normalized.contact.buyerName),
+          email: normalized.contact.email,
+          normalizedEmail: normalizeSearchText(normalized.contact.email),
+          phone: normalized.contact.phone,
+          isPrimary: true,
+          createdAt: timestamp,
+          updatedAt: timestamp
+        };
+        await contacts.add(contact);
+      }
+      for (const candidate of customerContacts) {
+        if (candidate.id !== contact.id && candidate.isPrimary) {
+          candidate.isPrimary = false;
+          candidate.updatedAt = timestamp;
+          await contacts.put(candidate);
+        }
+      }
+    }
+    return { customerId: customer.id, contactId: contact?.id };
+  }
+
+  async function saveCustomerAndContact(content, links = {}) {
+    const normalized = assertValidContent(content);
+    const database = await openDatabase();
+    const transaction = database.transaction([
+      QUOTE_LIBRARY_STORES.customers,
+      QUOTE_LIBRARY_STORES.contacts
+    ], 'readwrite');
+    const result = await upsertCustomerAndContact(
+      transaction.objectStore(QUOTE_LIBRARY_STORES.customers),
+      transaction.objectStore(QUOTE_LIBRARY_STORES.contacts),
+      normalized,
+      links
+    );
+    await transaction.done;
+    return result;
+  }
+
+  async function saveDraftWithCustomer(quoteId, content, { expectedRevision } = {}) {
+    const normalized = assertValidContent(content);
+    const database = await openDatabase();
+    const transaction = database.transaction([
+      QUOTE_LIBRARY_STORES.quotes,
+      QUOTE_LIBRARY_STORES.customers,
+      QUOTE_LIBRARY_STORES.contacts
+    ], 'readwrite');
+    const quotes = transaction.objectStore(QUOTE_LIBRARY_STORES.quotes);
+    const quote = await quotes.get(quoteId);
+    const errors = validateQuoteRecord(quote);
+    if (errors.length) throw new Error(`Cannot save an invalid quote record: ${errors.join(' ')}`);
+    if (!quote.workingDraft) throw new Error('Finalized quote versions are immutable. Start a revision before editing.');
+    const currentRevision = Number.isInteger(quote.draftRevision) ? quote.draftRevision : 0;
+    if (expectedRevision != null && expectedRevision !== currentRevision) throw new QuoteDraftConflictError();
+
+    const timestamp = now();
+    const links = await upsertCustomerAndContact(
+      transaction.objectStore(QUOTE_LIBRARY_STORES.customers),
+      transaction.objectStore(QUOTE_LIBRARY_STORES.contacts),
+      normalized,
+      { customerId: quote.customerId, contactId: quote.contactId },
+      timestamp
+    );
+    quote.workingDraft.content = cloneQuoteData(normalized);
+    quote.workingDraft.lastSavedAt = timestamp;
+    quote.draftRevision = currentRevision + 1;
+    quote.customerId = links.customerId;
+    quote.contactId = links.contactId;
+    quote.customerSearchText = createQuoteSearchText(normalized, quote.baseNumber);
+    quote.updatedAt = timestamp;
+    await quotes.put(quote);
+    await transaction.done;
+    return cloneQuoteData(quote);
+  }
+
+  async function getCustomer(customerId) {
+    const database = await openDatabase();
+    const customer = await database.get(QUOTE_LIBRARY_STORES.customers, customerId);
+    return customer ? cloneQuoteData(customer) : undefined;
+  }
+
+  async function getContact(contactId) {
+    const database = await openDatabase();
+    const contact = await database.get(QUOTE_LIBRARY_STORES.contacts, contactId);
+    return contact ? cloneQuoteData(contact) : undefined;
+  }
+
+  async function listContacts(customerId) {
+    const database = await openDatabase();
+    const contacts = await database.getAllFromIndex(QUOTE_LIBRARY_STORES.contacts, 'customerId', customerId);
+    return contacts
+      .sort((left, right) => Number(right.isPrimary) - Number(left.isPrimary) || right.updatedAt.localeCompare(left.updatedAt))
+      .map(cloneQuoteData);
+  }
+
+  async function searchCustomers({ query = '', limit = 50 } = {}) {
+    const database = await openDatabase();
+    const customers = await database.getAll(QUOTE_LIBRARY_STORES.customers);
+    const normalizedQuery = normalizeSearchText(query);
+    return customers
+      .filter((customer) => !normalizedQuery || [
+        customer.normalizedName,
+        normalizeSearchText(customer.addressText)
+      ].some((value) => value.includes(normalizedQuery)))
+      .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
+      .slice(0, Math.max(0, limit))
+      .map(cloneQuoteData);
   }
 
   async function searchQuotes({ query = '', status, limit = 100 } = {}) {
@@ -383,6 +576,7 @@ export function createQuoteLibraryRepository({
       content: cloneQuoteData(sourceVersion.content),
       lastSavedAt: timestamp
     };
+    quote.draftRevision = (Number.isInteger(quote.draftRevision) ? quote.draftRevision : 0) + 1;
     quote.updatedAt = timestamp;
     await transaction.objectStore(QUOTE_LIBRARY_STORES.quotes).put(quote);
     await transaction.objectStore(QUOTE_LIBRARY_STORES.quoteEvents).add(eventRecord({
@@ -456,7 +650,7 @@ export function createQuoteLibraryRepository({
     return cloneQuoteData(version);
   }
 
-  async function duplicateAsNew(sourceQuoteId, { versionId } = {}) {
+  async function duplicateAsNew(sourceQuoteId, { versionId, quoteDate } = {}) {
     const sourceQuote = await getQuote(sourceQuoteId);
     if (!sourceQuote) throw new Error('The source quote was not found.');
     let sourceVersionId = versionId;
@@ -474,6 +668,11 @@ export function createQuoteLibraryRepository({
       content = version.content;
     } else {
       throw new Error('The source quote has no content to duplicate.');
+    }
+    content = cloneQuoteData(content);
+    if (quoteDate) {
+      content.quoteDate = String(quoteDate);
+      content.expirationDate = '';
     }
     return createDraft(content, {
       sourceQuoteId,
@@ -514,6 +713,12 @@ export function createQuoteLibraryRepository({
     createDraftFromLegacyQuote,
     getQuote,
     saveDraftContent,
+    saveDraftWithCustomer,
+    saveCustomerAndContact,
+    getCustomer,
+    getContact,
+    listContacts,
+    searchCustomers,
     searchQuotes,
     finalizeBase,
     getVersion,

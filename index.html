@@ -26,6 +26,40 @@
         </div>
       </header>
 
+      <details id="quoteLibraryTools" class="panel quote-library-tools">
+        <summary>
+          <span>Quote Library</span>
+          <span id="quoteLibrarySummary" class="quote-library-summary">Loading drafts...</span>
+        </summary>
+        <div class="quote-library-tools__body">
+          <p class="local-library-notice">
+            Saved quotes and customers stay only in this browser on this device. They do not sync to another phone or laptop.
+          </p>
+          <div class="library-primary-actions">
+            <button id="addCurrentToLibrary" type="button" class="button primary">Add Current Quote to Library</button>
+          </div>
+          <p id="quoteLibraryStatus" class="quote-library-status" role="status" aria-live="polite"></p>
+          <p id="quoteLibraryRecovery" class="quote-library-recovery" hidden></p>
+
+          <label>
+            Search saved drafts
+            <input id="quoteLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Customer, buyer, email, item, or SKU">
+          </label>
+          <div id="quoteLibraryResults" class="quote-library-results" role="region" aria-label="Saved quote drafts"></div>
+
+          <details class="customer-library">
+            <summary>Saved Customers</summary>
+            <div class="customer-library__body">
+              <label>
+                Search customers
+                <input id="customerLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Company or address">
+              </label>
+              <div id="customerLibraryResults" class="customer-library-results" role="region" aria-label="Saved customers"></div>
+            </div>
+          </details>
+        </div>
+      </details>
+
       <section class="panel calculator-panel" aria-labelledby="calculator-heading">
         <div class="section-heading">
           <h2 id="calculator-heading">Item Calculator</h2>

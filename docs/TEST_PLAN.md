@@ -109,6 +109,8 @@ Assert deterministic ordering: exact SKU, SKU prefix, exact normalized dimension
 
 Foundation coverage includes lossless conversion from `gtm_quote_calculator_v1`, unnumbered drafts, search, explicit business-year numbering, concurrent base allocation, immutable content hashes, sequential revisions, duplicate lineage, corrupt-record quarantine, and a real-browser IndexedDB smoke test. UI/status/customer behavior remains pending in later Version 2 slices.
 
+PR #12 adds atomic customer/contact plus draft saves, stale revision-token rollback, customer recall/update, date-reset duplicate behavior, non-destructive legacy import, session reload, draft search/reopen/duplicate, populated phone overflow, and stale-writer UI tests across Chromium, Firefox, WebKit, Pixel 7, and iPhone Safari emulation. Accessibility scans include the expanded Quote Library.
+
 ### Numbering
 
 - Draft has no number.
