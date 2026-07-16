@@ -1,5 +1,11 @@
 # Build Log
 
+### 2026-07-16 -- Version and roadmap maintenance rule
+
+- Added repository-level instructions requiring a roadmap infographic review after every version/status change and coordinated README/release-document updates for every full or half version milestone.
+- Replaced the README's stale raster roadmap reference with a maintainable SVG that marks Versions 1.0 and 1.5 complete and Version 2.0 in progress.
+- Rendered the SVG through Chromium and visually verified all seven roadmap cards, status labels, footer text, and the Version 2 current-phase banner without clipping or overlap.
+
 ### 2026-07-16 -- Version 2 quote-library list usability
 
 - Added ten-at-a-time phone rendering over the existing newest-first, 100-result draft search; search still covers the complete repository result set and resets the visible count to ten.

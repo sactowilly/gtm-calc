@@ -1,5 +1,12 @@
 # Decisions
 
+## Version and Roadmap Documentation Synchronization
+
+**DECISION:** Every application version or milestone-status change must include a roadmap-infographic and product-roadmap review. Every full or half product-version change must update README and all affected release, current-state, implementation, test, build-log, decision, and open-item documentation in the same pull request.
+**RATIONALE:** Version labels, roadmap status, and release documentation had diverged. A repository-level rule and deterministic SVG roadmap keep the visible project story synchronized and make future status edits reliable.
+**DATE:** 2026-07-16
+**PARTIES:** Codex, Will Z
+
 ## Quote Library Progressive Disclosure and Duplicate Review State
 
 **DECISION:** Show ten matching quote drafts initially and ten more per explicit request. Mark a newly duplicated draft with visible `DUP` text and pale shading while `sourceQuoteId` exists and `draftRevision` is zero; remove the marker after its first successful save without modifying the customer/company name.

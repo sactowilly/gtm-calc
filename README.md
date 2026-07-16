@@ -51,7 +51,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 ## Roadmap
 
-![GTM Quote Tool Roadmap](docs/assets/gtm-quote-tool-roadmap.png)
+![GTM Quote Tool Roadmap](docs/assets/gtm-quote-tool-roadmap.svg)
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
