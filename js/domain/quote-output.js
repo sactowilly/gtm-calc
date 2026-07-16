@@ -11,7 +11,7 @@ export function formatQuantityWithUom(quantity, uom) {
   return `${quantity} ${normalizeUom(uom)}`;
 }
 
-export function getQuotePdfFilename({ customerName, date }) {
+export function getQuotePdfFilename({ customerName, date, quoteNumber }) {
   const safeCustomer = String(customerName || 'customer')
     .trim()
     .toLowerCase()
@@ -21,12 +21,20 @@ export function getQuotePdfFilename({ customerName, date }) {
     ? date
     : 'undated';
 
-  return `${safeDate}-${safeCustomer}-quotation.pdf`;
+  const safeQuoteNumber = String(quoteNumber || '')
+    .trim()
+    .toUpperCase()
+    .replaceAll(/[^A-Z0-9-]+/g, '');
+
+  return safeQuoteNumber
+    ? `${safeQuoteNumber}-${safeCustomer}-quotation.pdf`
+    : `${safeDate}-${safeCustomer}-quotation.pdf`;
 }
 
 export function buildCustomerQuoteText(quote) {
   const lines = [
     `Quote for ${quote.customerName || 'Customer'}`,
+    ...(quote.quoteNumber ? [`Quote Number: ${quote.quoteNumber}`] : []),
     `Customer Address: ${String(quote.customerAddress || '').replace(/\r?\n/g, ', ') || 'Not set'}`,
     `Buyer: ${quote.buyerName || 'Not set'}`,
     `Buyer Email: ${quote.buyerEmail || 'Not set'}`,

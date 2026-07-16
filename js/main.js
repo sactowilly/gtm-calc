@@ -61,6 +61,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
   function createEmptyQuote() {
     return {
+      quoteNumber: '',
       customerName: '',
       customerAddress: '',
       buyerName: '',
@@ -80,6 +81,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     const parsed = source && typeof source === 'object' ? source : {};
     const empty = createEmptyQuote();
     return {
+      quoteNumber: parsed.quoteNumber || '',
       customerName: parsed.customerName || '',
       customerAddress: parsed.customerAddress || '',
       buyerName: parsed.buyerName || '',
@@ -102,6 +104,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   let quotePdfPromise = null;
   let catalogController = null;
   let quoteLibraryController = null;
+  let quoteReadOnly = false;
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
 
@@ -121,6 +124,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   }
 
   function markUnsaved() {
+    if (quoteReadOnly) return;
     savedState.textContent = 'Not saved';
     quoteLibraryController?.markDirty();
   }
@@ -224,6 +228,10 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       const row = document.createElement('tr');
       const safeItemName = escapeHtml(normalized.name);
       const safeItemId = escapeHtml(normalized.id);
+      const actions = quoteReadOnly
+        ? ''
+        : `<button type="button" class="edit-button" data-id="${safeItemId}" aria-label="Edit ${safeItemName}">Edit</button>
+          <button type="button" class="delete-button" data-id="${safeItemId}" aria-label="Delete ${safeItemName}">Delete</button>`;
       row.innerHTML = `
         <th scope="row" data-label="Item">${safeItemName}</th>
         <td data-label="Qty">${formatQuantityWithUom(normalized.quantity, normalized.uom)}</td>
@@ -234,8 +242,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
         <td data-label="GTM$ Total">${formatMoney(normalized.gtmTotalDollars)}</td>
         <td data-label="GTM%">${formatPercent(normalized.gtmTotalPercent)}</td>
         <td class="row-actions" data-label="Actions">
-          <button type="button" class="edit-button" data-id="${safeItemId}" aria-label="Edit ${safeItemName}">Edit</button>
-          <button type="button" class="delete-button" data-id="${safeItemId}" aria-label="Delete ${safeItemName}">Delete</button>
+          ${actions || '<span class="read-only-label">Finalized snapshot</span>'}
         </td>
       `;
       quoteItems.appendChild(row);
@@ -275,7 +282,32 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     customerNotes.value = quote.customerNotes;
   }
 
-  function replaceActiveQuote(source) {
+  function setQuoteReadOnly(readOnly, label = '') {
+    quoteReadOnly = Boolean(readOnly);
+    const controls = [
+      ...itemForm.querySelectorAll('input, select, textarea, button'),
+      customerName,
+      customerAddress,
+      buyerName,
+      buyerEmail,
+      buyerPhone,
+      salesRep,
+      quoteDate,
+      shipVia,
+      fobPoint,
+      terms,
+      customerNotes,
+      document.getElementById('saveQuote')
+    ];
+    controls.forEach((control) => {
+      control.disabled = quoteReadOnly;
+    });
+    savedState.textContent = quoteReadOnly
+      ? `${label || quote.quoteNumber || 'Finalized quote'} · Read only`
+      : label || 'Loaded draft';
+  }
+
+  function replaceActiveQuote(source, options = {}) {
     quote = normalizeLegacyQuote(source);
     releaseQuotePdf();
     itemForm.reset();
@@ -283,13 +315,14 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     editingItemId = null;
     document.getElementById('itemSubmit').textContent = 'Add Item';
     populateQuoteMeta();
+    setQuoteReadOnly(options.readOnly, options.label);
     renderQuote();
     updateCalculatorPreview();
-    savedState.textContent = 'Loaded draft';
     setPdfStatus('', false);
   }
 
   function applyCustomerDetails(details) {
+    if (quoteReadOnly) return;
     quote = { ...quote, ...details };
     releaseQuotePdf();
     populateQuoteMeta();
@@ -326,9 +359,9 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   }
 
   function startNewQuote() {
-    const hadLibraryDraft = Boolean(quoteLibraryController?.hasBoundDraft());
-    const confirmationMessage = hadLibraryDraft
-      ? 'Start a new quote? This clears the active form and original browser fallback. The saved library draft will remain available.'
+    const hadLibraryQuote = Boolean(quoteLibraryController?.hasBoundQuote());
+    const confirmationMessage = hadLibraryQuote
+      ? 'Start a new quote? This clears the active form and original browser fallback. The saved library quote will remain available.'
       : 'Start a new quote? This clears the current quote and removes its saved copy from this device. This cannot be undone.';
     if (
       hasActiveQuoteInformation() &&
@@ -340,6 +373,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
     quoteLibraryController?.unbindCurrent();
     quote = createEmptyQuote();
+    setQuoteReadOnly(false, 'Not saved');
     const clearResult = clearActiveQuote(localStorage);
     releaseQuotePdf();
     clearItemForm();
@@ -349,25 +383,29 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     setPdfStatus('', false);
     setStatus(
       clearResult.status === 'cleared'
-        ? (hadLibraryDraft ? 'New quote ready. The previous library draft remains saved.' : 'New quote ready.')
+        ? (hadLibraryQuote ? 'New quote ready. The previous library quote remains saved.' : 'New quote ready.')
         : 'New quote ready, but this browser could not remove the previous saved copy. Save this quote before leaving.',
       clearResult.status !== 'cleared'
     );
     customerName.focus();
   }
 
-  function saveActiveQuoteFallback() {
+  function saveActiveQuoteFallback({ preserveState = false } = {}) {
     syncQuoteMeta();
     const result = saveActiveQuote(localStorage, quote);
-    if (result.status === 'saved') {
+    if (result.status === 'saved' && !preserveState) {
       savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
-    } else {
+    } else if (result.status !== 'saved') {
       savedState.textContent = 'Not saved';
     }
     return result;
   }
 
   async function saveQuote() {
+    if (quoteReadOnly) {
+      setStatus('Finalized quote versions are read only. Create a revision to make changes.', true);
+      return;
+    }
     const localResult = saveActiveQuoteFallback();
     if (localResult.status !== 'saved') {
       setStatus('This browser could not save the quote. Keep this page open and copy or download it before leaving.', true);
@@ -415,6 +453,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     const date = quote.date || new Date().toISOString().slice(0, 10);
     const lines = [
       `Quote for ${customer}`,
+      ...(quote.quoteNumber ? [`Quote Number: ${quote.quoteNumber}`] : []),
       `Buyer: ${buyer}`,
       `Buyer Email: ${quote.buyerEmail || 'Not set'}`,
       `Buyer Phone: ${quote.buyerPhone || 'Not set'}`,
@@ -467,6 +506,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     if (quote.customerName) {
       subjectParts.push(quote.customerName);
     }
+    if (quote.quoteNumber) subjectParts.push(quote.quoteNumber);
 
     openPreparedEmail('', subjectParts, `${buildQuoteText()}\n\n${attachmentInstruction}`, 'Internal email draft opened. Attach the downloaded PDF manually.');
   }
@@ -480,6 +520,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     }
 
     const subjectParts = ['Your Vision Packaging Quote'];
+    if (quote.quoteNumber) subjectParts.push(quote.quoteNumber);
 
     openPreparedEmail(quote.buyerEmail, subjectParts, `${buildCustomerQuoteText(quote)}\n\n${attachmentInstruction}`, 'Customer email draft opened. Attach the downloaded PDF manually.');
   }
@@ -600,6 +641,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   }
 
   function editItem(itemId) {
+    if (quoteReadOnly) return;
     const item = quote.items.find(function (candidate) {
       return String(candidate.id) === itemId;
     });
@@ -640,6 +682,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
   itemForm.addEventListener('submit', function (event) {
     event.preventDefault();
+    if (quoteReadOnly) return;
     const result = readCurrentItem();
 
     if (result.error) {
@@ -668,6 +711,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   });
 
   quoteItems.addEventListener('click', function (event) {
+    if (quoteReadOnly) return;
     if (event.target.matches('.edit-button')) {
       editItem(event.target.dataset.id);
       return;

@@ -185,6 +185,8 @@ describe('IndexedDB quote library repository', () => {
     const revision1 = await repository.finalizeRevision(draft.id);
     expect(revision1.displayNumber).toBe('2026-001-R1');
     expect((await repository.getVersion(base.id)).content.lines[0].price).toBe(1.25);
+    expect(await repository.searchQuotes({ query: '2026-001-r1' })).toHaveLength(1);
+    expect(await repository.searchQuotes({ query: '2026-07-16' })).toHaveLength(1);
 
     await repository.startRevision(draft.id, revision1.id);
     const revision2 = await repository.finalizeRevision(draft.id);
@@ -194,6 +196,46 @@ describe('IndexedDB quote library repository', () => {
       '2026-001-R1',
       '2026-001-R2'
     ]);
+  });
+
+  it('enforces controlled status transitions and records the transition event', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const version = await repository.finalizeBase(draft.id, { numberYear: 2026 });
+
+    await expect(repository.changeStatus(draft.id, 'accepted')).rejects.toThrow('cannot change from finalized to accepted');
+    const sent = await repository.changeStatus(draft.id, 'sent');
+    expect(sent.currentStatus).toBe('sent');
+    const accepted = await repository.changeStatus(draft.id, 'accepted');
+    expect(accepted.currentStatus).toBe('accepted');
+    await expect(repository.changeStatus(draft.id, 'cancelled')).rejects.toThrow('cannot change from accepted to cancelled');
+
+    expect(await repository.listEvents(draft.id)).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        quoteVersionId: version.id,
+        type: 'status_changed',
+        metadata: { fromStatus: 'finalized', toStatus: 'sent' }
+      }),
+      expect.objectContaining({
+        quoteVersionId: version.id,
+        type: 'status_changed',
+        metadata: { fromStatus: 'sent', toStatus: 'accepted' }
+      })
+    ]));
+  });
+
+  it('starts revisions only from the latest finalized version and blocks terminal outcomes', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const base = await repository.finalizeBase(draft.id, { numberYear: 2026 });
+    await repository.startRevision(draft.id, base.id);
+    expect((await repository.getQuote(draft.id)).currentStatus).toBe('draft');
+    const revision = await repository.finalizeRevision(draft.id);
+
+    await expect(repository.startRevision(draft.id, base.id)).rejects.toThrow('latest finalized version');
+    await repository.changeStatus(draft.id, 'sent');
+    await repository.changeStatus(draft.id, 'declined');
+    await expect(repository.startRevision(draft.id, revision.id)).rejects.toThrow('Outcome statuses are terminal');
   });
 
   it('duplicates a finalized version as a new independent unnumbered draft with lineage', async () => {

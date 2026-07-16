@@ -6,7 +6,9 @@ import { customerQuoteFixtures, onePageQuote } from './fixtures/customer-quotes.
 
 describe('customer quotation projection', () => {
   it('maps every approved reference field', () => {
-    const documentData = toCustomerQuoteDocument(onePageQuote);
+    const documentData = toCustomerQuoteDocument({ ...onePageQuote, quoteNumber: '2026-001-R1' });
+
+    expect(documentData.quoteNumber).toBe('2026-001-R1');
 
     expect(documentData.customer).toEqual({
       name: onePageQuote.customerName,
@@ -43,6 +45,18 @@ describe('customer quotation projection', () => {
       'unitPrice',
       'leadTime'
     ]);
+  });
+
+  it('keeps an optional quote number customer-safe without exposing internal fields', () => {
+    const projected = toCustomerQuoteDocument({
+      ...onePageQuote,
+      quoteNumber: '2026-001',
+      currentStatus: 'sent',
+      contentHash: 'secret-hash'
+    });
+    expect(projected.quoteNumber).toBe('2026-001');
+    expect(projected).not.toHaveProperty('currentStatus');
+    expect(projected).not.toHaveProperty('contentHash');
   });
 
   it('does not project catalog source metadata from a saved quote snapshot', () => {

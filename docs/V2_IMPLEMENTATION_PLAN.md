@@ -53,7 +53,7 @@ Status: merged. The directly hosted source now imports the committed IndexedDB h
 
 ### PR 14 — Quote-library list usability
 
-Status: implemented and verified on `feature/v2-library-list-usability`; owner review pending.
+Status: merged in PR #14.
 
 Goal: keep a growing phone library scannable and make a newly created duplicate unmistakable without changing customer-facing data.
 
@@ -69,6 +69,8 @@ Excluded: quote titles, automatic duplicate opening, deletion/archive, repositor
 
 ### PR 15 — Finalization, numbering, immutable history, duplicate, and revision UI
 
+Status: implemented and automated verification passed on `feature/v2-quote-lifecycle`; owner review pending.
+
 Goal: complete the quote lifecycle with clear, distinct user operations.
 
 Included:
@@ -76,8 +78,8 @@ Included:
 - Finalize confirmation and local-device/year numbering disclosure.
 - Finalized read-only view and PDF regeneration from the selected immutable version.
 - Duplicate as new unnumbered draft.
-- Create revision from a selected finalized version; R1/R2 allocation on finalization.
-- Status changes with append-only events after owner approves the transition matrix.
+- Create revision from the latest finalized version; R1/R2 allocation on finalization while prior versions remain selectable for output.
+- Controlled status changes with append-only events: Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcome states are terminal.
 - Resend/reshare existing finalized versions using the existing customer-safe services.
 
 Excluded: shared/global numbering, automatic email, server sync, backup/restore, and arbitrary editing of finalized versions.
@@ -100,12 +102,12 @@ Excluded: complete backup/restore (Version 2.5), PWA/offline shell (Version 3), 
 
 ## Owner approvals needed before affected controls ship
 
-1. Numbering year: quote-date year or finalization-date year. The foundation requires the caller to provide the year and does not decide silently.
-2. Status transition matrix, including whether Accepted/Declined/Expired/Cancelled are terminal and who may reopen them.
+1. ~~Numbering year~~ — approved: use the finalization date's year.
+2. ~~Status transition matrix~~ — approved: Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcome states are terminal.
 3. Draft deletion/archive behavior and retention of abandoned revisions.
 4. Customer/contact merge rules when names or email addresses match.
 5. Which fields a duplicate resets besides number, date, status, and events.
-6. Whether a revision can be based on any finalized version or only the latest one.
+6. ~~Revision source~~ — approved: only the latest finalized version can start a revision.
 
 ## Version 2 completion gate
 

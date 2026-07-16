@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-07-16 -- Version 2 quote lifecycle candidate
+
+- Implemented finalization-date-year base numbering, immutable read-only current/historical version views, latest-version-only revisions, duplicate-as-new, and the approved controlled status graph with append-only status events.
+- Added optional customer-safe quote numbers to copied customer text, PDF projection/header, email subjects, and stable PDF filenames without adding internal status/hash/cost data to customer output.
+- Added all-status library filtering, status badges/actions, historical-version controls, read-only active-quote behavior, and phone-safe control layouts while preserving `gtm_quote_calculator_v1` and the GitHub Pages source model.
+- Verified JavaScript checks, 96 unit/privacy/storage tests, 65 compatibility/accessibility tests across Chromium, Firefox, WebKit, Pixel 7, and iPhone 13 profiles, 16 customer-PDF layout tests, the `/gtm-calc/` production build, and a 412 px direct-source Pages-style smoke with no page/console errors or horizontal overflow.
+- Rendered and visually inspected the numbered one-page quotation and updated roadmap PNG; both are free of clipping or overlap. The production build retains only the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-07-16 -- Version and roadmap maintenance rule
 
 - Added repository-level instructions requiring a roadmap infographic review after every version/status change and coordinated README/release-document updates for every full or half version milestone.

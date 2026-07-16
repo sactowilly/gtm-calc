@@ -279,6 +279,11 @@ describe('quote output helpers', () => {
     })).toBe('2026-05-29-vintage-design-inc-quotation.pdf');
     expect(getQuotePdfFilename({ customerName: '', date: 'not-a-date' }))
       .toBe('undated-customer-quotation.pdf');
+    expect(getQuotePdfFilename({
+      customerName: 'Vintage Design, Inc.',
+      date: '2026-05-29',
+      quoteNumber: '2026-001-R2'
+    })).toBe('2026-001-R2-vintage-design-inc-quotation.pdf');
   });
 
   it('builds a customer email without internal cost or profitability values', () => {
@@ -289,6 +294,7 @@ describe('quote output helpers', () => {
       buyerEmail: 'jamie@example.com',
       buyerPhone: '916-555-0100',
       salesRep: 'Will Z',
+      quoteNumber: '2026-001',
       date: '2026-07-14',
       items: [{
         quantity: 40,
@@ -304,6 +310,7 @@ describe('quote output helpers', () => {
 
     expect(customerText).toContain('40 CS - Single Face == $46.27');
     expect(customerText).toContain('Sales Rep: Will Z');
+    expect(customerText).toContain('Quote Number: 2026-001');
     expect(customerText).not.toMatch(/cost|gtm|margin|total/i);
   });
 });

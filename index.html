@@ -33,7 +33,7 @@
         </summary>
         <div class="quote-library-tools__body">
           <p class="local-library-notice">
-            Saved quotes and customers stay only in this browser on this device. They do not sync to another phone or laptop.
+            Saved quotes and customers stay only in this browser on this device. They do not sync to another phone or laptop. Finalized numbers use the finalization year and this device's local sequence, so another device can create the same display number.
           </p>
           <div class="library-primary-actions">
             <button id="addCurrentToLibrary" type="button" class="button primary">Add Current Quote to Library</button>
@@ -41,11 +41,26 @@
           <p id="quoteLibraryStatus" class="quote-library-status" role="status" aria-live="polite"></p>
           <p id="quoteLibraryRecovery" class="quote-library-recovery" hidden></p>
 
+          <div class="library-search-controls">
           <label>
-            Search saved drafts
+            Search saved quotes
             <input id="quoteLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Customer, buyer, email, item, or SKU">
           </label>
-          <div id="quoteLibraryResults" class="quote-library-results" role="region" aria-label="Saved quote drafts"></div>
+          <label>
+            Status
+            <select id="quoteLibraryStatusFilter">
+              <option value="">All statuses</option>
+              <option value="draft">Draft</option>
+              <option value="finalized">Finalized</option>
+              <option value="sent">Sent</option>
+              <option value="accepted">Accepted</option>
+              <option value="declined">Declined</option>
+              <option value="expired">Expired</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          </div>
+          <div id="quoteLibraryResults" class="quote-library-results" role="region" aria-label="Saved quotes"></div>
           <button
             id="showMoreQuotes"
             type="button"

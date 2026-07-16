@@ -43,7 +43,7 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   page.once('dialog', (dialog) => dialog.accept());
   await page.locator('#newQuote').click();
   await expect(page.locator('#customerName')).toHaveValue('');
-  await expect(page.locator('#statusMessage')).toContainText('previous library draft remains saved');
+  await expect(page.locator('#statusMessage')).toContainText('previous library quote remains saved');
   await expect(reopenedLibrary.locator('.library-card')).toHaveCount(2);
   await page.locator('#itemName').fill('Unsaved item entry');
   const customerLibrary = reopenedLibrary.locator('.customer-library');

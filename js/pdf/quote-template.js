@@ -38,6 +38,7 @@ function createHeader(documentData, logoUrl, continuation) {
   const title = element('div', 'quote-print-title');
   title.append(
     element('p', 'quote-print-title__name', continuation ? 'QUOTATION - CONTINUED' : 'QUOTATION'),
+    element('p', 'quote-print-title__number', documentData.quoteNumber ? `Quote ${documentData.quoteNumber}` : '\u00a0'),
     element('p', 'quote-print-title__phone', documentData.company.telephone),
     element('p', 'quote-print-title__fax', documentData.company.fax ? `Fax: ${documentData.company.fax}` : '\u00a0')
   );
