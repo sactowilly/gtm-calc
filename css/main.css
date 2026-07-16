@@ -258,6 +258,39 @@ h2 {
   box-shadow: inset 4px 0 0 var(--accent);
 }
 
+.library-card.is-unreviewed-duplicate {
+  border-color: #c5962e;
+  background: #fff6d8;
+}
+
+.library-card.is-active.is-unreviewed-duplicate {
+  border-color: var(--accent);
+}
+
+.library-card__heading {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.library-card__heading h3 {
+  min-width: 0;
+}
+
+.library-card__duplicate-badge {
+  flex: 0 0 auto;
+  border: 1px solid #9a6a00;
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: #5c4100;
+  background: #ffe8a3;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
 .library-card h3,
 .customer-card h3 {
   margin: 0;
@@ -289,6 +322,12 @@ h2 {
 .customer-card .button {
   min-width: 0;
   padding-inline: 9px;
+}
+
+.quote-library-show-more {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
 }
 
 .customer-library {

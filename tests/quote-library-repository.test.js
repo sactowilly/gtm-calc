@@ -3,6 +3,7 @@ import { openDB } from 'idb';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildQuoteItem } from '../js/domain/calculations.js';
 import { quoteContentToLegacyQuote } from '../js/domain/quote-library.js';
+import { isUnreviewedDuplicate } from '../js/quote-library/quote-library-ui.js';
 import {
   QUOTE_LIBRARY_DATABASE_VERSION,
   QUOTE_LIBRARY_STORES,
@@ -210,6 +211,18 @@ describe('IndexedDB quote library repository', () => {
     expect(duplicate.id).not.toBe(source.id);
     expect(duplicate.baseNumber).toBeUndefined();
     expect(duplicate.workingDraft.content).toEqual(version.content);
+    expect(isUnreviewedDuplicate(duplicate)).toBe(true);
+
+    await expect(repository.saveDraftContent(duplicate.id, duplicate.workingDraft.content, {
+      expectedRevision: 1
+    })).rejects.toMatchObject({ name: 'QuoteDraftConflictError' });
+    expect(isUnreviewedDuplicate(await repository.getQuote(duplicate.id))).toBe(true);
+
+    const reviewed = await repository.saveDraftContent(duplicate.id, duplicate.workingDraft.content, {
+      expectedRevision: 0
+    });
+    expect(isUnreviewedDuplicate(reviewed)).toBe(false);
+    expect(reviewed.workingDraft.content.customer.companyName).toBe('North River Packaging');
     expect((await repository.listEvents(duplicate.id)).map((event) => event.type)).toEqual(['duplicated']);
   });
 

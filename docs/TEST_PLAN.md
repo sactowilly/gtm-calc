@@ -111,6 +111,8 @@ Foundation coverage includes lossless conversion from `gtm_quote_calculator_v1`,
 
 PR #12 adds atomic customer/contact plus draft saves, stale revision-token rollback, customer recall/update, date-reset duplicate behavior, non-destructive legacy import, session reload, draft search/reopen/duplicate, populated phone overflow, and stale-writer UI tests across Chromium, Firefox, WebKit, Pixel 7, and iPhone Safari emulation. Accessibility scans include the expanded Quote Library.
 
+The quote-library usability follow-up seeds 50 deterministically ordered drafts, verifies ten-at-a-time rendering and full-result search, checks summary/open/unsaved states, and proves that the visible `DUP` marker is derived from lineage plus revision zero. A rejected save must preserve that marker; the first successful save must clear it without changing the stored customer name or customer-facing content.
+
 ### Numbering
 
 - Draft has no number.

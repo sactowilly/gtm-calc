@@ -1,5 +1,7 @@
 # Product Roadmap
 
+The maintained visual roadmap is [`docs/assets/gtm-quote-tool-roadmap.svg`](assets/gtm-quote-tool-roadmap.svg). Repository rules require it to be reviewed after every version or milestone-status change and updated whenever the current, completed, or next phase changes.
+
 ## Guiding constraints
 
 Through Version 3.5 the application remains a public, static GitHub Pages application. GitHub provides source control, branches, pull requests, Actions, and hosting. Browser-local storage provides per-device data. There is no authentication, hosted database, custom backend, server function, automatic email delivery, or external email service. Customer and pricing data never belong in the Git repository or an Actions artifact.
