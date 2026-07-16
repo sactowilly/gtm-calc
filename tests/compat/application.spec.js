@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 test('loads, exposes accessible controls, and preserves approved defaults', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { name: 'GTM Calc and Quote Tool' })).toBeVisible();
-  await expect(page.locator('#appVersion')).toContainText('v2.0.0 · draft-library.2');
+  await expect(page.locator('#appVersion')).toContainText('v2.0.0 · draft-library.3');
   await expect(page.getByRole('button', { name: 'New Quote' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'View Quote' })).toBeVisible();
   await page.locator('.quote-details').evaluate((details) => { details.open = true; });

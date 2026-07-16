@@ -1,5 +1,12 @@
 # Decisions
 
+## Quote Library Progressive Disclosure and Duplicate Review State
+
+**DECISION:** Show ten matching quote drafts initially and ten more per explicit request. Mark a newly duplicated draft with visible `DUP` text and pale shading while `sourceQuoteId` exists and `draftRevision` is zero; remove the marker after its first successful save without modifying the customer/company name.
+**RATIONALE:** Fifty local quotes are not a storage concern, but rendering every card creates excessive phone scrolling. Existing lineage and revision data provides the temporary review state without a schema migration or risk of leaking `DUP` into PDFs, emails, customer records, or search.
+**DATE:** 2026-07-16
+**PARTIES:** Codex, Will Z
+
 ## Version 2 Foundation Boundary
 
 **DECISION:** Introduce a separate `gtm_quote_manager` IndexedDB database behind a repository adapter while leaving `gtm_quote_calculator_v1` as the active visible quote. Use pinned `idb` for transaction handling and test with both `fake-indexeddb` and real browser IndexedDB. Require an explicit business year for number allocation until the owner approves the date/year rule.

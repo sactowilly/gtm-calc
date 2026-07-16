@@ -9,6 +9,15 @@ import {
 
 export const QUOTE_LIBRARY_SESSION_KEY = 'gtm_quote_library_active_v1';
 export const QUOTE_LIBRARY_SIGNAL_KEY = 'gtm_quote_library_signal_v1';
+export const QUOTE_LIBRARY_PAGE_SIZE = 10;
+
+export function isUnreviewedDuplicate(quote) {
+  return Boolean(
+    quote?.currentStatus === 'draft' &&
+    quote.sourceQuoteId &&
+    quote.draftRevision === 0
+  );
+}
 
 function formatSavedTime(value) {
   const date = new Date(value);
@@ -41,6 +50,7 @@ export function initializeQuoteLibraryUi({
   const saveButton = document.getElementById('addCurrentToLibrary');
   const quoteSearch = document.getElementById('quoteLibrarySearch');
   const quoteResults = document.getElementById('quoteLibraryResults');
+  const showMoreQuotes = document.getElementById('showMoreQuotes');
   const customerSearch = document.getElementById('customerLibrarySearch');
   const customerResults = document.getElementById('customerLibraryResults');
   const recovery = document.getElementById('quoteLibraryRecovery');
@@ -50,6 +60,8 @@ export function initializeQuoteLibraryUi({
   let dirty = false;
   let externalChange = false;
   let channel;
+  let matchingQuotes = [];
+  let visibleQuoteLimit = QUOTE_LIBRARY_PAGE_SIZE;
 
   function setLibraryStatus(message, isError = false) {
     status.textContent = message;
@@ -76,7 +88,22 @@ export function initializeQuoteLibraryUi({
   function updateBoundUi() {
     saveButton.textContent = boundQuoteId ? 'Save Draft to Library' : 'Add Current Quote to Library';
     saveButton.dataset.boundQuoteId = boundQuoteId || '';
-    if (boundQuoteId && dirty) summary.textContent = 'Draft open · unsaved changes';
+    updateQuoteSummary();
+  }
+
+  function updateQuoteSummary() {
+    const total = matchingQuotes.length;
+    if (!total) {
+      summary.textContent = quoteSearch.value.trim() ? '0 matching drafts' : '0 drafts on this device';
+      return;
+    }
+    const parts = [
+      `${total} draft${total === 1 ? '' : 's'}`,
+      `${Math.min(total, visibleQuoteLimit)} shown`
+    ];
+    if (boundQuoteId) parts.push('one open');
+    if (boundQuoteId && dirty) parts.push('unsaved');
+    summary.textContent = parts.join(' · ');
   }
 
   function bindQuote(quote) {
@@ -115,11 +142,11 @@ export function initializeQuoteLibraryUi({
   }
 
   function renderQuoteResults(quotes) {
+    matchingQuotes = quotes;
     quoteResults.replaceChildren();
-    summary.textContent = boundQuoteId
-      ? `${quotes.length} drafts · one open`
-      : `${quotes.length} drafts on this device`;
+    updateQuoteSummary();
     if (!quotes.length) {
+      showMoreQuotes.hidden = true;
       const empty = document.createElement('p');
       empty.className = 'library-empty';
       empty.textContent = 'No saved drafts match this search.';
@@ -128,15 +155,28 @@ export function initializeQuoteLibraryUi({
       return;
     }
 
-    quotes.forEach((quote) => {
+    quotes.slice(0, visibleQuoteLimit).forEach((quote) => {
       const content = quote.workingDraft?.content;
       if (!content) return;
       const card = document.createElement('article');
       card.className = 'library-card';
+      card.dataset.quoteId = quote.id;
       if (quote.id === boundQuoteId) card.classList.add('is-active');
+      const unreviewedDuplicate = isUnreviewedDuplicate(quote);
+      if (unreviewedDuplicate) card.classList.add('is-unreviewed-duplicate');
 
+      const headingRow = document.createElement('div');
+      headingRow.className = 'library-card__heading';
       const heading = document.createElement('h3');
       heading.textContent = content.customer.companyName || 'Untitled draft';
+      headingRow.appendChild(heading);
+      if (unreviewedDuplicate) {
+        const badge = document.createElement('span');
+        badge.className = 'library-card__duplicate-badge';
+        badge.textContent = 'DUP';
+        badge.setAttribute('aria-label', 'Duplicate draft needs review');
+        headingRow.appendChild(badge);
+      }
       const meta = document.createElement('p');
       meta.textContent = [
         content.contact.buyerName,
@@ -152,9 +192,16 @@ export function initializeQuoteLibraryUi({
         makeButton(quote.id === boundQuoteId ? 'Reopen' : 'Open', 'button secondary', () => openDraft(quote.id)),
         makeButton('Duplicate', 'button secondary', () => duplicateDraft(quote.id))
       );
-      card.append(heading, meta, saved, actions);
+      card.append(headingRow, meta, saved, actions);
       quoteResults.appendChild(card);
     });
+    const remaining = quotes.length - Math.min(quotes.length, visibleQuoteLimit);
+    showMoreQuotes.hidden = remaining <= 0;
+    if (remaining > 0) {
+      const nextCount = Math.min(QUOTE_LIBRARY_PAGE_SIZE, remaining);
+      showMoreQuotes.textContent = `Show ${nextCount} more`;
+      showMoreQuotes.setAttribute('aria-label', `Show ${nextCount} more saved drafts`);
+    }
     updateBoundUi();
   }
 
@@ -172,6 +219,7 @@ export function initializeQuoteLibraryUi({
         ? `${recoveryRecords.length} damaged record${recoveryRecords.length === 1 ? '' : 's'} preserved for recovery.`
         : '';
     } catch (error) {
+      showMoreQuotes.hidden = true;
       setLibraryStatus('The quote library is unavailable. The current quote can still be saved in this browser.', true);
     }
   }
@@ -233,6 +281,7 @@ export function initializeQuoteLibraryUi({
       const links = await saveCustomerSnapshot(legacyQuote);
       const draft = await repository.createDraftFromLegacyQuote(legacyQuote, links);
       bindQuote(draft);
+      visibleQuoteLimit = QUOTE_LIBRARY_PAGE_SIZE;
       const fallback = saveActiveFallback();
       await Promise.all([refreshQuotes(), refreshCustomers()]);
       setLibraryStatus(
@@ -309,8 +358,9 @@ export function initializeQuoteLibraryUi({
       const duplicate = await repository.duplicateAsNew(quoteId, {
         quoteDate: new Date().toISOString().slice(0, 10)
       });
+      visibleQuoteLimit = QUOTE_LIBRARY_PAGE_SIZE;
       await refreshQuotes();
-      setLibraryStatus(`Created an unnumbered duplicate of ${duplicate.workingDraft.content.customer.companyName || 'the draft'}. Open it when ready.`);
+      setLibraryStatus(`Created an unnumbered duplicate of ${duplicate.workingDraft.content.customer.companyName || 'the draft'}. The highlighted DUP draft is ready to open.`);
       notifyOtherTabs(duplicate.id);
     } catch (error) {
       setLibraryStatus('The draft could not be duplicated.', true);
@@ -374,7 +424,14 @@ export function initializeQuoteLibraryUi({
   }
 
   saveButton.addEventListener('click', addCurrentToLibrary);
-  quoteSearch.addEventListener('input', refreshQuotes);
+  quoteSearch.addEventListener('input', () => {
+    visibleQuoteLimit = QUOTE_LIBRARY_PAGE_SIZE;
+    refreshQuotes();
+  });
+  showMoreQuotes.addEventListener('click', () => {
+    visibleQuoteLimit += QUOTE_LIBRARY_PAGE_SIZE;
+    renderQuoteResults(matchingQuotes);
+  });
   customerSearch.addEventListener('input', refreshCustomers);
   window.addEventListener('beforeunload', (event) => {
     if (!boundQuoteId || !dirty) return;

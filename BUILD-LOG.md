@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-07-16 -- Version 2 quote-library list usability
+
+- Added ten-at-a-time phone rendering over the existing newest-first, 100-result draft search; search still covers the complete repository result set and resets the visible count to ten.
+- Added a pale, text-labeled `DUP` review state derived from existing duplicate lineage and revision zero. The marker clears after the first successful save without changing customer/company data.
+- Visually inspected 412 px renderings with 51 drafts and a long duplicate customer name; the badge, card actions, count summary, and 48 px Show More control fit without horizontal overflow.
+- Verified syntax checks, 92 unit tests, 50 compatibility/accessibility tests across Chromium, Firefox, WebKit, Pixel 7, and iPhone 13 profiles, 16 customer-PDF/privacy tests, the `/gtm-calc/` production build, and a direct-source GitHub Pages smoke test with no browser errors.
+
 ### 2026-07-16 -- GitHub Pages source-import hotfix
 
 - Reproduced the live failure in Chromium: GitHub Pages served the source tree directly and the browser rejected the bare `idb` package import before any application controller initialized.

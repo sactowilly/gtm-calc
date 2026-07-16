@@ -55,7 +55,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
-- **Version 2.0 - Local Quote Library (draft UI in progress):** IndexedDB-backed searchable drafts and customer recall are implemented on the current branch; finalization, quote numbers, revisions, and statuses remain the next lifecycle slice.
+- **Version 2.0 - Local Quote Library (in progress):** IndexedDB-backed searchable drafts, customer recall, ten-at-a-time phone results, and highlighted new duplicates are implemented; finalization, quote numbers, revisions, and statuses remain the next lifecycle slice.
 - **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.

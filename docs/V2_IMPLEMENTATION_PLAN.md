@@ -29,7 +29,7 @@ Rollback: revert the PR. Since the new repository is not connected to the visibl
 
 ### PR 12 — Draft library, customer recall, and legacy import UI
 
-Status: implemented on `feature/v2-draft-library-ui`; verification and owner review pending.
+Status: merged in PR #12.
 
 Goal: let a user opt into the local library, save multiple unnumbered drafts, find/reopen them, and reuse customer/contact data.
 
@@ -47,7 +47,27 @@ Excluded: finalization/number allocation controls, finalized-version editing, re
 
 Rollback: revert the UI connection. Keep `gtm_quote_calculator_v1` updated during the transition so the stable active-quote workflow remains usable. Do not delete IndexedDB records.
 
-### PR 13 — Finalization, numbering, immutable history, duplicate, and revision UI
+### PR 13 — GitHub Pages source-import hotfix
+
+Status: merged. The directly hosted source now imports the committed IndexedDB helper through a browser-resolvable relative path, with regression coverage for source-hosted module imports.
+
+### PR 14 — Quote-library list usability
+
+Status: implemented and verified on `feature/v2-library-list-usability`; owner review pending.
+
+Goal: keep a growing phone library scannable and make a newly created duplicate unmistakable without changing customer-facing data.
+
+Included:
+
+- Show the ten newest matching drafts first, with ten-at-a-time progressive disclosure and search across all 100 repository results.
+- Display total and shown counts while retaining open/unsaved state.
+- Show a pale, text-labeled `DUP` state when `sourceQuoteId` is present and `draftRevision` is zero.
+- Clear the temporary duplicate state only after the first successful draft save.
+- Fifty-draft phone, search, accessibility, customer-name privacy, and duplicate-save regression coverage.
+
+Excluded: quote titles, automatic duplicate opening, deletion/archive, repository pagination, schema migrations, and lifecycle controls.
+
+### PR 15 — Finalization, numbering, immutable history, duplicate, and revision UI
 
 Goal: complete the quote lifecycle with clear, distinct user operations.
 
@@ -64,7 +84,7 @@ Excluded: shared/global numbering, automatic email, server sync, backup/restore,
 
 Rollback: disable lifecycle actions and revert the UI/service connection. Preserve IndexedDB and the active quote bridge; never delete or renumber committed versions during rollback.
 
-### PR 14 — Version 2 release hardening
+### PR 16 — Version 2 release hardening
 
 Goal: validate upgrades, recovery, accessibility, phone/laptop workflows, and production deployment before calling Version 2 stable.
 
