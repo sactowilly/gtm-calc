@@ -1,4 +1,6 @@
-import { deleteDB, openDB } from 'idb';
+// Keep this browser entry point relative so the repository remains runnable when
+// GitHub Pages serves the source tree directly, without Vite rewriting imports.
+import { deleteDB, openDB } from '../../vendor/idb.js';
 import {
   QUOTE_RECORD_SCHEMA_VERSION,
   buildDisplayNumber,
