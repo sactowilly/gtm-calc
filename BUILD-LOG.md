@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-07-16 -- GitHub Pages source-import hotfix
+
+- Reproduced the live failure in Chromium: GitHub Pages served the source tree directly and the browser rejected the bare `idb` package import before any application controller initialized.
+- Vendored the pinned `idb` ES module and ISC license, changed the repository import to a browser-resolvable relative path, and replaced the static `Loading drafts...` placeholder with a neutral label.
+- Added regression coverage that rejects package-only imports in directly hosted browser modules.
+- Verified syntax checks, 92 unit tests, the `/gtm-calc/` production build, and a direct-source 412 px Chromium smoke test that imported and listed a CSV item with no console or page errors.
+
 ### 2026-07-16 -- Version 2 draft-library UI
 
 - Confirmed PR #11 merged with passing CI and created `feature/v2-draft-library-ui` from updated `main`.

@@ -8,7 +8,7 @@
 | Confirm duplicate SKU policy | provisional | Current foundation rejects later duplicate normalized SKUs and reports each rejected row. |
 | Validate catalog storage volume | monitor | The representative CSV fit and worked. Revisit only if a larger catalog approaches the visible import limit or browser quota. |
 | Version 2 quote-library foundation | complete | PR #11 merged with passing CI. |
-| Version 2 draft-library UI | in progress | Branch `feature/v2-draft-library-ui`; opt-in import, draft search/reopen/duplicate, customer recall, fallback save, and stale-tab protection are implemented. |
+| Version 2 draft-library UI | complete | PR #12 merged; opt-in import, draft search/reopen/duplicate, customer recall, fallback save, and stale-tab protection are implemented. |
 | Approve quote-number year policy | owner input needed before PR 13 | Choose quote-date year or finalization-date year. The foundation requires an explicit year and does not decide automatically. |
 | Approve Version 2 status transitions | owner input needed before PR 13 | Define allowed transitions and whether accepted/declined/expired/cancelled records can be reopened. |
 | Approve customer/contact matching | owner input before V2 stable | Current provisional rule uses exact normalized company name, then contact email (or name when email is blank). |
