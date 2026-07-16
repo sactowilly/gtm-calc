@@ -1,5 +1,15 @@
 # Build Log
 
+### 2026-07-16 -- Version 2 draft-library UI
+
+- Confirmed PR #11 merged with passing CI and created `feature/v2-draft-library-ui` from updated `main`.
+- Added an opt-in phone-first quote library, non-destructive active-quote import, searchable/reopenable/duplicable drafts, saved customer/contact recall, per-tab session binding, and clear device-local disclosure.
+- Normal Save still writes `gtm_quote_calculator_v1`; bound library drafts update IndexedDB and the legacy fallback.
+- Added atomic draft/customer saves with revision-token conflict rejection so a stale tab cannot overwrite a newer library draft or partially change customer records.
+- Visually inspected a populated 412 px phone rendering with long company, buyer, and email values; the library card wrapped without page-level horizontal overflow.
+- Verified JavaScript syntax checks, 90 unit tests, the `/gtm-calc/` production build, 40 cross-browser/mobile/accessibility tests, and 16 customer-PDF layout checks.
+- The production build retains the existing warnings for the two vendored non-module PDF scripts; no new build warning was introduced.
+
 ### 2026-07-16 -- Version 1.5 accepted; Version 2 foundation started
 
 - PR #10 merged with passing CI. The owner imported a representative CSV, confirmed catalog items were listed/searchable, and confirmed My Items persistence and previous-catalog restore.

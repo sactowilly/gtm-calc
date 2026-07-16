@@ -97,7 +97,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-16): Foundation in progress.** The first slice adds the separate IndexedDB schema and tested domain/repository behavior without replacing the stable `gtm_quote_calculator_v1` workflow. Visible library/import/finalize/status controls follow in reviewable PRs.
+**Status (2026-07-16): Draft-library UI in progress.** PR #11 merged the separate IndexedDB schema and tested domain/repository behavior. The PR #12 branch adds opt-in legacy import, searchable/reopenable/duplicable drafts, customer/contact recall, and conflict-aware saves while preserving `gtm_quote_calculator_v1` as a fallback. Finalization, numbering, revisions, statuses, and immutable-history UI follow.
 
 ### Objective
 
