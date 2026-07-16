@@ -99,6 +99,10 @@ Finalization is one IndexedDB transaction: validate the draft, allocate a base/r
 
 ### Quote content snapshot
 
+The Version 2 foundation uses a compatibility bridge while the existing UI still owns a flat active quote. `legacyQuoteToQuoteContent` maps `customerName` and `customerAddress` into the customer snapshot; buyer name/email/phone into the contact snapshot; `salesRep`, date, Ship Via, F.O.B., terms, customer notes, and existing line snapshots into explicit content fields. `quoteContentToLegacyQuote` round-trips that data back to the current UI shape. Address remains `addressText` until the customer-record UI introduces safe structured-address editing; it is not guessed or split during migration.
+
+Current line snapshots additionally preserve `uom`, `leadTime`, freight mode, the legacy derived calculation fields, and optional `catalogItemId`, `catalogSource`, and `sku`. These internal identifiers remain excluded from the customer projection.
+
 ```ts
 interface QuoteContent {
   customer: CustomerSnapshot;

@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 2 Foundation Boundary
+
+**DECISION:** Introduce a separate `gtm_quote_manager` IndexedDB database behind a repository adapter while leaving `gtm_quote_calculator_v1` as the active visible quote. Use pinned `idb` for transaction handling and test with both `fake-indexeddb` and real browser IndexedDB. Require an explicit business year for number allocation until the owner approves the date/year rule.
+**RATIONALE:** This proves migration, transaction, immutability, revision, duplicate, and recovery rules without making an irreversible UI/data cutover. The active Version 1.5 workflow remains the rollback path.
+**DATE:** 2026-07-16
+**PARTIES:** Codex, Will Z (continued implementation authorization)
+
 ## Version 1.5 Catalog Storage Boundary
 
 **DECISION:** Keep `gtm_quote_calculator_v1` unchanged. Store Version 1.5 catalog, manual-item, and recent-use data behind separate versioned localStorage adapter keys with validation, one prior-import rollback copy, and recoverable failure states. Keep the adapter API migratable to IndexedDB in Version 2.
