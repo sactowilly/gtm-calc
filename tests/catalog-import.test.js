@@ -90,4 +90,20 @@ describe('catalog CSV import', () => {
     expect(result.report.acceptedRows).toBe(1);
     expect(result.items[0]).toMatchObject({ sku: 'P-1', name: 'Mailer' });
   });
+
+  it('accepts a UTF-8 BOM and quoted multiline fields', () => {
+    const result = importCatalogCsv('\uFEFFSKU,Name,Description\r\nA-1,Carton,"Line one\nLine two"');
+
+    expect(result.report).toMatchObject({ totalRows: 1, acceptedRows: 1, rejectedRows: 0 });
+    expect(result.items[0].description).toBe('Line one\nLine two');
+  });
+
+  it('rejects ambiguous duplicate aliases and oversized fields', () => {
+    const duplicateHeaders = importCatalogCsv('SKU,Item Number,Name\nA-1,A-1,Carton');
+    expect(duplicateHeaders.report.errors[0]).toMatchObject({ row: 1, code: 'ambiguous_header' });
+
+    const oversized = importCatalogCsv(`SKU,Name\nA-1,${'x'.repeat(11)}`, { maxFieldLength: 10 });
+    expect(oversized.report).toMatchObject({ totalRows: 1, acceptedRows: 0, rejectedRows: 1 });
+    expect(oversized.report.errors[0].message).toContain('10-character');
+  });
 });

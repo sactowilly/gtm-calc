@@ -71,10 +71,19 @@ function normalizeHeader(value) {
 
 function resolveHeaderIndexes(headerRow, aliases) {
   const normalizedHeaders = headerRow.map(normalizeHeader);
-  return Object.fromEntries(Object.entries(aliases).map(([field, candidates]) => {
+  const indexes = {};
+  const duplicateFields = [];
+
+  Object.entries(aliases).forEach(([field, candidates]) => {
     const normalizedCandidates = candidates.map(normalizeHeader);
-    return [field, normalizedHeaders.findIndex((header) => normalizedCandidates.includes(header))];
-  }));
+    const matches = normalizedHeaders
+      .map((header, index) => normalizedCandidates.includes(header) ? index : -1)
+      .filter((index) => index >= 0);
+    indexes[field] = matches[0] ?? -1;
+    if (matches.length > 1) duplicateFields.push(field);
+  });
+
+  return { indexes, duplicateFields };
 }
 
 function readCell(row, index) {
@@ -114,6 +123,9 @@ function stableCatalogId(normalizedSku) {
 export function importCatalogCsv(csvText, options = {}) {
   const aliases = options.headerAliases || DEFAULT_CATALOG_HEADERS;
   const requiredFields = ['sku', 'name'];
+  const maxFieldLength = Number.isInteger(options.maxFieldLength) && options.maxFieldLength > 0
+    ? options.maxFieldLength
+    : 2000;
   const parsed = parseCsvRows(String(csvText ?? ''));
   const report = {
     totalRows: 0,
@@ -135,13 +147,21 @@ export function importCatalogCsv(csvText, options = {}) {
   }
 
   const headerRow = parsed.rows[headerRowIndex];
-  const indexes = resolveHeaderIndexes(headerRow, aliases);
+  const { indexes, duplicateFields } = resolveHeaderIndexes(headerRow, aliases);
   const missingHeaders = requiredFields.filter((field) => !Number.isInteger(indexes[field]) || indexes[field] < 0);
   if (missingHeaders.length > 0) {
     report.errors.push({
       row: headerRowIndex + 1,
       code: 'missing_required_header',
       message: `Missing required column(s): ${missingHeaders.join(', ')}.`
+    });
+    return { items: [], report };
+  }
+  if (duplicateFields.length > 0) {
+    report.errors.push({
+      row: headerRowIndex + 1,
+      code: 'ambiguous_header',
+      message: `Multiple columns map to: ${duplicateFields.join(', ')}.`
     });
     return { items: [], report };
   }
@@ -160,6 +180,9 @@ export function importCatalogCsv(csvText, options = {}) {
     const name = readCell(row, indexes.name);
     const rowErrors = [];
 
+    if (row.some((cell) => String(cell ?? '').length > maxFieldLength)) {
+      rowErrors.push(`A field exceeds the ${maxFieldLength}-character import limit.`);
+    }
     if (!sku) rowErrors.push('SKU is required.');
     if (!name) rowErrors.push('Name is required.');
     if (normalizedSku && seenSkus.has(normalizedSku)) rowErrors.push(`Duplicate SKU: ${sku}.`);

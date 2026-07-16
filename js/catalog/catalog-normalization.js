@@ -3,6 +3,12 @@ const DIMENSION_SEPARATOR_PATTERN = String.raw`(?:\s*[xX×]\s*|\s+)`;
 const DIMENSION_PATTERN = new RegExp(
   String.raw`(^|[^\d.])(${DIMENSION_NUMBER_PATTERN})${DIMENSION_SEPARATOR_PATTERN}(${DIMENSION_NUMBER_PATTERN})${DIMENSION_SEPARATOR_PATTERN}(${DIMENSION_NUMBER_PATTERN})(?=$|[^\d.])`
 );
+const FOUR_X_DIMENSION_PATTERN = new RegExp(
+  String.raw`(^|[^\d.])(${DIMENSION_NUMBER_PATTERN})\s*[xX×]\s*(${DIMENSION_NUMBER_PATTERN})\s*[xX×]\s*(${DIMENSION_NUMBER_PATTERN})\s*[xX×]\s*(${DIMENSION_NUMBER_PATTERN})(?=$|[^\d.])`
+);
+const FOUR_SPACE_DIMENSION_PATTERN = new RegExp(
+  String.raw`^\D*(${DIMENSION_NUMBER_PATTERN})\s+(${DIMENSION_NUMBER_PATTERN})\s+(${DIMENSION_NUMBER_PATTERN})\s+(${DIMENSION_NUMBER_PATTERN})\D*$`
+);
 
 export function normalizeSearchText(value) {
   return String(value ?? '')
@@ -49,7 +55,9 @@ function normalizeDimensionPart(value) {
  * "RSC 12x10x8" all produce the canonical token "12x10x8".
  */
 export function normalizeDimensions(value) {
-  const match = String(value ?? '').match(DIMENSION_PATTERN);
+  const source = String(value ?? '');
+  if (FOUR_X_DIMENSION_PATTERN.test(source) || FOUR_SPACE_DIMENSION_PATTERN.test(source)) return '';
+  const match = source.match(DIMENSION_PATTERN);
   if (!match) return '';
 
   return [match[2], match[3], match[4]].map(normalizeDimensionPart).join('x');
