@@ -8,7 +8,7 @@ Live application: <https://sactowilly.github.io/gtm-calc/>
 
 > Historical baseline: this document records the original `f7c35a1` audit. Subsequent Version 1 pull requests added Vite/ES modules, regression tests, phone-first quote controls, customer/buyer fields, UOM, explicit PDF download, and separate rep/customer email actions. The customer-PDF replacement branch removes the handwritten coordinate renderer in favor of the customer-safe HTML/CSS template documented in `PDF_TEMPLATE_FIELD_MAPPING.md` and `PDF_AND_SHARING.md`. The storage key and calculation formulas remain unchanged.
 
-## Current implementation update — 2026-07-15
+## Current implementation update — 2026-07-16
 
 The detailed audit below remains as historical evidence for the original baseline. The active code has since changed materially:
 
@@ -17,12 +17,13 @@ The detailed audit below remains as historical evidence for the original baselin
 - Customer PDF/email projections exclude unit cost, landed cost, freight, GTM/markup, catalog source IDs, and other internal profitability fields.
 - The single active quote remains manually saved under the backward-compatible `gtm_quote_calculator_v1` key with corrupt-record recovery.
 - PR #9 merged the pure Version 1.5 CSV parsing, normalization, dimension matching, import reporting, and catalog search foundation.
-- `feature/v15-catalog-ui` adds a collapsible phone-first catalog workflow, standard CSV import/reporting, recent results, My Items, editable item-form population, and one prior-import rollback.
+- PR #10 merged the collapsible phone-first catalog workflow, standard CSV import/reporting, recent results, My Items, editable item-form population, and one prior-import rollback. The owner successfully imported and searched a representative CSV and confirmed that manual items persist.
 - Version 1.5 catalog data uses separate versioned keys: `gtm_catalog_v1`, `gtm_catalog_v1_previous`, `gtm_manual_items_v1`, and `gtm_catalog_usage_v1`. These keys do not replace or mutate the active quote key.
-- The visible application marker for this branch is `v1.5.0 · catalog-preview.1`.
-- Quote-library IndexedDB, quote numbering/revisions, backup/restore, PWA, backend, authentication, and synchronization remain deferred according to the roadmap.
+- The Version 2 foundation branch adds a separate `gtm_quote_manager` IndexedDB schema, lossless legacy-quote bridge, draft repository, search, corrupt-record quarantine, transactional local numbering, immutable finalized snapshots, duplication, and revisions. It is not connected to the visible quote workflow in this slice.
+- The visible application marker for the foundation branch is `v2.0.0 · quote-library-foundation.1`.
+- Quote-library UI/customer repositories/status workflow remain later Version 2 slices. Backup/restore, PWA, backend, authentication, and synchronization remain deferred according to the roadmap.
 
-The current verification baseline is 71 unit tests, 25 cross-browser/mobile/accessibility tests, 16 customer-PDF visual/layout tests, JavaScript syntax checks, and the `/gtm-calc/` production build. The live GitHub Pages site changes only after this feature branch is reviewed and merged to `main`.
+The current verification counts are recorded in `BUILD-LOG.md` after each verified branch. The live GitHub Pages site changes only after a feature branch is reviewed and merged to `main`.
 
 ## Executive summary
 

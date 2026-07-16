@@ -70,7 +70,25 @@ This is intentionally smaller than the V2 repositories. UI code should not call 
 
 ## Version 2 IndexedDB plan
 
-Database name: `gtm_quote_manager` (proposed). Use an explicit integer database version and logical record `schemaVersion`s.
+Database name: `gtm_quote_manager`. Use an explicit integer database version and logical record `schemaVersion`s.
+
+### Foundation implementation status — 2026-07-16
+
+The first Version 2 slice implements database version 1 with `quotes`, `quoteVersions`, `quoteEvents`, `customers`, `contacts`, `settings`, `recoveryRecords`, and `migrationLog` stores. It uses the small pinned `idb` wrapper for transaction safety and `fake-indexeddb` only in unit tests; Playwright also exercises the repository against real browser IndexedDB.
+
+This slice is deliberately disconnected from `js/main.js`. The active calculator still reads and writes `gtm_quote_calculator_v1`, and creating the new database never deletes or changes that key. The repository can import a cloned legacy quote into an unnumbered library draft, but the visible opt-in/import workflow belongs to the next PR.
+
+Implemented guarantees:
+
+- UUID-like injected IDs and ISO timestamps with a stable device ID in settings.
+- Lossless conversion between the current flat quote and the Version 2 content snapshot, including catalog references and derived legacy calculations.
+- Transactional `YYYY-NNN` base allocation using an explicit business year.
+- Transactional `-R#` revision allocation and content hashes for finalized snapshots.
+- No repository method that updates a finalized version; editing requires a revision draft.
+- Duplicate-as-new creates an unnumbered draft with source lineage.
+- Invalid records are isolated in `recoveryRecords` while healthy records remain usable.
+
+Not yet connected or implemented: customer/contact repositories, status-transition rules, active-quote import UI, quote-library screens, catalog migration, backup/restore, and deletion/recovery controls.
 
 Proposed object stores:
 

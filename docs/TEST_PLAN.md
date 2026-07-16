@@ -81,7 +81,7 @@ Forbidden vocabulary/value assertions include unit cost, landed cost, total cost
 
 ## Catalog and dimension tests (Version 1.5)
 
-Implementation status as of 2026-07-15: PR #9 covers the roadmap dimension examples, decimals/mixed fractions, normalized search fields, required/missing headers, malformed quoted CSV, row-numbered errors, duplicate SKUs, invalid money/status values, configurable header aliases, exact/prefix/description/dimension ranking, inactive exclusion, recency ordering, and deterministic limits. The PR #10 branch adds BOM/multiline/ambiguous-header/oversized-field and false-positive dimension fixtures; catalog corruption, quota, rollback, manual-item, and usage storage tests; plus end-to-end import/search/persistence checks across Chromium, Firefox, WebKit, Android Chrome emulation, and iPhone Safari emulation.
+Implementation status as of 2026-07-16: PR #9 covers the roadmap parser/search foundation. Merged PR #10 adds BOM/multiline/ambiguous-header/oversized-field and false-positive dimension fixtures; catalog corruption, quota, rollback, manual-item, and usage storage tests; plus end-to-end import/search/persistence checks across Chromium, Firefox, WebKit, Android Chrome emulation, and iPhone Safari emulation. The owner also passed a representative CSV import/search and My Items persistence test.
 
 ### Normalization
 
@@ -106,6 +106,8 @@ Test case/whitespace, decimals, leading/trailing text, separators, invalid two/f
 Assert deterministic ordering: exact SKU, SKU prefix, exact normalized dimension/name, name prefix, name substring, description substring, then recent-use boost within a documented tier. Test manual versus standard conflicts, archived/inactive exclusion, punctuation, case, partial terms, and empty/very broad queries.
 
 ## Quote library tests (Version 2)
+
+Foundation coverage includes lossless conversion from `gtm_quote_calculator_v1`, unnumbered drafts, search, explicit business-year numbering, concurrent base allocation, immutable content hashes, sequential revisions, duplicate lineage, corrupt-record quarantine, and a real-browser IndexedDB smoke test. UI/status/customer behavior remains pending in later Version 2 slices.
 
 ### Numbering
 

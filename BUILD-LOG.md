@@ -1,5 +1,15 @@
 # Build Log
 
+### 2026-07-16 -- Version 1.5 accepted; Version 2 foundation started
+
+- PR #10 merged with passing CI. The owner imported a representative CSV, confirmed catalog items were listed/searchable, and confirmed My Items persistence and previous-catalog restore.
+- Marked Version 1.5 complete for the initial local release.
+- Started `feature/v2-quote-library-foundation` from updated `main`.
+- Added an inactive, separate IndexedDB domain/repository foundation for legacy conversion, drafts, search, local numbering, immutable versions, revisions, duplicates, and corrupt-record quarantine.
+- Kept `gtm_quote_calculator_v1` as the visible active-quote source; no automatic migration or UI cutover occurs in this slice.
+- Verified a clean `npm ci`, JavaScript syntax checks, 86 unit tests, the `/gtm-calc/` production build, 30 full cross-browser/mobile/accessibility checks, 16 customer-PDF layout checks, and a post-hardening five-browser IndexedDB smoke rerun.
+- The production build retains the existing warnings for the two vendored non-module PDF scripts; no new build warning was introduced.
+
 ### 2026-07-15 -- Version 1.5 catalog foundation merged
 
 - PR #9 merged the pure CSV import/report, normalization, dimension matching, and deterministic catalog search modules.

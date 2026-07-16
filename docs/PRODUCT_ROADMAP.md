@@ -59,7 +59,7 @@ Turn the functioning calculator into a dependable phone-first active-quote build
 
 ## Version 1.5 — Catalog search
 
-**Status (2026-07-15): In progress.** PR #9 merged the storage-independent CSV parser, row-level import report, catalog normalization, canonical dimension matching, deterministic unified search, and focused tests. The `feature/v15-catalog-ui` follow-up implements versioned catalog-only local storage, a phone-first import/report/search workflow, My Items, recent selections, and editable item-form population. Quote-library IndexedDB remains Version 2 scope.
+**Status (2026-07-16): Complete for the initial local release.** PR #9 merged the storage-independent parser/search foundation. PR #10 merged versioned catalog-only local storage, phone-first import/report/search, My Items, recent selections, rollback, and editable item-form population. A representative owner CSV import/search and My Items persistence test passed.
 
 ### Objective
 
@@ -96,6 +96,8 @@ Reduce quote-entry time through dependable local search across a standard catalo
 - Selecting a catalog item populates its stored cost/pricing inputs while keeping quote-specific values editable and preserving them in saved quote snapshots.
 
 ## Version 2.0 — Local quote library
+
+**Status (2026-07-16): Foundation in progress.** The first slice adds the separate IndexedDB schema and tested domain/repository behavior without replacing the stable `gtm_quote_calculator_v1` workflow. Visible library/import/finalize/status controls follow in reviewable PRs.
 
 ### Objective
 

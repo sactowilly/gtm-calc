@@ -8,9 +8,11 @@ A simple USD quote calculator for packaging sales. It calculates landed cost, GT
 
 GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
-## Version 1 Release Candidate
+## Current Release Track
 
-Version 1 is ready for final owner testing when the release-candidate branch is merged, GitHub Pages deploys, and the live app passes a short real-device smoke test:
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are merged and have passed an owner test with a real CSV. Version 2 quote-library work is beginning behind the existing active-quote workflow.
+
+The release smoke checks remain:
 
 - Android: create, save, reload, edit, preview, download, and share a real quote PDF.
 - Laptop: download the PDF, use Email Rep, and use Email Customer.
@@ -50,8 +52,8 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 ![GTM Quote Tool Roadmap](docs/assets/gtm-quote-tool-roadmap.png)
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
-- **Version 1.5 - Catalog Search (in progress):** the tested CSV normalization/import/search foundation is merged; local catalog storage, phone-friendly import/search, manual items, and recent items are the next delivery slice.
-- **Version 2.0 - Local Quote Library:** IndexedDB-backed quotes and customers, quote statuses, quote numbers, duplication, and revisions.
+- **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
+- **Version 2.0 - Local Quote Library (foundation in progress):** IndexedDB-backed quotes and customers, quote statuses, quote numbers, duplication, and revisions.
 - **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
