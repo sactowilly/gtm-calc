@@ -17,6 +17,7 @@
   --surface-soft: #f8faf7;
   --radius: 10px;
   --shadow: 0 2px 10px rgba(27, 39, 51, 0.07);
+  --app-nav-height: 72px;
 }
 
 html {
@@ -47,7 +48,7 @@ button {
 .app-shell {
   width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 12px;
+  padding: 12px 12px calc(var(--app-nav-height) + 18px);
 }
 
 .app-header {
@@ -56,6 +57,53 @@ button {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.app-views {
+  min-width: 0;
+}
+
+.app-view[hidden] {
+  display: none;
+}
+
+.app-navigation {
+  position: fixed;
+  z-index: 20;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  min-height: var(--app-nav-height);
+  padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 -4px 12px rgba(27, 39, 51, 0.1);
+}
+
+.app-navigation__button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.app-navigation__button[aria-current="page"] {
+  border-color: #b9d7cd;
+  background: #eaf5f0;
+  color: var(--accent-dark);
+}
+
+.app-navigation__button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
 }
 
 .app-title {
@@ -746,7 +794,7 @@ button:focus-visible,
 .item-actions {
   position: sticky;
   z-index: 5;
-  bottom: 0;
+  bottom: calc(var(--app-nav-height) + env(safe-area-inset-bottom));
   display: grid;
   grid-template-columns: 1.25fr 1fr 1fr;
   margin: 14px -6px -8px;
@@ -1009,7 +1057,7 @@ dialog .pdf-actions {
 
 @media (min-width: 560px) {
   .app-shell {
-    padding: 18px;
+    padding: 18px 18px calc(var(--app-nav-height) + 18px);
   }
 
   .panel {
@@ -1065,6 +1113,46 @@ dialog .pdf-actions {
 }
 
 @media (min-width: 860px) {
+  .app-shell {
+    display: grid;
+    grid-template-columns: 196px minmax(0, 1fr);
+    column-gap: 18px;
+    align-items: start;
+    padding-bottom: 24px;
+  }
+
+  .app-header {
+    grid-column: 1 / -1;
+  }
+
+  .app-navigation {
+    position: sticky;
+    top: 16px;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    grid-column: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    min-height: 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .app-navigation__button {
+    min-height: 48px;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .app-views {
+    grid-column: 2;
+    min-width: 0;
+  }
+
   .mobile-table-hint {
     display: none;
   }

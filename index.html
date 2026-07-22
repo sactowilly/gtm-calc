@@ -26,6 +26,17 @@
         </div>
       </header>
 
+      <nav id="appNavigation" class="app-navigation" aria-label="Primary navigation">
+        <button type="button" class="app-navigation__button" data-app-view="quote" aria-current="page">Quote</button>
+        <button type="button" class="app-navigation__button" data-app-view="quotes">Quotes</button>
+        <button type="button" class="app-navigation__button" data-app-view="customers">Customers</button>
+        <button type="button" class="app-navigation__button" data-app-view="catalog">Catalog</button>
+      </nav>
+
+      <div class="app-views">
+      <section id="quoteWorkspace" class="app-view app-view--quote" data-app-view-panel="quote" aria-label="Quote workspace">
+      <!-- Quote Library is intentionally relocated into its own Quotes workspace below. -->
+      <!--
       <details id="quoteLibraryTools" class="panel quote-library-tools">
         <summary>
           <span>Quote Library</span>
@@ -81,6 +92,7 @@
           </details>
         </div>
       </details>
+      -->
 
       <section class="panel calculator-panel" aria-labelledby="calculator-heading">
         <div class="section-heading">
@@ -89,6 +101,8 @@
         </div>
 
         <form id="itemForm" novalidate>
+          <!-- Catalog controls are intentionally relocated into the Catalog workspace below. -->
+          <!--
           <details id="catalogTools" class="catalog-tools">
             <summary>
               <span>Item Catalog</span>
@@ -117,6 +131,7 @@
               <div id="catalogResults" class="catalog-results" aria-label="Catalog search results"></div>
             </div>
           </details>
+          -->
 
           <div class="form-grid">
             <label class="field-full">
@@ -306,6 +321,90 @@
           <button id="emailCustomer" type="button" class="button primary">Email Customer</button>
         </div>
       </section>
+      </section>
+
+      <section id="quotesWorkspace" class="app-view" data-app-view-panel="quotes" aria-label="Quote library" hidden>
+        <details id="quoteLibraryTools" class="panel quote-library-tools" open>
+          <summary>
+            <span>Quote Library</span>
+            <span id="quoteLibrarySummary" class="quote-library-summary">Draft library</span>
+          </summary>
+          <div class="quote-library-tools__body">
+            <p class="local-library-notice">
+              Saved quotes and customers stay only in this browser on this device. They do not sync to another phone or laptop. Finalized numbers use the finalization year and this device's local sequence, so another device can create the same display number.
+            </p>
+            <div class="library-primary-actions">
+              <button id="addCurrentToLibrary" type="button" class="button primary">Add Current Quote to Library</button>
+            </div>
+            <p id="quoteLibraryStatus" class="quote-library-status" role="status" aria-live="polite"></p>
+            <p id="quoteLibraryRecovery" class="quote-library-recovery" hidden></p>
+            <div class="library-search-controls">
+              <label>
+                Search saved quotes
+                <input id="quoteLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Customer, buyer, email, item, or SKU">
+              </label>
+              <label>
+                Status
+                <select id="quoteLibraryStatusFilter">
+                  <option value="">All statuses</option>
+                  <option value="draft">Draft</option>
+                  <option value="finalized">Finalized</option>
+                  <option value="sent">Sent</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="declined">Declined</option>
+                  <option value="expired">Expired</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </label>
+            </div>
+            <div id="quoteLibraryResults" class="quote-library-results" role="region" aria-label="Saved quotes"></div>
+            <button id="showMoreQuotes" type="button" class="button secondary quote-library-show-more" aria-controls="quoteLibraryResults" hidden>Show 10 more</button>
+          </div>
+        </details>
+      </section>
+
+      <section id="customersWorkspace" class="app-view" data-app-view-panel="customers" aria-label="Saved customers" hidden>
+        <details id="customerLibraryTools" class="panel customer-library" open>
+          <summary>Saved Customers</summary>
+          <div class="customer-library__body">
+            <label>
+              Search customers
+              <input id="customerLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Company or address">
+            </label>
+            <div id="customerLibraryResults" class="customer-library-results" role="region" aria-label="Saved customers"></div>
+          </div>
+        </details>
+      </section>
+
+      <section id="catalogWorkspace" class="app-view" data-app-view-panel="catalog" aria-label="Item catalog" hidden>
+        <details id="catalogTools" class="panel catalog-tools" open>
+          <summary>
+            <span>Item Catalog</span>
+            <span id="catalogSummary" class="catalog-summary">0 catalog · 0 my items</span>
+          </summary>
+          <div class="catalog-tools__body">
+            <label>
+              Search by SKU, item, description, or dimensions
+              <input id="catalogSearch" type="search" inputmode="search" autocomplete="off" placeholder="Example: RSC 12x10x8">
+            </label>
+            <div class="catalog-controls">
+              <label class="catalog-file">
+                Import Catalog CSV
+                <input id="catalogFile" type="file" accept=".csv,text/csv">
+              </label>
+              <button id="saveManualItem" type="button" class="button secondary">Save Current as My Item</button>
+              <button id="restoreCatalog" type="button" class="button secondary" disabled>Restore Previous Catalog</button>
+            </div>
+            <p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p>
+            <details id="catalogImportReport" class="catalog-import-report" hidden>
+              <summary id="catalogImportSummary">Import report</summary>
+              <ul id="catalogImportErrors"></ul>
+            </details>
+            <div id="catalogResults" class="catalog-results" aria-label="Catalog search results"></div>
+          </div>
+        </details>
+      </section>
+      </div>
     </main>
 
     <dialog id="quoteDialog">

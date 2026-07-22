@@ -115,6 +115,8 @@ The quote-library usability follow-up seeds 50 deterministically ordered drafts,
 
 PR #15 adds repository and phone-browser coverage for finalization-date-year base numbers, immutable read-only viewing, customer-safe quote-number output/filenames, historical version selection, sequential revision finalization, latest-version-only revision starts, controlled status events, terminal outcomes, and finalized-version duplication as a new unnumbered `DUP` draft.
 
+The Version 2 workspace-navigation slice verifies that Quote, Quotes, Customers, and Catalog remain distinct accessible destinations on a phone and laptop; switching destinations retains unsaved active-quote fields; opening a quote or selecting a saved customer returns to Quote; catalog selection returns to Quote with the selected values; the bottom bar and laptop rail retain 44 px or larger controls; and narrow widths have no horizontal overflow.
+
 ### Numbering
 
 - Draft has no number.

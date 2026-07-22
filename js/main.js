@@ -10,6 +10,7 @@ import { APP_BUILD_LABEL } from './app-meta.js';
 import { initializeCatalogUi } from './catalog/catalog-ui.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
+import { initializeAppNavigation } from './navigation/app-navigation.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
 import { initializeQuoteLibraryUi } from './quote-library/quote-library-ui.js';
@@ -104,6 +105,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   let quotePdfPromise = null;
   let catalogController = null;
   let quoteLibraryController = null;
+  let appNavigation = null;
   let quoteReadOnly = false;
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
@@ -772,7 +774,10 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   });
 
   document.getElementById('clearItem').addEventListener('click', clearItemForm);
-  document.getElementById('newQuote').addEventListener('click', startNewQuote);
+  document.getElementById('newQuote').addEventListener('click', function () {
+    appNavigation?.showView('quote');
+    startNewQuote();
+  });
   document.getElementById('saveQuote').addEventListener('click', saveQuote);
   document.getElementById('viewQuote').addEventListener('click', openQuoteDialog);
   document.getElementById('downloadQuote').addEventListener('click', downloadQuotePdf);
@@ -797,7 +802,15 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     releaseQuotePdf();
   });
 
-  catalogController = initializeCatalogUi({ storage: localStorage, fields, updateCalculatorPreview });
+  appNavigation = initializeAppNavigation();
+  const showQuoteWorkspace = () => appNavigation.showView('quote');
+
+  catalogController = initializeCatalogUi({
+    storage: localStorage,
+    fields,
+    updateCalculatorPreview,
+    onItemSelected: showQuoteWorkspace
+  });
   const loadedSavedQuote = loadQuote();
   populateQuoteMeta();
   if (loadedSavedQuote) {
@@ -816,7 +829,8 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     replaceActiveQuote,
     applyCustomerDetails,
     saveActiveFallback: saveActiveQuoteFallback,
-    shouldConfirmReplace: hasActiveQuoteInformation
+    shouldConfirmReplace: hasActiveQuoteInformation,
+    showQuoteWorkspace
   });
   quoteLibraryController.initialize();
 })();

@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 2 Workspace Navigation
+
+**DECISION:** Use four state-preserving workspaces—Quote, Quotes, Customers, and Catalog—with a fixed phone bottom bar and a sticky laptop navigation rail. Keep search and CSV import inside their relevant workspaces. Opening a quote, applying a customer, or selecting a catalog item returns to Quote.
+**RATIONALE:** The prior one-document interface became difficult to scan once the quote library, customer recall, and catalog workflows grew. This improves wayfinding without adding routes, a framework, new storage, or an opportunity to discard unsaved quote state.
+**DATE:** 2026-07-22
+**PARTIES:** Codex, Will Z
+
 ## Version 2 Quote Lifecycle Rules
 
 **DECISION:** Allocate a base quote number from the calendar year in which finalization occurs. Allow Finalized → Sent or Cancelled; allow Sent → Accepted, Declined, Expired, or Cancelled; treat Accepted, Declined, Expired, and Cancelled as terminal. Start revisions only from the latest finalized version while retaining every prior version for read-only output and PDF regeneration.

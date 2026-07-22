@@ -8,7 +8,7 @@ Live application: <https://sactowilly.github.io/gtm-calc/>
 
 > Historical baseline: this document records the original `f7c35a1` audit. Subsequent Version 1 pull requests added Vite/ES modules, regression tests, phone-first quote controls, customer/buyer fields, UOM, explicit PDF download, and separate rep/customer email actions. The customer-PDF replacement branch removes the handwritten coordinate renderer in favor of the customer-safe HTML/CSS template documented in `PDF_TEMPLATE_FIELD_MAPPING.md` and `PDF_AND_SHARING.md`. The storage key and calculation formulas remain unchanged.
 
-## Current implementation update — 2026-07-16
+## Current implementation update — 2026-07-22
 
 The detailed audit below remains as historical evidence for the original baseline. The active code has since changed materially:
 
@@ -22,8 +22,9 @@ The detailed audit below remains as historical evidence for the original baselin
 - The Version 2 foundation branch adds a separate `gtm_quote_manager` IndexedDB schema, lossless legacy-quote bridge, draft repository, search, corrupt-record quarantine, transactional local numbering, immutable finalized snapshots, duplication, and revisions. It is not connected to the visible quote workflow in this slice.
 - PR #11 merged that foundation. The PR #12 branch connects an opt-in phone-first draft library, customer/contact recall, duplicate-as-new, session reopen, and stale-tab conflict protection while continuing to save the original localStorage fallback.
 - PR #12 merged the visible draft library, PR #13 restored direct GitHub Pages source compatibility, and PR #14 merged phone-scale progressive disclosure plus the temporary `DUP` review state.
-- The current PR #15 candidate connects finalization-date-year local numbering, immutable read-only version output, historical version selection, latest-version-only revisions, duplicate-as-new, and the approved controlled status workflow. Its visible marker is `v2.0.0 · lifecycle.1`.
-- Version 2 release hardening and owner acceptance remain after the lifecycle PR. Backup/restore, PWA, backend, authentication, synchronization, deletion, and archiving remain deferred according to the roadmap.
+- PR #15 merged finalization-date-year local numbering, immutable read-only version output, historical version selection, latest-version-only revisions, duplicate-as-new, and the approved controlled status workflow. PR #16 merged automatic return to the active quote after opening/reopening a saved quote.
+- The current navigation candidate keeps the existing quote state mounted while separating Quote, Quotes, Customers, and Catalog into touch-safe workspaces. Selecting a catalog item, opening a quote, or using a saved customer returns to Quote. Its visible marker is `v2.0.0 · navigation.1`.
+- Navigation review, Version 2 release hardening, and owner acceptance remain. Backup/restore, PWA, backend, authentication, synchronization, deletion, and archiving remain deferred according to the roadmap.
 
 The current verification counts are recorded in `BUILD-LOG.md` after each verified branch. The live GitHub Pages site changes only after a feature branch is reviewed and merged to `main`.
 

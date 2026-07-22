@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are merged and have passed an owner test with a real CSV. Version 2 now has an IndexedDB-backed phone quote library plus a lifecycle candidate for local numbering, immutable finalized versions, revisions, and controlled statuses, while retaining the original browser save as a fallback.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are merged and have passed an owner test with a real CSV. Version 2 now has an IndexedDB-backed local quote library, lifecycle controls, and a phone/laptop workspace navigation candidate, while retaining the original browser save as a fallback.
 
 The release smoke checks remain:
 
@@ -56,7 +56,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
-- **Version 2.0 - Local Quote Library (in progress):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, and controlled statuses are implemented on the current candidate branch; release hardening and owner acceptance remain.
+- **Version 2.0 - Local Quote Library (in progress):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Quotes/Customers/Catalog workspaces are implemented; navigation review, release hardening, and owner acceptance remain.
 - **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
