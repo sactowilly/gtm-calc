@@ -87,3 +87,22 @@ test('warns instead of overwriting a library draft changed by another writer', a
     return draft.workingDraft.content.customer.companyName;
   }, quoteId)).toBe('Saved by Another Writer');
 });
+
+test('opening a saved quote collapses the library and scrolls to Active Quote', async ({ page }) => {
+  await page.goto('./');
+  await fillQuoteCustomer(page, 'Scroll Customer');
+  const library = await openLibrary(page);
+  await library.locator('#addCurrentToLibrary').click();
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  page.once('dialog', (dialog) => dialog.accept());
+  await library.getByRole('button', { name: 'Open' }).click();
+
+  await expect(library).not.toHaveAttribute('open', '');
+  const scrollState = await page.locator('.quote-panel').evaluate((panel) => ({
+    panelTop: panel.getBoundingClientRect().top,
+    viewportHeight: window.innerHeight
+  }));
+  expect(scrollState.panelTop).toBeLessThanOrEqual(scrollState.viewportHeight);
+  await expect(page.locator('#customerName')).toHaveValue('Scroll Customer');
+});
