@@ -185,6 +185,12 @@ export function initializeQuoteLibraryUi({
     setLibraryStatus('This draft changed in another tab. Reopen it before saving here.', true);
   }
 
+  function showActiveQuote() {
+    tools.open = false;
+    const activeQuote = document.querySelector('.quote-panel');
+    activeQuote?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  }
+
   function createStatusControl(quote) {
     const transitions = getAllowedQuoteStatusTransitions(quote.currentStatus);
     if (!transitions.length) return undefined;
@@ -462,6 +468,7 @@ export function initializeQuoteLibraryUi({
         label: draft.workingDraft.kind === 'revision' ? `Revision draft for ${draft.baseNumber}` : 'Loaded draft'
       });
       bindDraft(draft);
+      if (!restoringSession) showActiveQuote();
       const fallback = saveActiveFallback();
       setLibraryStatus(
         fallback.status === 'saved'
@@ -496,6 +503,7 @@ export function initializeQuoteLibraryUi({
           : `Historical ${version.displayNumber}`
       });
       bindVersion(quoteRecord, version);
+      if (!restoringSession) showActiveQuote();
       setLibraryStatus(`Viewing immutable quote ${version.displayNumber}. PDF, copy, and email actions remain available.`);
       await refreshQuotes();
     } catch (error) {
@@ -573,6 +581,7 @@ export function initializeQuoteLibraryUi({
         label: `Revision draft for ${revisionDraft.baseNumber}`
       });
       bindDraft(revisionDraft);
+      showActiveQuote();
       saveActiveFallback({ preserveState: true });
       statusFilter.value = '';
       await refreshQuotes();
