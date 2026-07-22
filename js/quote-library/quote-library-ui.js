@@ -53,7 +53,8 @@ export function initializeQuoteLibraryUi({
   replaceActiveQuote,
   applyCustomerDetails,
   saveActiveFallback,
-  shouldConfirmReplace = () => false
+  shouldConfirmReplace = () => false,
+  showQuoteWorkspace = () => {}
 }) {
   const tools = document.getElementById('quoteLibraryTools');
   const summary = document.getElementById('quoteLibrarySummary');
@@ -187,8 +188,8 @@ export function initializeQuoteLibraryUi({
 
   function showActiveQuote() {
     tools.open = false;
-    const activeQuote = document.querySelector('.quote-panel');
-    activeQuote?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    showQuoteWorkspace();
+    document.querySelector('.quote-panel')?.scrollIntoView({ behavior: 'auto', block: 'start' });
   }
 
   function createStatusControl(quote) {
@@ -642,7 +643,7 @@ export function initializeQuoteLibraryUi({
       dirty = true;
       updateBoundUi();
       setLibraryStatus(`Loaded ${customer.companyName}. Save the quote to keep these changes.`);
-      tools.open = false;
+      showQuoteWorkspace();
     } catch (error) {
       setLibraryStatus('That customer record could not be loaded.', true);
     }

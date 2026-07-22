@@ -62,7 +62,7 @@ Preserve entered state when moving between steps. On laptop (about 900 px+) Deta
 
 Version 2 adds Quote Library, Customer, Quote Detail/Timeline, Duplicate, Revision, and Status screens. Those are not V1 navigation placeholders.
 
-The initial Version 2 draft-library slice uses a collapsed top-level Quote Library panel rather than introducing a route/navigation framework. On phones it provides one primary “Add/Save Draft” action, device-local disclosure, search, stacked draft cards with Open/Duplicate actions, and a nested Saved Customers recall panel. Finalized history, revision, and status screens remain later lifecycle work.
+The current Version 2 navigation slice uses one state-preserving document with four workspaces rather than URL routes: **Quote**, **Quotes**, **Customers**, and **Catalog**. Phones use a fixed, thumb-reachable bottom bar; laptop layouts use the same destinations as a left navigation rail. The Quote form remains mounted when a user switches workspaces. Opening/reopening a quote, applying a saved customer, or selecting a catalog item returns the user to Quote. Search and import remain actions inside their relevant workspace rather than becoming extra top-level destinations.
 
 ## Quote-building workflow
 

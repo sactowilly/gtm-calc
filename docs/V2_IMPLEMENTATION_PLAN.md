@@ -69,7 +69,7 @@ Excluded: quote titles, automatic duplicate opening, deletion/archive, repositor
 
 ### PR 15 — Finalization, numbering, immutable history, duplicate, and revision UI
 
-Status: implemented and automated verification passed on `feature/v2-quote-lifecycle`; owner review pending.
+Status: merged.
 
 Goal: complete the quote lifecycle with clear, distinct user operations.
 
@@ -86,7 +86,38 @@ Excluded: shared/global numbering, automatic email, server sync, backup/restore,
 
 Rollback: disable lifecycle actions and revert the UI/service connection. Preserve IndexedDB and the active quote bridge; never delete or renumber committed versions during rollback.
 
-### PR 16 — Version 2 release hardening
+### PR 16 — Open-quote return navigation
+
+Status: merged.
+
+Goal: collapse the library and return the user to the active quote when they open/reopen a quote or begin a revision.
+
+Included:
+
+- Return to the active quote after an Open/Reopen action or a revision start.
+- Preserve the loaded active-quote state and existing library card state.
+
+Excluded: new navigation architecture, data/schema changes, and lifecycle-policy changes.
+
+### PR 17 — Mobile workspace navigation
+
+Status: current candidate.
+
+Goal: reduce all-on-one-page clutter by giving the phone and laptop distinct, accessible workspaces without unmounting the active quote or altering storage behavior.
+
+Included:
+
+- Four destinations: Quote, Quotes, Customers, and Catalog.
+- Fixed phone bottom navigation and a sticky laptop navigation rail.
+- Preserve active form values when changing destinations.
+- Return to Quote after a quote is opened, a saved customer is applied, or a catalog item is selected.
+- Phone/laptop layout, touch-target, overflow, and workflow regression coverage.
+
+Excluded: routing framework, separate URL routes, customer CRUD, catalog/schema migration, new lifecycle rules, backup/restore, and PWA navigation.
+
+Rollback: revert the view/navigation files and restore the prior one-document layout. Existing localStorage and IndexedDB records are untouched.
+
+### PR 18 — Version 2 release hardening
 
 Goal: validate upgrades, recovery, accessibility, phone/laptop workflows, and production deployment before calling Version 2 stable.
 

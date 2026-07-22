@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 async function openLibrary(page) {
+  await page.getByRole('button', { name: 'Quotes', exact: true }).click();
   const library = page.locator('#quoteLibraryTools');
   if (!(await library.evaluate((element) => element.open))) {
     await library.locator('> summary').click();
@@ -15,7 +16,7 @@ async function createLibraryDraft(page, companyName = 'Lifecycle Customer') {
   await page.locator('#buyerEmail').fill('jordan@example.test');
   const library = await openLibrary(page);
   await library.locator('#addCurrentToLibrary').click();
-  await expect(library.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft');
+  await expect(library.locator('.library-card h3')).toHaveText(companyName);
   return library;
 }
 
@@ -73,6 +74,7 @@ test('creates and finalizes an editable revision without changing the prior vers
   await page.locator('#customerName').fill('Revision Customer Updated');
   await page.locator('#saveQuote').click();
   await expect(page.locator('#statusMessage')).toContainText('Draft saved to the quote library');
+  await openLibrary(page);
   await acceptNextDialog(page);
   await library.getByRole('button', { name: 'Finalize' }).click();
   await expect(library.locator('.library-card__number')).toHaveText('2026-001-R1');

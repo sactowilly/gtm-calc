@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 async function openLibrary(page) {
+  await page.getByRole('button', { name: 'Quotes', exact: true }).click();
   const library = page.locator('#quoteLibraryTools');
   if (!(await library.evaluate((element) => element.open))) {
     await library.locator('> summary').click();
@@ -101,6 +102,7 @@ test('highlights a duplicate without changing the customer and clears DUP after 
   await expect(library.locator('#quoteLibraryStatus')).toContainText('Opened Acme Packaging');
   await page.locator('#saveQuote').click();
   await expect(page.locator('#statusMessage')).toContainText('Draft saved to the quote library');
+  await openLibrary(page);
 
   const reviewedCard = library.locator(`[data-quote-id="${duplicateId}"]`);
   await expect(reviewedCard).not.toHaveClass(/is-unreviewed-duplicate/);

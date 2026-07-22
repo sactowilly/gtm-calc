@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-07-22 -- Version 2 workspace navigation candidate
+
+- Added a state-preserving Quote / Quotes / Customers / Catalog workspace layout with a fixed phone bottom bar and sticky laptop rail; current quote data stays mounted while switching views.
+- Connected existing flows so opening/reopening a quote, applying a saved customer, and selecting a catalog item all return to Quote without changing `gtm_quote_calculator_v1`, IndexedDB records, calculations, customer PDF privacy, or email behavior.
+- Updated the visible build marker to `v2.0.0 · navigation.1`, the V2 sequence, roadmap status/artwork, release documentation, and navigation regression coverage.
+- Verified JavaScript checks, 96 unit/storage/privacy tests, 16 customer-PDF layout tests, and 80 compatibility/accessibility tests across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari. Rebuilt for `/gtm-calc/`, rendered and inspected the roadmap infographic, and inspected phone/laptop workspace screenshots. The production build retains only the known warnings for the vendored non-module PDF scripts.
+
 ### 2026-07-16 -- Version 2 quote lifecycle candidate
 
 - Implemented finalization-date-year base numbering, immutable read-only current/historical version views, latest-version-only revisions, duplicate-as-new, and the approved controlled status graph with append-only status events.

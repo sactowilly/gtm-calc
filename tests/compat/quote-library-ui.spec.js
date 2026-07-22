@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 async function openLibrary(page) {
+  await page.getByRole('button', { name: 'Quotes', exact: true }).click();
   const library = page.locator('#quoteLibraryTools');
   if (!(await library.evaluate((element) => element.open))) {
     await library.locator('> summary').click();
@@ -27,9 +28,11 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('gtm_quote_calculator_v1')).customerName)).toBe('Acme Packaging');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 
+  await page.getByRole('button', { name: 'Quote', exact: true }).click();
   await page.locator('#customerName').fill('Acme Packaging Updated');
   await page.locator('#saveQuote').click();
   await expect(page.locator('#statusMessage')).toContainText('Draft saved to the quote library');
+  await openLibrary(page);
   await library.locator('#quoteLibrarySearch').fill('updated');
   await expect(library.locator('.library-card h3')).toHaveText('Acme Packaging Updated');
 
@@ -46,7 +49,8 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   await expect(page.locator('#statusMessage')).toContainText('previous library quote remains saved');
   await expect(reopenedLibrary.locator('.library-card')).toHaveCount(2);
   await page.locator('#itemName').fill('Unsaved item entry');
-  const customerLibrary = reopenedLibrary.locator('.customer-library');
+  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  const customerLibrary = page.locator('#customerLibraryTools');
   await customerLibrary.evaluate((details) => { details.open = true; });
   await customerLibrary.locator('#customerLibrarySearch').fill('Acme Packaging Updated');
   await customerLibrary.getByRole('button', { name: 'Use Customer' }).click();
@@ -74,6 +78,7 @@ test('warns instead of overwriting a library draft changed by another writer', a
     await repository.close();
   }, quoteId);
 
+  await page.getByRole('button', { name: 'Quote', exact: true }).click();
   await page.locator('#buyerPhone').fill('916-555-9999');
   await page.locator('#saveQuote').click();
   await expect(page.locator('#statusMessage')).toContainText('changed in another tab');

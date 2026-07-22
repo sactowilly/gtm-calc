@@ -6,9 +6,18 @@ const csv = [
   'TAPE-2,Two Inch Tape,Pressure sensitive tape,,EA,18.5,29.95,yes'
 ].join('\n');
 
+async function openCatalog(page) {
+  await page.getByRole('button', { name: 'Catalog', exact: true }).click();
+  const catalog = page.locator('#catalogTools');
+  if (!(await catalog.evaluate((element) => element.open))) {
+    await catalog.locator('> summary').click();
+  }
+  return catalog;
+}
+
 test('imports, searches, selects, and snapshots a catalog item without changing the quote storage key', async ({ page }) => {
   await page.goto('./');
-  await page.locator('#catalogTools').evaluate((details) => { details.open = true; });
+  await openCatalog(page);
   page.once('dialog', (dialog) => dialog.accept());
   await page.locator('#catalogFile').setInputFiles({
     name: 'vision-catalog.csv',
@@ -21,6 +30,8 @@ test('imports, searches, selects, and snapshots a catalog item without changing 
   await page.locator('#catalogSearch').fill('12x10x8');
   await page.locator('[data-item-id="catalog:RSC-12108"]').click();
 
+  await expect(page.locator('#quoteWorkspace')).toBeVisible();
+  await expect(page.locator('#catalogWorkspace')).toBeHidden();
   await expect(page.locator('#itemName')).toHaveValue('RSC Kraft Carton');
   await expect(page.locator('#uom')).toHaveValue('CS');
   await expect(page.locator('#unitCost')).toHaveValue('0.54321');
@@ -43,7 +54,7 @@ test('imports, searches, selects, and snapshots a catalog item without changing 
   expect(stored.catalog.items).toHaveLength(2);
 
   await page.reload();
-  await page.locator('#catalogTools').evaluate((details) => { details.open = true; });
+  await openCatalog(page);
   await expect(page.locator('[data-item-id="catalog:RSC-12108"]')).toBeVisible();
 });
 
@@ -53,13 +64,13 @@ test('saves, updates, and reloads a local My Item', async ({ page }) => {
   await page.locator('#uom').selectOption('BND');
   await page.locator('#unitCost').fill('4.12345');
   await page.locator('#price').fill('8.5');
-  await page.locator('#catalogTools').evaluate((details) => { details.open = true; });
+  await openCatalog(page);
   await page.locator('#saveManualItem').click();
 
   await expect(page.locator('#catalogStatus')).toContainText('Saved to My Items');
   await expect(page.locator('[data-item-id^="manual:"]')).toContainText('Custom Foam Set');
   await page.reload();
-  await page.locator('#catalogTools').evaluate((details) => { details.open = true; });
+  await openCatalog(page);
   await page.locator('#catalogSearch').fill('custom foam');
   await expect(page.locator('[data-item-id^="manual:"]')).toContainText('MY ITEM');
 });

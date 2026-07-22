@@ -18,7 +18,7 @@ function optionalMoney(input) {
     : { error: `${input.labels?.[0]?.textContent.trim() || 'Value'} must be a non-negative number.` };
 }
 
-export function initializeCatalogUi({ storage, fields, updateCalculatorPreview }) {
+export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, onItemSelected = () => {} }) {
   const elements = {
     tools: document.getElementById('catalogTools'),
     summary: document.getElementById('catalogSummary'),
@@ -133,6 +133,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview }
     elements.selection.textContent = `${item.source === 'manual' ? 'My Item' : 'Catalog'}${item.sku ? ` ${item.sku}` : ''} selected. Quote values remain editable.${uomNotice}`;
     updateCalculatorPreview();
     elements.tools.open = false;
+    onItemSelected();
     fields.quantity.focus();
   }
 

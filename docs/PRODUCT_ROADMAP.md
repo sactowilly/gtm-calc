@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-16): Lifecycle candidate in progress.** PRs #11–#14 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, and duplicate review state. The current PR #15 candidate adds finalization-year local numbering, immutable and historical read-only versions, latest-version-only revisions, duplicate-as-new, and controlled status transitions while preserving `gtm_quote_calculator_v1`. Release hardening and owner acceptance follow before Version 2 is complete.
+**Status (2026-07-22): Workspace-navigation candidate in progress.** PRs #11–#16 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, and return-to-active-quote behavior. The current navigation slice separates Quote, Quotes, Customers, and Catalog workspaces without changing the `gtm_quote_calculator_v1` fallback or local-library data. Navigation review, release hardening, and owner acceptance follow before Version 2 is complete.
 
 ### Objective
 
@@ -113,6 +113,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 - Per-device/year base numbering (`2026-001`) and immutable version revisions (`2026-001-R1`).
 - Separate operations for duplicate-as-new and create-revision with source references.
 - Immutable finalized `QuoteVersion` snapshots and append-only events for status history.
+- A four-destination phone bottom navigation and laptop navigation rail for Quote, Quotes, Customers, and Catalog workflows.
 
 ### Explicitly excluded
 
