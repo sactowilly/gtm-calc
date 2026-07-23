@@ -803,7 +803,18 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   });
 
   appNavigation = initializeAppNavigation();
-  const showQuoteWorkspace = () => appNavigation.showView('quote');
+  const showQuoteWorkspace = ({
+    focusTarget,
+    scrollTarget = '#quoteWorkspace',
+    openQuoteDetails = false,
+    status
+  } = {}) => {
+    appNavigation.showView('quote', { scroll: false });
+    if (openQuoteDetails) document.querySelector('.quote-details').open = true;
+    if (status) setStatus(status, false);
+    document.querySelector(scrollTarget)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    if (focusTarget) document.querySelector(focusTarget)?.focus({ preventScroll: true });
+  };
 
   catalogController = initializeCatalogUi({
     storage: localStorage,

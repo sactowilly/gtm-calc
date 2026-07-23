@@ -2,9 +2,16 @@
 
 ## Version 2 Workspace Navigation
 
-**DECISION:** Use four state-preserving workspaces—Quote, Quotes, Customers, and Catalog—with a fixed phone bottom bar and a sticky laptop navigation rail. Keep search and CSV import inside their relevant workspaces. Opening a quote, applying a customer, or selecting a catalog item returns to Quote.
+**DECISION:** Use four state-preserving workspaces—Quote, Library, Customers, and Catalog—with a fixed phone bottom bar and a sticky laptop navigation rail. Keep search and CSV import inside their relevant workspaces. Opening a quote, applying a customer, or selecting a catalog item returns to Quote.
 **RATIONALE:** The prior one-document interface became difficult to scan once the quote library, customer recall, and catalog workflows grew. This improves wayfinding without adding routes, a framework, new storage, or an opportunity to discard unsaved quote state.
 **DATE:** 2026-07-22
+**PARTIES:** Codex, Will Z
+
+## Navigation Replacement and Focus Safety
+
+**DECISION:** Ask for confirmation only when selecting a catalog item or saved customer would replace non-empty, different values. Keep empty-form selection one tap. After record recall, move focus to a visible Quote target and announce the outcome.
+**RATIONALE:** This prevents silent loss of partially entered data while preserving the fast common path. Explicit focus restoration avoids leaving keyboard and screen-reader users inside a hidden workspace.
+**DATE:** 2026-07-23
 **PARTIES:** Codex, Will Z
 
 ## Version 2 Quote Lifecycle Rules

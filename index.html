@@ -28,7 +28,7 @@
 
       <nav id="appNavigation" class="app-navigation" aria-label="Primary navigation">
         <button type="button" class="app-navigation__button" data-app-view="quote" aria-current="page">Quote</button>
-        <button type="button" class="app-navigation__button" data-app-view="quotes">Quotes</button>
+        <button type="button" class="app-navigation__button" data-app-view="quotes">Library</button>
         <button type="button" class="app-navigation__button" data-app-view="customers">Customers</button>
         <button type="button" class="app-navigation__button" data-app-view="catalog">Catalog</button>
       </nav>
@@ -218,7 +218,7 @@
 
       <section class="panel quote-panel" aria-labelledby="quote-heading">
         <div class="section-heading">
-          <h2 id="quote-heading">Active Quote</h2>
+          <h2 id="quote-heading" tabindex="-1">Active Quote</h2>
           <span id="savedState" class="save-state">Not saved</span>
         </div>
 
@@ -371,6 +371,7 @@
               Search customers
               <input id="customerLibrarySearch" type="search" inputmode="search" autocomplete="off" placeholder="Company or address">
             </label>
+            <p id="customerLibraryStatus" class="quote-library-status" role="status" aria-live="polite"></p>
             <div id="customerLibraryResults" class="customer-library-results" role="region" aria-label="Saved customers"></div>
           </div>
         </details>

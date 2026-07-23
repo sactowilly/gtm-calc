@@ -45,6 +45,15 @@ function quoteLabel(quote) {
   return quote.displayNumber || quote.baseNumber || 'Unnumbered';
 }
 
+function wouldReplaceCustomerDetails(current, next) {
+  return ['customerName', 'customerAddress', 'buyerName', 'buyerEmail', 'buyerPhone', 'terms']
+    .some((key) => {
+      const currentValue = String(current?.[key] || '').trim();
+      const nextValue = String(next?.[key] || '').trim();
+      return currentValue && currentValue !== nextValue;
+    });
+}
+
 export function initializeQuoteLibraryUi({
   repository = createQuoteLibraryRepository(),
   session = window.sessionStorage,
@@ -65,6 +74,7 @@ export function initializeQuoteLibraryUi({
   const quoteResults = document.getElementById('quoteLibraryResults');
   const showMoreQuotes = document.getElementById('showMoreQuotes');
   const customerSearch = document.getElementById('customerLibrarySearch');
+  const customerStatus = document.getElementById('customerLibraryStatus');
   const customerResults = document.getElementById('customerLibraryResults');
   const recovery = document.getElementById('quoteLibraryRecovery');
 
@@ -80,6 +90,11 @@ export function initializeQuoteLibraryUi({
   function setLibraryStatus(message, isError = false) {
     status.textContent = message;
     status.classList.toggle('is-error', isError);
+  }
+
+  function setCustomerStatus(message, isError = false) {
+    customerStatus.textContent = message;
+    customerStatus.classList.toggle('is-error', isError);
   }
 
   function readSessionSelection() {
@@ -188,8 +203,10 @@ export function initializeQuoteLibraryUi({
 
   function showActiveQuote() {
     tools.open = false;
-    showQuoteWorkspace();
-    document.querySelector('.quote-panel')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    showQuoteWorkspace({
+      focusTarget: '#quote-heading',
+      scrollTarget: '.quote-panel'
+    });
   }
 
   function createStatusControl(quote) {
@@ -632,20 +649,37 @@ export function initializeQuoteLibraryUi({
       if (!customer) throw new Error('Missing customer');
       const contact = contacts[0];
       const current = getActiveQuote();
-      applyCustomerDetails({
+      const nextDetails = {
         customerName: customer.companyName,
         customerAddress: customer.addressText || '',
         buyerName: contact?.name || '',
         buyerEmail: contact?.email || '',
         buyerPhone: contact?.phone || '',
         terms: customer.defaultPaymentTerms || current.terms
-      });
+      };
+      if (
+        wouldReplaceCustomerDetails(current, nextDetails) &&
+        !window.confirm(`Replace the current customer and buyer details with ${customer.companyName}? Unsaved customer fields will be replaced.`)
+      ) {
+        const message = 'Customer change cancelled. The current quote details were kept.';
+        setLibraryStatus(message);
+        setCustomerStatus(message);
+        return;
+      }
+      applyCustomerDetails(nextDetails);
       dirty = true;
       updateBoundUi();
       setLibraryStatus(`Loaded ${customer.companyName}. Save the quote to keep these changes.`);
-      showQuoteWorkspace();
+      setCustomerStatus(`${customer.companyName} applied to the active quote.`);
+      showQuoteWorkspace({
+        focusTarget: '#customerName',
+        scrollTarget: '.quote-panel',
+        openQuoteDetails: true,
+        status: `${customer.companyName} applied. Save the quote to keep these changes.`
+      });
     } catch (error) {
       setLibraryStatus('That customer record could not be loaded.', true);
+      setCustomerStatus('That customer record could not be loaded.', true);
     }
   }
 

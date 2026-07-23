@@ -118,14 +118,39 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
   }
 
   function selectItem(item) {
-    selectedItem = item;
-    fields.itemName.value = item.name;
-
     const allowedUom = Array.from(fields.uom.options).some((option) => option.value === item.unitOfMeasure);
-    fields.uom.value = allowedUom ? item.unitOfMeasure : 'EA';
-    fields.unitCost.value = Number.isFinite(item.defaultUnitCost) ? item.defaultUnitCost : '';
-    fields.price.value = Number.isFinite(item.defaultUnitPrice) ? item.defaultUnitPrice : '';
-    fields.leadTime.value = item.leadTime || '';
+    const nextValues = {
+      itemName: item.name,
+      uom: allowedUom ? item.unitOfMeasure : 'EA',
+      unitCost: Number.isFinite(item.defaultUnitCost) ? String(item.defaultUnitCost) : '',
+      price: Number.isFinite(item.defaultUnitPrice) ? String(item.defaultUnitPrice) : '',
+      leadTime: item.leadTime || ''
+    };
+    const hasEnteredItemDetails = Boolean(
+      fields.itemName.value.trim() ||
+      fields.unitCost.value ||
+      fields.price.value ||
+      fields.leadTime.value.trim()
+    );
+    const wouldReplaceValues = Object.entries(nextValues).some(([key, value]) => {
+      const current = String(fields[key].value || '').trim();
+      return current !== String(value).trim();
+    });
+    if (
+      hasEnteredItemDetails &&
+      wouldReplaceValues &&
+      !window.confirm(`Replace the current item details with ${item.name}? Quantity and freight will be kept.`)
+    ) {
+      setCatalogStatus('Catalog selection cancelled. The current item details were kept.');
+      return;
+    }
+
+    selectedItem = item;
+    fields.itemName.value = nextValues.itemName;
+    fields.uom.value = nextValues.uom;
+    fields.unitCost.value = nextValues.unitCost;
+    fields.price.value = nextValues.price;
+    fields.leadTime.value = nextValues.leadTime;
 
     const uomNotice = item.unitOfMeasure && !allowedUom
       ? ` Imported UOM ${item.unitOfMeasure} is not supported; EA was selected.`
@@ -133,7 +158,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
     elements.selection.textContent = `${item.source === 'manual' ? 'My Item' : 'Catalog'}${item.sku ? ` ${item.sku}` : ''} selected. Quote values remain editable.${uomNotice}`;
     updateCalculatorPreview();
     elements.tools.open = false;
-    onItemSelected();
+    onItemSelected({ scrollTarget: '.calculator-panel' });
     fields.quantity.focus();
   }
 

@@ -115,7 +115,9 @@ The quote-library usability follow-up seeds 50 deterministically ordered drafts,
 
 PR #15 adds repository and phone-browser coverage for finalization-date-year base numbers, immutable read-only viewing, customer-safe quote-number output/filenames, historical version selection, sequential revision finalization, latest-version-only revision starts, controlled status events, terminal outcomes, and finalized-version duplication as a new unnumbered `DUP` draft.
 
-The Version 2 workspace-navigation slice verifies that Quote, Quotes, Customers, and Catalog remain distinct accessible destinations on a phone and laptop; switching destinations retains unsaved active-quote fields; opening a quote or selecting a saved customer returns to Quote; catalog selection returns to Quote with the selected values; the bottom bar and laptop rail retain 44 px or larger controls; and narrow widths have no horizontal overflow.
+The Version 2 workspace-navigation slice verifies that Quote, Library, Customers, and Catalog remain distinct accessible destinations on a phone and laptop; exactly one destination exposes `aria-current="page"`; switching destinations retains unsaved active-quote fields; and the bottom bar and laptop rail retain 44 px or larger controls without label clipping at 320 px.
+
+The navigation design-hardening regression set verifies that opening a quote focuses the visible Active Quote heading; using a saved customer expands quote details, focuses Customer, and announces a visible result; catalog selection focuses Quantity; and cancelling a replacement preserves every non-empty item/customer value. It also verifies that focused or short-height phone forms release sticky item actions, no phone navigation label overflows, the card quote layout remains active at 900 px, and the desktop table activates at 1120 px or wider.
 
 ### Numbering
 
