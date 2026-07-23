@@ -4,25 +4,32 @@ async function openWorkspace(page, name) {
   await page.getByRole('button', { name, exact: true }).click();
 }
 
+async function expectCurrentWorkspace(page, name, view) {
+  await expect(page.getByRole('button', { name, exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('#appNavigation [aria-current="page"]')).toHaveCount(1);
+  await expect(page.locator(`[data-app-view-panel="${view}"]`)).toBeVisible();
+}
+
 test('keeps an active quote intact while switching mobile workspaces', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./');
 
   await expect(page.locator('#quoteWorkspace')).toBeVisible();
   await expect(page.locator('#quotesWorkspace')).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Quote', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expectCurrentWorkspace(page, 'Quote', 'quote');
 
   await page.locator('#customerName').fill('Workspace Packaging');
   await page.locator('#itemName').fill('Foam insert');
-  await openWorkspace(page, 'Quotes');
-  await expect(page.locator('#quotesWorkspace')).toBeVisible();
+  await openWorkspace(page, 'Library');
+  await expectCurrentWorkspace(page, 'Library', 'quotes');
   await expect(page.locator('#quoteWorkspace')).toBeHidden();
 
   await openWorkspace(page, 'Customers');
-  await expect(page.locator('#customersWorkspace')).toBeVisible();
+  await expectCurrentWorkspace(page, 'Customers', 'customers');
   await openWorkspace(page, 'Catalog');
-  await expect(page.locator('#catalogWorkspace')).toBeVisible();
+  await expectCurrentWorkspace(page, 'Catalog', 'catalog');
   await openWorkspace(page, 'Quote');
+  await expectCurrentWorkspace(page, 'Quote', 'quote');
 
   await expect(page.locator('#customerName')).toHaveValue('Workspace Packaging');
   await expect(page.locator('#itemName')).toHaveValue('Foam insert');
@@ -45,4 +52,27 @@ test('uses a bottom navigation bar on a phone and a left navigation rail on a la
   });
   expect(laptopLayout.position).toBe('sticky');
   expect(laptopLayout.columns.split(' ').length).toBe(1);
+});
+
+test('fits narrow labels, yields sticky actions while editing, and delays the desktop table', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('./');
+  const clippedLabels = await page.locator('#appNavigation button').evaluateAll((buttons) => buttons
+    .filter((button) => button.scrollWidth > button.clientWidth)
+    .map((button) => button.textContent.trim()));
+  expect(clippedLabels).toEqual([]);
+  const clippedQuoteActions = await page.locator('.quote-actions button').evaluateAll((buttons) => buttons
+    .filter((button) => button.scrollWidth > button.clientWidth || button.scrollHeight > button.clientHeight)
+    .map((button) => button.textContent.trim()));
+  expect(clippedQuoteActions).toEqual([]);
+  await expect(page.locator('.item-actions')).toHaveCSS('position', 'static');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator('#itemName').focus();
+  await expect(page.locator('.item-actions')).toHaveCSS('position', 'static');
+
+  await page.setViewportSize({ width: 900, height: 900 });
+  await expect(page.locator('.quote-table tbody')).toHaveCSS('display', 'block');
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(page.locator('.quote-table tbody')).toHaveCSS('display', 'table-row-group');
 });

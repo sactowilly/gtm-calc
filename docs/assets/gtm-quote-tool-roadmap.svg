@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1900" viewBox="0 0 1200 1900" role="img" aria-labelledby="title description">
   <title id="title">GTM Quote Tool product roadmap</title>
-  <desc id="description">Versions 1.0 and 1.5 are complete. Version 2.0 Local Quote Library is currently in progress with workspace navigation under review. Versions 2.5 through 4.0 are planned future phases.</desc>
+  <desc id="description">Versions 1.0 and 1.5 are complete. Version 2.0 Local Quote Library is currently in design hardening after workspace navigation merged. Versions 2.5 through 4.0 are planned future phases.</desc>
   <defs>
     <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#062b4c"/>
@@ -65,7 +65,7 @@
   <text class="version" x="225" y="752" fill="#f06400">V2.0</text>
   <text class="heading" x="385" y="750">LOCAL QUOTE LIBRARY</text>
   <text class="body" x="225" y="800">IndexedDB library • Local numbers • Immutable versions • Controlled statuses</text>
-  <text class="body" x="225" y="837">Navigation in review • Release hardening next</text>
+  <text class="body" x="225" y="837">Design hardening now • Release hardening next</text>
   <rect x="735" y="693" width="350" height="37" rx="18" fill="#f47a00"/>
   <text class="status" x="910" y="719" fill="#fff" text-anchor="middle">CURRENT • IN PROGRESS</text>
 
@@ -119,5 +119,5 @@
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
   <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V2.0 LOCAL QUOTE LIBRARY</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Workspace navigation is in review; release hardening follows.</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Workspace navigation merged; design and release hardening follow.</text>
 </svg>

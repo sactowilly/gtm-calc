@@ -101,13 +101,13 @@ Excluded: new navigation architecture, data/schema changes, and lifecycle-policy
 
 ### PR 17 — Mobile workspace navigation
 
-Status: current candidate.
+Status: merged in PR #17.
 
 Goal: reduce all-on-one-page clutter by giving the phone and laptop distinct, accessible workspaces without unmounting the active quote or altering storage behavior.
 
 Included:
 
-- Four destinations: Quote, Quotes, Customers, and Catalog.
+- Four destinations: Quote, Library, Customers, and Catalog.
 - Fixed phone bottom navigation and a sticky laptop navigation rail.
 - Preserve active form values when changing destinations.
 - Return to Quote after a quote is opened, a saved customer is applied, or a catalog item is selected.
@@ -117,7 +117,26 @@ Excluded: routing framework, separate URL routes, customer CRUD, catalog/schema 
 
 Rollback: revert the view/navigation files and restore the prior one-document layout. Existing localStorage and IndexedDB records are untouched.
 
-### PR 18 — Version 2 release hardening
+### PR 18 — Navigation design hardening
+
+Status: current candidate.
+
+Goal: resolve the UI Designer and UX Researcher findings before Version 2 release hardening.
+
+Included:
+
+- Standards-correct `aria-current="page"` and a stronger text-plus-accent active navigation state.
+- A shorter phone label for Library, narrow-phone label-fit coverage, and keyboard/short-height safeguards for sticky item actions.
+- Retain phone/card quote rows through tablet and compact-laptop widths; switch to the desktop table only at 1120 px.
+- Restore visible focus and status after opening a quote or applying a customer.
+- Confirm before a catalog item or saved customer replaces non-empty, different form values; keep the one-tap path for an empty form.
+- Phone, laptop, accessibility, focus, replacement-safety, and direct-source regression coverage.
+
+Excluded: routes, storage/schema changes, quote/customer deletion, catalog changes, lifecycle changes, backup/restore, PWA, or deployment changes.
+
+Rollback: revert this hardening PR. PR #17 navigation and all Version 2 records remain intact.
+
+### PR 19 — Version 2 release hardening
 
 Goal: validate upgrades, recovery, accessibility, phone/laptop workflows, and production deployment before calling Version 2 stable.
 

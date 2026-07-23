@@ -74,3 +74,38 @@ test('saves, updates, and reloads a local My Item', async ({ page }) => {
   await page.locator('#catalogSearch').fill('custom foam');
   await expect(page.locator('[data-item-id^="manual:"]')).toContainText('MY ITEM');
 });
+
+test('protects partially entered item details before applying a catalog item', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('#itemName').fill('In-progress custom item');
+  await page.locator('#uom').selectOption('BND');
+  await page.locator('#unitCost').fill('4.5');
+  await page.locator('#price').fill('8');
+  await page.locator('#leadTime').fill('Tomorrow');
+
+  await openCatalog(page);
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('#catalogFile').setInputFiles({
+    name: 'vision-catalog.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(csv)
+  });
+  await page.locator('#catalogSearch').fill('RSC');
+
+  page.once('dialog', (dialog) => dialog.dismiss());
+  await page.locator('[data-item-id="catalog:RSC-12108"]').click();
+  await expect(page.locator('#catalogWorkspace')).toBeVisible();
+  await expect(page.locator('#catalogStatus')).toContainText('current item details were kept');
+  await expect(page.locator('#itemName')).toHaveValue('In-progress custom item');
+  await expect(page.locator('#uom')).toHaveValue('BND');
+  await expect(page.locator('#unitCost')).toHaveValue('4.5');
+  await expect(page.locator('#price')).toHaveValue('8');
+  await expect(page.locator('#leadTime')).toHaveValue('Tomorrow');
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-item-id="catalog:RSC-12108"]').click();
+  await expect(page.locator('#quoteWorkspace')).toBeVisible();
+  await expect(page.locator('#itemName')).toHaveValue('RSC Kraft Carton');
+  await expect(page.locator('#uom')).toHaveValue('CS');
+  await expect(page.locator('#quantity')).toBeFocused();
+});

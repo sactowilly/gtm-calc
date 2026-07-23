@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 async function openLibrary(page) {
-  await page.getByRole('button', { name: 'Quotes', exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   const library = page.locator('#quoteLibraryTools');
   if (!(await library.evaluate((element) => element.open))) {
     await library.locator('> summary').click();

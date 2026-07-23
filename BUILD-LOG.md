@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-07-23 -- Version 2 navigation design-hardening candidate
+
+- Applied the UI Designer and UX Researcher review: corrected `aria-current`, strengthened the active indicator, shortened the Quotes destination to Library, protected non-empty item/customer form values before replacement, and restored visible focus/status after quote or customer recall.
+- Hardened narrow-phone and software-keyboard layouts by preventing navigation-label clipping, releasing sticky item actions while editing or on short screens, increasing scroll clearance, and delaying the desktop quote table to 1120 px.
+- Updated the visible build marker to `v2.0.0 · navigation.2`, package pre-release to `2.0.0-alpha.7`, Version 2 plan, current-state/test/UX documentation, and roadmap wording. The roadmap remains in Version 2.0; only its current-step wording changed.
+- Verified JavaScript checks, 96 unit/storage/privacy tests, 16 customer-PDF layout tests, and 95 compatibility/accessibility tests across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari. After the final 320 px action-label adjustment, all 15 workspace-navigation tests passed again across those five profiles.
+- Rebuilt for `/gtm-calc/`, visually inspected the regenerated roadmap plus 320 px phone and 1280 px laptop screenshots, and passed a direct-source GitHub Pages-style smoke with the correct marker, one current navigation destination, no control/page overflow, and no browser errors. The build retains only the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-07-22 -- Version 2 workspace navigation candidate
 
 - Added a state-preserving Quote / Quotes / Customers / Catalog workspace layout with a fixed phone bottom bar and sticky laptop rail; current quote data stays mounted while switching views.

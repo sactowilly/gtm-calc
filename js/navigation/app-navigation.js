@@ -30,7 +30,8 @@ export function initializeAppNavigation({ initialView = 'quote' } = {}) {
     });
     buttons.forEach((button) => {
       const selected = button.dataset.appView === currentView;
-      button.toggleAttribute('aria-current', selected);
+      if (selected) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
     });
 
     const panel = panelFor(currentView);

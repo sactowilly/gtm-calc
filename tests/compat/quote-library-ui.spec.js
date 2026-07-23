@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 async function openLibrary(page) {
-  await page.getByRole('button', { name: 'Quotes', exact: true }).click();
+  await page.getByRole('button', { name: 'Library', exact: true }).click();
   const library = page.locator('#quoteLibraryTools');
   if (!(await library.evaluate((element) => element.open))) {
     await library.locator('> summary').click();
@@ -54,9 +54,46 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   await customerLibrary.evaluate((details) => { details.open = true; });
   await customerLibrary.locator('#customerLibrarySearch').fill('Acme Packaging Updated');
   await customerLibrary.getByRole('button', { name: 'Use Customer' }).click();
+  await expect(page.locator('#quoteWorkspace')).toBeVisible();
+  await expect(page.locator('.quote-details')).toHaveAttribute('open', '');
   await expect(page.locator('#customerName')).toHaveValue('Acme Packaging Updated');
   await expect(page.locator('#buyerEmail')).toHaveValue('jordan@example.test');
   await expect(page.locator('#itemName')).toHaveValue('Unsaved item entry');
+  await expect(page.locator('#customerName')).toBeFocused();
+  await expect(page.locator('#statusMessage')).toContainText('applied');
+});
+
+test('protects unsaved customer details before applying a saved customer', async ({ page }) => {
+  await page.goto('./');
+  await fillQuoteCustomer(page, 'Saved Customer');
+  const library = await openLibrary(page);
+  await library.locator('#addCurrentToLibrary').click();
+
+  await page.getByRole('button', { name: 'Quote', exact: true }).click();
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('#newQuote').click();
+  await page.locator('#customerName').fill('Unsaved Customer');
+  await page.locator('#buyerEmail').fill('unsaved@example.test');
+
+  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  const customerLibrary = page.locator('#customerLibraryTools');
+  await customerLibrary.evaluate((details) => { details.open = true; });
+  await customerLibrary.locator('#customerLibrarySearch').fill('Saved Customer');
+
+  page.once('dialog', (dialog) => dialog.dismiss());
+  await customerLibrary.getByRole('button', { name: 'Use Customer' }).click();
+  await expect(page.locator('#customersWorkspace')).toBeVisible();
+  await expect(customerLibrary.locator('#customerLibraryStatus')).toContainText('current quote details were kept');
+  await expect(page.locator('#customerName')).toHaveValue('Unsaved Customer');
+  await expect(page.locator('#buyerEmail')).toHaveValue('unsaved@example.test');
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await customerLibrary.getByRole('button', { name: 'Use Customer' }).click();
+  await expect(page.locator('#quoteWorkspace')).toBeVisible();
+  await expect(page.locator('.quote-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#customerName')).toHaveValue('Saved Customer');
+  await expect(page.locator('#customerName')).toBeFocused();
+  await expect(page.locator('#statusMessage')).toContainText('Saved Customer applied');
 });
 
 test('warns instead of overwriting a library draft changed by another writer', async ({ page }) => {
@@ -110,4 +147,6 @@ test('opening a saved quote collapses the library and scrolls to Active Quote', 
   }));
   expect(scrollState.panelTop).toBeLessThanOrEqual(scrollState.viewportHeight);
   await expect(page.locator('#customerName')).toHaveValue('Scroll Customer');
+  await expect(page.locator('#quote-heading')).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Quote', exact: true })).toHaveAttribute('aria-current', 'page');
 });

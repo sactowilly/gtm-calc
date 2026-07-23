@@ -8,7 +8,7 @@
 - Separate **Build**, **Review**, and **Share** mental modes. Internal profitability stays in Build/Review; customer-safe output stays in Preview/Share.
 - Save changes continuously and communicate local-only storage without implying cloud backup.
 
-## Recommended navigation
+## Version 1 historical navigation
 
 Version 1 has one active quote, so a router or permanent multi-tab application shell is unnecessary. Use a three-step in-page flow with a compact sticky step/action bar:
 
@@ -17,6 +17,16 @@ Version 1 has one active quote, so a router or permanent multi-tab application s
 3. **Preview & Share** — customer-safe preview, PDF, download, copy, share/email fallback.
 
 Preserve entered state when moving between steps. On laptop (about 900 px+) Details and Items may appear in a two-column workspace, while Preview remains a modal/dedicated panel. Browser Back should close an open editor/preview before leaving the page where practical, without adding a full routing framework.
+
+This three-step flow documents the Version 1 target and is retained as historical context. Version 2 uses the workspace navigation described below.
+
+## Version 2 workspace navigation
+
+Version 2 uses one state-preserving document with four workspaces rather than URL routes: **Quote**, **Library**, **Customers**, and **Catalog**. Phones use a fixed, thumb-reachable bottom bar; laptop layouts use the same destinations as a left navigation rail. The Quote form remains mounted when a user switches workspaces.
+
+Opening or reopening a quote returns to Quote and focuses the visible Active Quote heading. Applying a saved customer expands Customer & Quote Details, scrolls back to the active quote, focuses Customer, and announces the result. Selecting a catalog item returns to the item editor and focuses Quantity. If a saved customer or catalog item would replace non-empty, different values, the app confirms first and keeps the current work when cancelled.
+
+The navigation active state uses both text and a high-contrast accent, with `aria-current="page"` on exactly one destination. Phone destinations remain at least 44 px tall and fit at 320 px. Sticky item actions yield while a form control is focused or the screen is short, avoiding competition with the software keyboard and bottom navigation. The phone/card quote layout remains in use through 1119 px; the desktop table begins at 1120 px.
 
 ## Screen inventory
 
@@ -60,9 +70,7 @@ Preserve entered state when moving between steps. On laptop (about 900 px+) Deta
 - PDF failure and retry.
 - Unsupported share/manual attachment instructions.
 
-Version 2 adds Quote Library, Customer, Quote Detail/Timeline, Duplicate, Revision, and Status screens. Those are not V1 navigation placeholders.
-
-The current Version 2 navigation slice uses one state-preserving document with four workspaces rather than URL routes: **Quote**, **Quotes**, **Customers**, and **Catalog**. Phones use a fixed, thumb-reachable bottom bar; laptop layouts use the same destinations as a left navigation rail. The Quote form remains mounted when a user switches workspaces. Opening/reopening a quote, applying a saved customer, or selecting a catalog item returns the user to Quote. Search and import remain actions inside their relevant workspace rather than becoming extra top-level destinations.
+Version 2 adds Quote Library, Customer, Quote Detail/Timeline, Duplicate, Revision, and Status screens. Those are not V1 navigation placeholders. Search and import remain actions inside their relevant workspace rather than becoming extra top-level destinations.
 
 ## Quote-building workflow
 
