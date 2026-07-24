@@ -50,8 +50,24 @@ function wouldReplaceCustomerDetails(current, next) {
     .some((key) => {
       const currentValue = String(current?.[key] || '').trim();
       const nextValue = String(next?.[key] || '').trim();
+      if (key === 'terms' && currentValue === 'NET30') return false;
       return currentValue && currentValue !== nextValue;
     });
+}
+
+function hasPendingItemFormInput() {
+  const value = (id) => String(document.getElementById(id)?.value || '').trim();
+  const freightMode = document.querySelector('input[name="freightMode"]:checked')?.value || 'perItem';
+  return Boolean(
+    value('itemName') ||
+    value('quantity') ||
+    (value('uom') && value('uom') !== 'EA') ||
+    value('unitCost') ||
+    value('price') ||
+    value('leadTime') ||
+    value('freight') ||
+    freightMode !== 'perItem'
+  );
 }
 
 export function initializeQuoteLibraryUi({
@@ -201,11 +217,12 @@ export function initializeQuoteLibraryUi({
     setLibraryStatus('This draft changed in another tab. Reopen it before saving here.', true);
   }
 
-  function showActiveQuote() {
+  function showActiveQuote(statusMessage) {
     tools.open = false;
     showQuoteWorkspace({
       focusTarget: '#quote-heading',
-      scrollTarget: '.quote-panel'
+      scrollTarget: '.quote-panel',
+      status: statusMessage
     });
   }
 
@@ -358,7 +375,7 @@ export function initializeQuoteLibraryUi({
       const recoveryRecords = await repository.getRecoveryRecords();
       recovery.hidden = recoveryRecords.length === 0;
       recovery.textContent = recoveryRecords.length
-        ? `${recoveryRecords.length} damaged record${recoveryRecords.length === 1 ? '' : 's'} preserved for recovery.`
+        ? `${recoveryRecords.length} damaged record${recoveryRecords.length === 1 ? '' : 's'} preserved for recovery. Healthy quotes remain available. Do not clear this site's data; complete backup and recovery tools arrive in Version 2.5.`
         : '';
     } catch (error) {
       showMoreQuotes.hidden = true;
@@ -397,13 +414,6 @@ export function initializeQuoteLibraryUi({
     }
   }
 
-  async function saveCustomerSnapshot(legacyQuote, quoteRecord) {
-    return repository.saveCustomerAndContact(legacyQuoteToQuoteContent(legacyQuote), {
-      customerId: quoteRecord?.customerId,
-      contactId: quoteRecord?.contactId
-    });
-  }
-
   async function addCurrentToLibrary() {
     if (boundVersionId) return { status: 'read-only' };
     if (boundQuoteId) {
@@ -421,8 +431,7 @@ export function initializeQuoteLibraryUi({
     }
     try {
       const legacyQuote = getActiveQuote();
-      const links = await saveCustomerSnapshot(legacyQuote);
-      const draft = await repository.createDraftFromLegacyQuote(legacyQuote, links);
+      const { draft } = await repository.createDraftWithCustomer(legacyQuoteToQuoteContent(legacyQuote));
       bindDraft(draft);
       visibleQuoteLimit = QUOTE_LIBRARY_PAGE_SIZE;
       const fallback = saveActiveFallback();
@@ -470,7 +479,16 @@ export function initializeQuoteLibraryUi({
   }
 
   async function openDraft(quoteId, { restoringSession = false } = {}) {
-    if (!restoringSession && (quoteId !== boundQuoteId || boundVersionId) && shouldConfirmReplace()) {
+    const reopeningDirtyDraft = (
+      quoteId === boundQuoteId &&
+      !boundVersionId &&
+      (dirty || hasPendingItemFormInput())
+    );
+    const replacingCurrentSelection = quoteId !== boundQuoteId || Boolean(boundVersionId);
+    if (
+      !restoringSession &&
+      (reopeningDirtyDraft || (replacingCurrentSelection && shouldConfirmReplace()))
+    ) {
       const confirmed = window.confirm('Open this saved draft? It will replace the active quote on this tab. Save the current draft first if you need to keep changes.');
       if (!confirmed) return;
     }
@@ -486,14 +504,15 @@ export function initializeQuoteLibraryUi({
         label: draft.workingDraft.kind === 'revision' ? `Revision draft for ${draft.baseNumber}` : 'Loaded draft'
       });
       bindDraft(draft);
-      if (!restoringSession) showActiveQuote();
       const fallback = saveActiveFallback();
+      const message = fallback.status === 'saved'
+        ? `Opened ${draft.workingDraft.content.customer.companyName || 'untitled draft'}.`
+        : 'Draft opened, but the original browser fallback could not be updated.';
       setLibraryStatus(
-        fallback.status === 'saved'
-          ? `Opened ${draft.workingDraft.content.customer.companyName || 'untitled draft'}.`
-          : 'Draft opened, but the original browser fallback could not be updated.',
+        message,
         fallback.status !== 'saved'
       );
+      if (!restoringSession) showActiveQuote(message);
       await refreshQuotes();
     } catch (error) {
       setLibraryStatus('The selected draft could not be opened. The active quote was kept.', true);
@@ -521,8 +540,9 @@ export function initializeQuoteLibraryUi({
           : `Historical ${version.displayNumber}`
       });
       bindVersion(quoteRecord, version);
-      if (!restoringSession) showActiveQuote();
-      setLibraryStatus(`Viewing immutable quote ${version.displayNumber}. PDF, copy, and email actions remain available.`);
+      const message = `Viewing immutable quote ${version.displayNumber}. PDF, copy, and email actions remain available.`;
+      setLibraryStatus(message);
+      if (!restoringSession) showActiveQuote(message);
       await refreshQuotes();
     } catch (error) {
       setLibraryStatus('The finalized quote version could not be opened. The active quote was kept.', true);

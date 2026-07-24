@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-23): Navigation design hardening in progress.** PRs #11–#17 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, return-to-active-quote behavior, and four state-preserving workspaces. The current hardening slice improves active-state accessibility, narrow-phone and keyboard behavior, focus restoration, and confirmation before catalog/customer replacement without changing the `gtm_quote_calculator_v1` fallback or local-library data. Release hardening and owner acceptance follow before Version 2 is complete.
+**Status (2026-07-24): Release hardening in progress.** PRs #11–#18 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, and navigation design hardening. The current release candidate closes output/data-loss risks and adds atomic-failure, direct-source, production-artifact, scale, and release evidence without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. Owner policy decisions, physical Android/laptop acceptance, and a post-merge production smoke remain before Version 2 is complete.
 
 ### Objective
 

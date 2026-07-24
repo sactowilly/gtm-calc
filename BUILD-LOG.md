@@ -1,5 +1,15 @@
 # Build Log
 
+### 2026-07-24 -- Version 2 release-hardening candidate
+
+- Started PR #19 from merged `main` after PR #18 CI and Pages deployment passed.
+- Independent Chief of Staff, Code Reviewer, and Test Automation audits identified stale cached PDFs, customer-dialog copy privacy, dirty-draft reopen, non-atomic first library save, and missing source/build release evidence as blockers.
+- The candidate invalidates PDF artifacts on quote mutation, separates internal/customer copy, protects dirty reopen and replacement-sensitive inputs, makes initial customer/contact/draft creation atomic, and adds 100-record Unicode scale coverage.
+- Added zero-transform source hosting and built-`dist` browser smokes under `/gtm-calc/`, failure artifacts in CI, a release metadata consistency test, and `docs/V2_RELEASE_CHECKLIST.md`.
+- Updated the visible marker to `v2.0.0 · release-candidate.1` and package version to `2.0.0-rc.1`.
+- Verified JavaScript checks, 100 unit/storage/privacy/metadata tests, 16 customer-PDF visual-layout tests, and 140 compatibility/accessibility tests across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari. Direct-source and built-`dist` `/gtm-calc/` smokes also passed; the production build retains only the two known warnings for vendored non-module PDF scripts.
+- Owner policy decisions, physical Android/laptop acceptance, merge CI, production smoke, and the rollback/re-entry drill remain pending. Version 2 is not marked complete.
+
 ### 2026-07-23 -- Version 2 navigation design-hardening candidate
 
 - Applied the UI Designer and UX Researcher review: corrected `aria-current`, strengthened the active indicator, shortened the Quotes destination to Library, protected non-empty item/customer form values before replacement, and restored visible focus/status after quote or customer recall.

@@ -119,7 +119,7 @@ Rollback: revert the view/navigation files and restore the prior one-document la
 
 ### PR 18 — Navigation design hardening
 
-Status: current candidate.
+Status: merged in PR #18.
 
 Goal: resolve the UI Designer and UX Researcher findings before Version 2 release hardening.
 
@@ -138,6 +138,8 @@ Rollback: revert this hardening PR. PR #17 navigation and all Version 2 records 
 
 ### PR 19 — Version 2 release hardening
 
+Status: current release-hardening candidate.
+
 Goal: validate upgrades, recovery, accessibility, phone/laptop workflows, and production deployment before calling Version 2 stable.
 
 Included:
@@ -146,6 +148,8 @@ Included:
 - Database upgrade and injected-failure tests.
 - Search scale/long-text/accessibility tests.
 - Recovery-record visibility/export guidance without destructive repair.
+- Cached-PDF invalidation, customer-copy privacy, dirty-reopen protection, and atomic initial draft/customer creation.
+- Zero-transform source-hosting and built-production-artifact browser smokes under `/gtm-calc/`.
 - Documentation, deployment smoke, and release tag checklist.
 
 Excluded: complete backup/restore (Version 2.5), PWA/offline shell (Version 3), and hosted access (Version 4).
@@ -158,6 +162,8 @@ Excluded: complete backup/restore (Version 2.5), PWA/offline shell (Version 3), 
 4. Customer/contact merge rules when names or email addresses match.
 5. Which fields a duplicate resets besides number, date, status, and events.
 6. ~~Revision source~~ — approved: only the latest finalized version can start a revision.
+
+The remaining owner decisions and physical-device evidence are tracked in `docs/V2_RELEASE_CHECKLIST.md`. PR #19 remains a release candidate until those checks are recorded. A small post-merge closeout change records the production smoke, marks Version 2 complete, advances the infographic to Version 2.5, and creates the `v2.0.0` tag.
 
 ## Version 2 completion gate
 

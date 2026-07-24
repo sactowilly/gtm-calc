@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 2 Release-Candidate Boundary
+
+**DECISION:** Treat PR #19 as a non-deploying release candidate with marker `v2.0.0 · release-candidate.1`. It may close correctness risks and add release evidence, but it must not mark Version 2 complete or create the stable tag. Owner Android/laptop acceptance and a post-merge production smoke are recorded before a documentation-only closeout marks Version 2 complete and advances the roadmap to Version 2.5.
+**RATIONALE:** Feature branches cannot deploy production, so the release-candidate PR cannot truthfully claim its own post-merge Pages verification. Separating candidate hardening from production closeout preserves the repository's evidence rules.
+**DATE:** 2026-07-24
+**PARTIES:** Codex; owner acceptance pending
+
 ## Version 2 Workspace Navigation
 
 **DECISION:** Use four state-preserving workspaces—Quote, Library, Customers, and Catalog—with a fixed phone bottom bar and a sticky laptop navigation rail. Keep search and CSV import inside their relevant workspaces. Opening a quote, applying a customer, or selecting a catalog item returns to Quote.
