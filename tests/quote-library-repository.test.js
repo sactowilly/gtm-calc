@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import { openDB } from 'idb';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildQuoteItem } from '../js/domain/calculations.js';
-import { quoteContentToLegacyQuote } from '../js/domain/quote-library.js';
+import { legacyQuoteToQuoteContent, quoteContentToLegacyQuote } from '../js/domain/quote-library.js';
 import { isUnreviewedDuplicate } from '../js/quote-library/quote-library-ui.js';
 import {
   QUOTE_LIBRARY_DATABASE_VERSION,
@@ -81,6 +81,65 @@ describe('IndexedDB quote library repository', () => {
     expect(await repository.searchQuotes({ query: 'north river' })).toHaveLength(1);
     expect(await repository.searchQuotes({ query: 'jordan@example' })).toHaveLength(1);
     expect(await repository.searchQuotes({ status: 'finalized' })).toEqual([]);
+  });
+
+  it('creates the initial draft and customer links in one repository operation', async () => {
+    const { repository } = makeRepository();
+    const result = await repository.createDraftWithCustomer(legacyQuoteToQuoteContent(makeLegacyQuote()));
+
+    expect(result.draft).toMatchObject({
+      currentStatus: 'draft',
+      customerId: result.customerId,
+      contactId: result.contactId
+    });
+    expect(await repository.getCustomer(result.customerId)).toMatchObject({
+      companyName: 'North River Packaging'
+    });
+    expect(await repository.getContact(result.contactId)).toMatchObject({
+      customerId: result.customerId,
+      name: 'Jordan Rivera',
+      email: 'jordan@example.test'
+    });
+    expect(await repository.listEvents(result.draft.id)).toEqual([
+      expect.objectContaining({ quoteId: result.draft.id, type: 'created' })
+    ]);
+  });
+
+  it('rolls back customer, contact, draft, and event writes when initial draft creation fails', async () => {
+    const ids = [
+      'device-id',
+      'customer-id',
+      'contact-id',
+      'draft-id',
+      'existing-event-id'
+    ];
+    const { repository, databaseName } = makeRepository({
+      idFactory: () => ids.shift()
+    });
+    await repository.initialize();
+    await repository.close();
+
+    const seedDatabase = await openDB(databaseName, QUOTE_LIBRARY_DATABASE_VERSION);
+    await seedDatabase.add(QUOTE_LIBRARY_STORES.quoteEvents, {
+      id: 'existing-event-id',
+      quoteId: 'seed-quote',
+      type: 'seed'
+    });
+    seedDatabase.close();
+
+    await expect(repository.createDraftWithCustomer(
+      legacyQuoteToQuoteContent(makeLegacyQuote())
+    )).rejects.toMatchObject({ name: 'ConstraintError' });
+
+    await repository.close();
+    const database = await openDB(databaseName, QUOTE_LIBRARY_DATABASE_VERSION);
+    expect(await database.getAll(QUOTE_LIBRARY_STORES.customers)).toEqual([]);
+    expect(await database.getAll(QUOTE_LIBRARY_STORES.contacts)).toEqual([]);
+    expect(await database.getAll(QUOTE_LIBRARY_STORES.quotes)).toEqual([]);
+    expect(await database.getAll(QUOTE_LIBRARY_STORES.quoteEvents)).toEqual([
+      expect.objectContaining({ id: 'existing-event-id', quoteId: 'seed-quote', type: 'seed' })
+    ]);
+    database.close();
   });
 
   it('saves only working-draft content and refuses to edit a finalized quote', async () => {

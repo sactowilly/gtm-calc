@@ -128,6 +128,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
     };
     const hasEnteredItemDetails = Boolean(
       fields.itemName.value.trim() ||
+      fields.uom.value !== 'EA' ||
       fields.unitCost.value ||
       fields.price.value ||
       fields.leadTime.value.trim()

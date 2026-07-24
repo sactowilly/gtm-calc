@@ -12,9 +12,11 @@
 | Version 2 library-list usability | complete | PR #14 merged ten-at-a-time results and the temporary duplicate review state. |
 | Version 2 lifecycle UI | complete | PR #15 merged local numbering, immutable history, revisions, finalized duplication, output regeneration, and controlled statuses. |
 | Version 2 workspace navigation | complete | PR #17 merged separate Quote, Library, Customers, and Catalog workspaces without changing local data or customer-safe output. |
-| Version 2 navigation design hardening | current candidate | Branch `feature/v2-navigation-design-hardening` resolves the UI/UX review findings for active state, focus, replacement safety, narrow phones, keyboards, and tablet-width quote rows. |
+| Version 2 navigation design hardening | complete | PR #18 merged with passing CI and a successful Pages deployment. |
 | Approve quote-number year policy | complete | Owner approved the finalization date's year. |
 | Approve Version 2 status transitions | complete | Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcomes are terminal. |
 | Approve revision source policy | complete | Revisions start only from the latest finalized version; historical versions remain viewable for output. |
-| Version 2 release hardening | next | After design hardening merges, run upgrade/failure/recovery and final Android/laptop acceptance before marking Version 2 complete. |
+| Version 2 release hardening | current candidate | Branch `feature/v2-release-hardening` closes output/data-loss blockers and adds atomicity, source/build smoke, scale, documentation, and owner-acceptance gates. |
 | Approve customer/contact matching | owner input before V2 stable | Current provisional rule uses exact normalized company name, then contact email (or name when email is blank). |
+| Approve duplicate reset policy | owner input before V2 stable | Recommendation: reset number/status/events/date/expiration; retain customer, items/pricing, rep, shipping, terms, and notes. |
+| Version 2 physical acceptance | owner input before V2 stable | Complete `docs/V2_RELEASE_CHECKLIST.md` on Android Chrome and laptop Edge before merge. |

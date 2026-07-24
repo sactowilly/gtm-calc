@@ -6,6 +6,10 @@ Implementation status: the customer quotation renderer described below is implem
 
 `toCustomerQuoteDocument(quote)` in `js/pdf/customer-quote-document.js` is the customer PDF's allowlist boundary. The HTML template and PDF renderer accept that projection rather than the internal quote object. Existing rep/customer clipboard and mailto behavior remains separate and unchanged by the template replacement.
 
+The workspace action **Copy Internal** is deliberately rep-facing and may contain profitability data. The PDF-dialog action **Copy Customer Quote** uses the same customer allowlist as customer email/PDF output and must never include cost, freight cost, GTM/markup, catalog/source IDs, vendor data, or internal notes.
+
+Any quote-content mutation invalidates the cached PDF `Blob` and object URL. Preview, download, share, and email preparation must regenerate from the current quote so a prior customer's artifact cannot be reused after edits.
+
 ### Customer PDF fields
 
 - Company branding and seller contact details approved for public use.

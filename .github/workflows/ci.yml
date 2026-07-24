@@ -39,5 +39,20 @@ jobs:
       - name: Run cross-browser compatibility checks
         run: npm run test:compat
 
+      - name: Run direct-source GitHub Pages smoke
+        run: npm run test:source
+
       - name: Build production artifact
         run: npm run build
+
+      - name: Run production artifact smoke
+        run: npx playwright test --config=playwright.production.config.js
+
+      - name: Upload browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-artifacts
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -12,7 +12,12 @@ export default defineConfig({
     { name: 'android-chrome', use: { ...devices['Pixel 7'] } },
     { name: 'iphone-safari', use: { ...devices['iPhone 13'] } }
   ],
-  use: { baseURL: 'http://127.0.0.1:4173/gtm-calc/' },
+  use: {
+    baseURL: 'http://127.0.0.1:4173/gtm-calc/',
+    screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure'
+  },
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1 --port 4173',
     url: 'http://127.0.0.1:4173/gtm-calc/',

@@ -235,6 +235,62 @@ export function createQuoteLibraryRepository({
     return createDraft(legacyQuoteToQuoteContent(legacyQuote, { fallbackDate: options.fallbackDate }), options);
   }
 
+  async function createDraftWithCustomer(content, links = {}) {
+    const normalized = assertValidContent(content);
+    const database = await openDatabase();
+    const settings = await ensureSettings();
+    const timestamp = now();
+    const transaction = database.transaction([
+      QUOTE_LIBRARY_STORES.customers,
+      QUOTE_LIBRARY_STORES.contacts,
+      QUOTE_LIBRARY_STORES.quotes,
+      QUOTE_LIBRARY_STORES.quoteEvents
+    ], 'readwrite');
+    const savedLinks = await upsertCustomerAndContact(
+      transaction.objectStore(QUOTE_LIBRARY_STORES.customers),
+      transaction.objectStore(QUOTE_LIBRARY_STORES.contacts),
+      normalized,
+      links,
+      timestamp
+    );
+    const draft = {
+      id: idFactory(),
+      schemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
+      originDeviceId: settings.deviceId,
+      currentStatus: 'draft',
+      draftRevision: 0,
+      versionIds: [],
+      workingDraft: {
+        kind: 'base',
+        content: cloneQuoteData(normalized),
+        lastSavedAt: timestamp
+      },
+      customerId: savedLinks.customerId,
+      contactId: savedLinks.contactId,
+      customerSearchText: createQuoteSearchText(normalized),
+      createdAt: timestamp,
+      updatedAt: timestamp
+    };
+    const event = eventRecord({
+      idFactory,
+      now,
+      quoteId: draft.id,
+      type: 'created'
+    });
+    try {
+      await transaction.objectStore(QUOTE_LIBRARY_STORES.quotes).add(draft);
+      await transaction.objectStore(QUOTE_LIBRARY_STORES.quoteEvents).add(event);
+      await transaction.done;
+    } catch (error) {
+      await transaction.done.catch(() => {});
+      throw error;
+    }
+    return {
+      draft: cloneQuoteData(draft),
+      ...savedLinks
+    };
+  }
+
   async function getQuote(quoteId) {
     const database = await openDatabase();
     const record = await database.get(QUOTE_LIBRARY_STORES.quotes, quoteId);
@@ -758,6 +814,7 @@ export function createQuoteLibraryRepository({
     getSettings: ensureSettings,
     createDraft,
     createDraftFromLegacyQuote,
+    createDraftWithCustomer,
     getQuote,
     saveDraftContent,
     saveDraftWithCustomer,

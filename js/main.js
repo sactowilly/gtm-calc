@@ -127,6 +127,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
   function markUnsaved() {
     if (quoteReadOnly) return;
+    releaseQuotePdf();
     savedState.textContent = 'Not saved';
     quoteLibraryController?.markDirty();
   }
@@ -489,10 +490,22 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
 
     try {
       await navigator.clipboard.writeText(text);
-      setStatus('Quote copied.', false);
+      setStatus('Internal quote copied.', false);
     } catch (error) {
       setStatus('Copy is unavailable here. Use the rendered PDF preview.', true);
       openQuoteDialog();
+    }
+  }
+
+  async function copyCustomerQuoteText() {
+    syncQuoteMeta();
+    const text = buildCustomerQuoteText(quote);
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setPdfStatus('Customer-safe quote copied.', false);
+    } catch (error) {
+      setPdfStatus('Customer-safe copy is unavailable here. Download the PDF instead.', true);
     }
   }
 
@@ -786,7 +799,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   document.getElementById('copyQuote').addEventListener('click', copyQuoteText);
   document.getElementById('emailRep').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
   document.getElementById('emailCustomer').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
-  document.getElementById('copyQuoteDialog').addEventListener('click', copyQuoteText);
+  document.getElementById('copyQuoteDialog').addEventListener('click', copyCustomerQuoteText);
   document.getElementById('emailRepDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
   document.getElementById('emailCustomerDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
   document.getElementById('closeQuote').addEventListener('click', function () {

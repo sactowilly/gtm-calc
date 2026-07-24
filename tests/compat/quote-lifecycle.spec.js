@@ -16,6 +16,10 @@ async function createLibraryDraft(page, companyName = 'Lifecycle Customer') {
   await page.locator('#buyerEmail').fill('jordan@example.test');
   const library = await openLibrary(page);
   await library.locator('#addCurrentToLibrary').click();
+  await expect(library.locator('#quoteLibraryStatus')).toContainText(
+    'added as an unnumbered draft',
+    { timeout: 15000 }
+  );
   await expect(library.locator('.library-card h3')).toHaveText(companyName);
   return library;
 }

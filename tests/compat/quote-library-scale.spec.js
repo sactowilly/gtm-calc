@@ -16,7 +16,8 @@ async function fillQuoteCustomer(page, name) {
   await page.locator('#buyerEmail').fill('jordan@example.test');
 }
 
-test('progressively reveals 50 drafts while search still covers the complete result set', async ({ page }) => {
+test('progressively reveals 100 drafts while search reaches a long Unicode tail record', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('./');
   await expect(page.locator('#quoteLibrarySummary')).toHaveText('0 quotes on this device');
   await page.evaluate(async () => {
@@ -27,10 +28,12 @@ test('progressively reveals 50 drafts while search still covers the complete res
       idFactory: () => `scale-${++id}`,
       now: () => new Date(Date.UTC(2026, 6, 16, 12, 0, second++)).toISOString()
     });
-    for (let index = 1; index <= 50; index += 1) {
+    for (let index = 1; index <= 100; index += 1) {
       await repository.createDraftFromLegacyQuote({
-        customerName: `Scale Customer ${String(index).padStart(2, '0')}`,
-        buyerName: `Buyer ${index}`,
+        customerName: index === 1
+          ? 'Café del Río Packaging — Unicode Tail Ω'
+          : `Scale Customer ${String(index).padStart(3, '0')}`,
+        buyerName: index === 1 ? 'Zoë Buyer' : `Buyer ${index}`,
         buyerEmail: `buyer${index}@example.test`,
         date: '2026-07-16',
         shipVia: 'Our Truck',
@@ -45,27 +48,32 @@ test('progressively reveals 50 drafts while search still covers the complete res
   const library = await openLibrary(page);
   await library.locator('#quoteLibrarySearch').fill('Scale Customer');
   await expect(library.locator('.library-card')).toHaveCount(10);
-  await expect(library.locator('.library-card h3').first()).toHaveText('Scale Customer 50');
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 10 shown');
+  await expect(library.locator('.library-card h3').first()).toHaveText('Scale Customer 100');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('99 quotes · 10 shown');
 
   const showMore = library.locator('#showMoreQuotes');
   await expect(showMore).toBeVisible();
   expect((await showMore.boundingBox()).height).toBeGreaterThanOrEqual(44);
   await showMore.click();
   await expect(library.locator('.library-card')).toHaveCount(20);
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 20 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('99 quotes · 20 shown');
 
-  await library.locator('#quoteLibrarySearch').fill('Scale Customer 01');
+  await library.locator('#quoteLibrarySearch').fill('Scale Customer 002');
   await expect(library.locator('.library-card')).toHaveCount(1);
-  await expect(library.locator('.library-card h3')).toHaveText('Scale Customer 01');
+  await expect(library.locator('.library-card h3')).toHaveText('Scale Customer 002');
   await expect(library.locator('#quoteLibrarySummary')).toHaveText('1 quote · 1 shown');
 
-  await library.locator('#quoteLibrarySearch').fill('Scale Customer');
+  await library.locator('#quoteLibrarySearch').fill('Unicode Tail Ω');
+  await expect(library.locator('.library-card')).toHaveCount(1);
+  await expect(library.locator('.library-card h3')).toHaveText('Café del Río Packaging — Unicode Tail Ω');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('1 quote · 1 shown');
+
+  await library.locator('#quoteLibrarySearch').fill('');
   await expect(library.locator('.library-card')).toHaveCount(10);
-  for (let click = 0; click < 4; click += 1) await showMore.click();
-  await expect(library.locator('.library-card')).toHaveCount(50);
+  for (let click = 0; click < 9; click += 1) await showMore.click();
+  await expect(library.locator('.library-card')).toHaveCount(100);
   await expect(showMore).toBeHidden();
-  await expect(library.locator('#quoteLibrarySummary')).toHaveText('50 quotes · 50 shown');
+  await expect(library.locator('#quoteLibrarySummary')).toHaveText('100 quotes · 100 shown');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 

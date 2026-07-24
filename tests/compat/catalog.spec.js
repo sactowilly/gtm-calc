@@ -109,3 +109,32 @@ test('protects partially entered item details before applying a catalog item', a
   await expect(page.locator('#uom')).toHaveValue('CS');
   await expect(page.locator('#quantity')).toBeFocused();
 });
+
+test('protects a UOM-only item edit before applying a catalog item', async ({ page }) => {
+  await page.goto('./');
+  await openCatalog(page);
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('#catalogFile').setInputFiles({
+    name: 'vision-catalog.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(csv)
+  });
+
+  await page.getByRole('button', { name: 'Quote', exact: true }).click();
+  await page.locator('#uom').selectOption('BND');
+  await openCatalog(page);
+  await page.locator('#catalogSearch').fill('RSC');
+
+  page.once('dialog', (dialog) => dialog.dismiss());
+  await page.locator('[data-item-id="catalog:RSC-12108"]').click();
+  await expect(page.locator('#catalogWorkspace')).toBeVisible();
+  await expect(page.locator('#catalogStatus')).toContainText('current item details were kept');
+  await expect(page.locator('#itemName')).toHaveValue('');
+  await expect(page.locator('#uom')).toHaveValue('BND');
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-item-id="catalog:RSC-12108"]').click();
+  await expect(page.locator('#quoteWorkspace')).toBeVisible();
+  await expect(page.locator('#itemName')).toHaveValue('RSC Kraft Carton');
+  await expect(page.locator('#uom')).toHaveValue('CS');
+});

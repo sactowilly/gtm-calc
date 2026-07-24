@@ -104,6 +104,14 @@ The PR #12 branch connects the repository through a collapsible phone-first Quot
 
 Customer matching is provisionally exact normalized company name, followed by existing stable IDs. Contacts match normalized email, or normalized name when email is blank. These rules require owner review before Version 2 is called stable. Finalization, quote numbering, revisions, statuses, deletion/archive, backup/restore, and catalog migration remain unconnected.
 
+### Release-hardening update — 2026-07-24
+
+- Initial Add to Library now creates/updates the customer, contact, draft, and creation event in one IndexedDB transaction. A constraint or storage failure rolls back all four writes.
+- Bound draft saves retain their existing atomic customer/contact/draft revision-token transaction.
+- Invalid quote/version records are moved into `recoveryRecords`; healthy records remain usable. The UI warns users not to clear site data while complete export/restore remains deferred to Version 2.5.
+- The release candidate adds two-real-tab numbering/conflict coverage plus zero-transform source and built-artifact browser smokes.
+- The database remains at version 1 in this candidate; no artificial schema migration is introduced solely to test an otherwise unnecessary upgrade.
+
 Proposed object stores:
 
 | Store | Key/indexes | Purpose |
