@@ -123,9 +123,9 @@ The feature branch and pull request must not deploy production.
 - [x] Smoke the live URL on phone and laptop: marker, direct reload, assets, calculator, library recall, PDF generation, and customer privacy passed.
 - [x] Record owner decisions and physical-device acceptance before stable closeout. PR #19 had already merged as the release candidate; stable acceptance was recorded on 2026-07-27.
 - [x] Prepare a closeout change that records the production result, marks Version 2 complete, and changes the roadmap's next phase to Version 2.5.
-- [ ] Merge the closeout change and verify its GitHub Pages deployment.
-- [ ] Tag the verified production commit `v2.0.0`.
+- [x] Merge PR #20 as `b61890c` and verify GitHub Pages deployment run `30304688708`.
+- [x] Tag verified production commit `b61890c` with annotated tag `v2.0.0`.
 
 Production release-candidate commit/deployment/smoke: `3e41007` / run `30132341911` / PASS on 2026-07-27.
 
-Closeout deployment/tag: pending until this closeout merges.
+Closeout deployment/tag: PR #20 CI run `30304252373`, merge `b61890c`, Pages run `30304688708`, live stable smoke, and annotated tag `v2.0.0` — PASS on 2026-07-27.

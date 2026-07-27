@@ -20,7 +20,7 @@ The release smoke checks remain:
 - Data safety: New Quote warns before clearing unsaved work, saved legacy quotes still reopen, and corrupt local saves are moved to a recovery key instead of crashing the app.
 - Accessibility: phone controls remain usable at narrow widths, visible buttons meet touch-target expectations, and the app has no serious or critical automated accessibility findings.
 
-The Version 2 acceptance gate passed on 2026-07-27. The final `v2.0.0` tag is created only after this closeout change merges and its GitHub Pages deployment is verified.
+The Version 2 acceptance gate passed on 2026-07-27. Annotated tag `v2.0.0` identifies production commit `b61890c`, verified after closeout CI and GitHub Pages deployment succeeded.
 
 ## What It Calculates
 

@@ -22,5 +22,5 @@
 | Approve duplicate reset policy | complete | Reset number/status/events/date/expiration; retain customer, items/pricing, rep, shipping, terms, and notes; keep `DUP` until first successful save. |
 | Defer deletion/archive policy | complete | Deletion, archive, and abandoned-revision cleanup remain outside Version 2 and require a separate approved roadmap slice. |
 | Version 2 physical acceptance | complete | Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome passed on 2026-07-27; owner approved Chrome as the laptop Edge substitution. |
-| Version 2 stable closeout | current | Version 2 is accepted and complete. Merge the closeout, verify its Pages deployment, then tag the verified commit `v2.0.0`. |
-| Version 2.5 backup and restore | next | Begin schema-versioned backup/restore only after the Version 2 closeout deployment and tag are verified. |
+| Version 2 stable closeout | complete | PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, live stable smoke, and annotated tag `v2.0.0` are verified. |
+| Version 2.5 backup and restore | current / next | Begin the separately planned schema-versioned backup/restore phase. |
