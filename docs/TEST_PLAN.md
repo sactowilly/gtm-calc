@@ -2,7 +2,7 @@
 
 ## Quality strategy
 
-The current repository has no automated tests, package tooling, linting, or testable exports. Version 1 should add Vite and native ES modules, Vitest for pure/unit/component-light tests, Playwright for browser flows, and `@axe-core/playwright` for automated accessibility checks. Keep physical iPhone/Android checks for platform features that automation cannot prove.
+Historical Version 1 planning began before the repository had automated tests or package tooling. The implemented stack now uses Vite and native ES modules, Vitest for pure/unit and storage tests, Playwright for browser/PDF/deployment flows, and `@axe-core/playwright` for automated accessibility checks. Physical iPhone/Android checks remain necessary for platform features that automation cannot prove.
 
 Test layers:
 
