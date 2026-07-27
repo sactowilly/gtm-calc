@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#19 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, and release evidence without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #19 head `22cf299` merged as `3e41007`; CI run `30130612587`, Pages run `30132341911`, live phone/laptop/privacy smoke, rollback/re-entry, and owner Android/laptop acceptance all passed. Version 2.5 backup and restore is the next phase; the `v2.0.0` tag follows verification of the closeout deployment.
+**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#20 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, release evidence, and stable closeout without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup and restore is current/next.
 
 ### Objective
 
