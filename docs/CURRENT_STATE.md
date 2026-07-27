@@ -8,7 +8,7 @@ Live application: <https://sactowilly.github.io/gtm-calc/>
 
 > Historical baseline: this document records the original `f7c35a1` audit. Subsequent Version 1 pull requests added Vite/ES modules, regression tests, phone-first quote controls, customer/buyer fields, UOM, explicit PDF download, and separate rep/customer email actions. The customer-PDF replacement branch removes the handwritten coordinate renderer in favor of the customer-safe HTML/CSS template documented in `PDF_TEMPLATE_FIELD_MAPPING.md` and `PDF_AND_SHARING.md`. The storage key and calculation formulas remain unchanged.
 
-## Current implementation update — 2026-07-24
+## Current implementation update — 2026-07-27
 
 The detailed audit below remains as historical evidence for the original baseline. The active code has since changed materially:
 
@@ -24,8 +24,9 @@ The detailed audit below remains as historical evidence for the original baselin
 - PR #12 merged the visible draft library, PR #13 restored direct GitHub Pages source compatibility, and PR #14 merged phone-scale progressive disclosure plus the temporary `DUP` review state.
 - PR #15 merged finalization-date-year local numbering, immutable read-only version output, historical version selection, latest-version-only revisions, duplicate-as-new, and the approved controlled status workflow. PR #16 merged automatic return to the active quote after opening/reopening a saved quote.
 - PR #17 merged the state-preserving Quote, Library, Customers, and Catalog workspaces. PR #18 merged navigation design hardening and passed GitHub CI plus the subsequent Pages deployment.
-- The current release-hardening candidate invalidates cached customer PDFs after edits, separates internal/customer copy actions, protects dirty draft reopen, makes the first customer/contact/draft save atomic, and adds direct-source plus built-artifact browser smokes. Its visible marker is `v2.0.0 · release-candidate.1`.
-- Version 2 owner policy decisions, physical Android/laptop acceptance, merge, and production smoke remain. Backup/restore, PWA, backend, authentication, synchronization, deletion, and archiving remain deferred according to the roadmap.
+- PR #19 head `22cf299` merged to `main` as `3e41007` after CI run `30130612587` passed. Pages run `30132341911` deployed the release candidate successfully.
+- Version 2 acceptance passed on 2026-07-27: live production phone/laptop/privacy smoke passed; Android Chrome passed on a Samsung Galaxy S24 Ultra; laptop Chromium passed on a Dell desktop in Chrome with the owner's approved substitution for Edge; and rollback/re-entry against accepted Version 1.5 commit `3f1f1a0` preserved the legacy raw value, IndexedDB counts, IDs, finalized hashes, counters, and recovery records before allocating `2026-002`.
+- Version 2 is complete with closeout marker `v2.0.0 · stable` and package version `2.0.0`; Version 2.5 backup/restore is next. The stable `v2.0.0` tag and closeout-deployment verification occur after this closeout merges. Deletion/archive, PWA, backend, authentication, synchronization, and hosted access remain deferred according to the roadmap.
 
 The current verification counts are recorded in `BUILD-LOG.md` after each verified branch. The live GitHub Pages site changes only after a feature branch is reviewed and merged to `main`.
 

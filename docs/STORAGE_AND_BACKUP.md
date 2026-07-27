@@ -102,7 +102,7 @@ The PR #12 branch connects the repository through a collapsible phone-first Quot
 - A stale writer saves the legacy fallback but cannot overwrite the newer IndexedDB draft. The UI requires the user to reopen the library record.
 - Customer/contact upsert and draft update occur in one IndexedDB transaction for bound drafts, so a conflict cannot partially update customer data.
 
-Customer matching is provisionally exact normalized company name, followed by existing stable IDs. Contacts match normalized email, or normalized name when email is blank. These rules require owner review before Version 2 is called stable. Finalization, quote numbering, revisions, statuses, deletion/archive, backup/restore, and catalog migration remain unconnected.
+Version 2 customer matching uses an explicitly selected stable ID when present; otherwise it reuses the first exact normalized company-name match. Within that customer, contacts reuse an exact normalized email match, or an exact normalized buyer-name match when email is blank. The owner accepted this implemented behavior for Version 2 on 2026-07-27. Same-name company disambiguation and confirmation before blank-email name reuse remain later improvements. Finalization, quote numbering, immutable revisions, and statuses are connected; deletion/archive and complete backup/restore remain deferred.
 
 ### Release-hardening update — 2026-07-24
 

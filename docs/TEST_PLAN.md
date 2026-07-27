@@ -247,6 +247,8 @@ CI/release coverage:
 - Current Edge desktop smoke (Chromium but default enterprise target).
 - Current iOS Safari and Android Chrome physical/device-cloud manual pass for keyboard/date/PDF/share.
 
+For Version 2 stable acceptance, the owner approved current Chrome on the Dell desktop as the laptop Chromium substitute for Edge. This one-release substitution does not remove Edge from the ongoing compatibility target.
+
 Feature-detect Clipboard, dialog, Blob/File, Web Share, and file sharing; tests cover absent APIs. Do not gate solely on user-agent strings.
 
 ## GitHub Pages and Actions tests
@@ -258,6 +260,18 @@ Feature-detect Clipboard, dialog, Blob/File, Web Share, and file sharing; tests 
 - Post-deploy smoke GETs the production URL/assets, verifies expected release marker/title, and runs a minimal browser calculation/privacy path where reliable.
 - Feature-branch/PR workflows must not deploy production.
 - Document rollback to `v0.1.0` through a restoration PR and smoke it in a dry-run branch build.
+
+## Version 2 release checks actually performed
+
+Release evidence is recorded against PR #19 head `22cf299` and merge commit `3e41007`:
+
+- Pull-request CI run `30130612587` passed locked install, JavaScript checks, 100 unit/storage/privacy/metadata tests, 16 customer-PDF visual-layout tests, 140 compatibility/accessibility tests across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari, direct-source smoke, build, and built-artifact smoke.
+- GitHub Pages run `30132341911` deployed the merged release candidate from `main`.
+- Live production phone, laptop, and customer-privacy smoke passed at `/gtm-calc/`.
+- Android acceptance passed on 2026-07-27 using Samsung Galaxy S24 Ultra and Chrome, including navigation, software keyboard, draft/lifecycle workflows, PDF preview/download/share, privacy sentinels, and portrait/landscape layout.
+- Laptop Chromium acceptance passed on 2026-07-27 using a Dell desktop and Chrome with the owner's approved substitution for Edge, including legacy/IndexedDB retention, multi-tab protection, search/history, PDF/email/copy privacy, keyboard/zoom, direct reload, and console checks.
+- Rollback/re-entry passed against accepted Version 1.5 commit `3f1f1a0`: the legacy raw value and IndexedDB counts, IDs, finalized hashes, counters, and recovery records matched the pre-rollback inventory; the next allocation was `2026-002`.
+- The final stable tag and closeout-deployment verification remain post-merge release actions.
 
 ## Current checks actually performed during planning
 

@@ -1,5 +1,33 @@
 # Decisions
 
+## Version 2 Stable Acceptance
+
+**DECISION:** Accept Version 2 as complete after PR #19 head `22cf299` merged as `3e41007`, CI run `30130612587` and Pages run `30132341911` passed, live production phone/laptop/privacy smoke passed, Android and owner-approved laptop Chromium acceptance passed, and rollback/re-entry preserved the legacy and IndexedDB inventories. Advance the roadmap to Version 2.5. Create `v2.0.0` only after the closeout deployment is verified.
+**RATIONALE:** The automated, production, physical-device, privacy, and rollback gates now have exact evidence. Separating final tag creation from the acceptance decision ensures the tag identifies the verified closeout deployment.
+**DATE:** 2026-07-27
+**PARTIES:** Will Z, Codex
+
+## Customer and Contact Matching
+
+**DECISION:** Accept the implemented Version 2 behavior: deliberately selected customer/contact records use stable IDs; an unbound save reuses the first exact normalized company-name match; within that customer, an exact normalized email match is reused, or an exact normalized buyer-name match is reused when email is blank. Defer same-name company disambiguation and blank-email confirmation to a later approved slice.
+**RATIONALE:** This records the production behavior the owner tested and accepted without claiming safeguards that Version 2 does not implement. Stable IDs preserve deliberate selection, while the ambiguity risk remains explicit rather than silently redefined during release closeout.
+**DATE:** 2026-07-27
+**PARTIES:** Will Z, Codex
+
+## Duplicate Reset Behavior
+
+**DECISION:** Duplicate-as-new resets the quote number, lifecycle status/events, quote date, and expiration. It retains customer/contact, line items/pricing, sales rep, shipping, terms, and notes, and remains visibly marked `DUP` until its first successful save.
+**RATIONALE:** This preserves the useful source content while resetting lifecycle identity and requiring an explicit review before the duplicate loses its warning state.
+**DATE:** 2026-07-27
+**PARTIES:** Will Z, Codex
+
+## Deletion and Archive Deferral
+
+**DECISION:** Do not add quote deletion, archive, or abandoned-revision cleanup to Version 2. Address retention controls only in a separate approved roadmap slice.
+**RATIONALE:** Destructive retention behavior needs its own recovery, backup, and owner-policy design and must not expand the stable Version 2 boundary.
+**DATE:** 2026-07-27
+**PARTIES:** Will Z, Codex
+
 ## Version 2 Release-Candidate Boundary
 
 **DECISION:** Treat PR #19 as a non-deploying release candidate with marker `v2.0.0 · release-candidate.1`. It may close correctness risks and add release evidence, but it must not mark Version 2 complete or create the stable tag. Owner Android/laptop acceptance and a post-merge production smoke are recorded before a documentation-only closeout marks Version 2 complete and advances the roadmap to Version 2.5.
