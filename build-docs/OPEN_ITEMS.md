@@ -16,7 +16,11 @@
 | Approve quote-number year policy | complete | Owner approved the finalization date's year. |
 | Approve Version 2 status transitions | complete | Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcomes are terminal. |
 | Approve revision source policy | complete | Revisions start only from the latest finalized version; historical versions remain viewable for output. |
-| Version 2 release hardening | current candidate | Branch `feature/v2-release-hardening` closes output/data-loss blockers and adds atomicity, source/build smoke, scale, documentation, and owner-acceptance gates. |
-| Approve customer/contact matching | owner input before V2 stable | Current provisional rule uses exact normalized company name, then contact email (or name when email is blank). |
-| Approve duplicate reset policy | owner input before V2 stable | Recommendation: reset number/status/events/date/expiration; retain customer, items/pricing, rep, shipping, terms, and notes. |
-| Version 2 physical acceptance | owner input before V2 stable | Complete `docs/V2_RELEASE_CHECKLIST.md` on Android Chrome and laptop Edge before merge. |
+| Version 2 release hardening | complete | PR #19 head `22cf299` merged as `3e41007`; CI run `30130612587`, Pages run `30132341911`, production smoke, rollback/re-entry, and owner acceptance passed. |
+| Approve customer/contact matching | complete | Owner accepted current Version 2 behavior: stable IDs for deliberate selection; otherwise first exact normalized company match, then exact email or blank-email exact buyer-name reuse. |
+| Improve ambiguous customer/contact matching | later | Consider same-name company disambiguation and confirmation before blank-email name-only reuse in a separately approved slice. |
+| Approve duplicate reset policy | complete | Reset number/status/events/date/expiration; retain customer, items/pricing, rep, shipping, terms, and notes; keep `DUP` until first successful save. |
+| Defer deletion/archive policy | complete | Deletion, archive, and abandoned-revision cleanup remain outside Version 2 and require a separate approved roadmap slice. |
+| Version 2 physical acceptance | complete | Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome passed on 2026-07-27; owner approved Chrome as the laptop Edge substitution. |
+| Version 2 stable closeout | current | Version 2 is accepted and complete. Merge the closeout, verify its Pages deployment, then tag the verified commit `v2.0.0`. |
+| Version 2.5 backup and restore | next | Begin schema-versioned backup/restore only after the Version 2 closeout deployment and tag are verified. |

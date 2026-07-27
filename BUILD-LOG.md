@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-07-27 -- Version 2 stable acceptance and closeout
+
+- Recorded PR #19 head `22cf299`, merge `3e41007`, passing CI run `30130612587`, and successful Pages run `30132341911`.
+- Approved the implemented customer/contact matching behavior, duplicate reset behavior, and explicit deletion/archive deferral documented in `docs/V2_RELEASE_CHECKLIST.md`; ambiguity prompts remain a documented later improvement.
+- Passed live production phone/laptop/privacy smoke. Android acceptance passed on Samsung Galaxy S24 Ultra with Chrome; laptop Chromium acceptance passed on a Dell desktop with Chrome using the owner's approved substitution for Edge.
+- Passed rollback/re-entry against accepted Version 1.5 commit `3f1f1a0`: the legacy raw value and IndexedDB counts, IDs, finalized hashes, counters, and recovery records were preserved, and the next allocated number was `2026-002`.
+- Marked Version 2 complete and Version 2.5 backup/restore next. The final `v2.0.0` tag and closeout-deployment verification remain post-merge actions.
+
 ### 2026-07-24 -- Version 2 release-hardening candidate
 
 - Started PR #19 from merged `main` after PR #18 CI and Pages deployment passed.

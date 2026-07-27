@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are complete. The Version 2 release candidate adds an IndexedDB-backed local quote library, lifecycle controls, and four phone/laptop workspaces while retaining the original browser save as a fallback. Release hardening and owner acceptance are in progress.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog import, search, recent items, rollback, and My Items are complete. Version 2 is complete: its IndexedDB-backed local quote library, lifecycle controls, and four phone/laptop workspaces passed automated release checks, production privacy smoke, rollback/re-entry, and owner Android/laptop acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is next.
 
 The release smoke checks remain:
 
@@ -20,7 +20,7 @@ The release smoke checks remain:
 - Data safety: New Quote warns before clearing unsaved work, saved legacy quotes still reopen, and corrupt local saves are moved to a recovery key instead of crashing the app.
 - Accessibility: phone controls remain usable at narrow widths, visible buttons meet touch-target expectations, and the app has no serious or critical automated accessibility findings.
 
-Version 2 is tagged `v2.0.0` only after the release checklist, owner Android/laptop acceptance, merged Pages deployment, and production smoke all pass.
+The Version 2 acceptance gate passed on 2026-07-27. The final `v2.0.0` tag is created only after this closeout change merges and its GitHub Pages deployment is verified.
 
 ## What It Calculates
 
@@ -56,8 +56,8 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
-- **Version 2.0 - Local Quote Library (release candidate):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Customers/Catalog workspaces are implemented; release hardening and owner acceptance remain.
-- **Version 2.5 - Backup and Restore:** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
+- **Version 2.0 - Local Quote Library (complete):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Customers/Catalog workspaces are accepted.
+- **Version 2.5 - Backup and Restore (next):** JSON backup/restore, validation, merge or replace, CSV exports, quote JSON export, and PDF export.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
 - **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.

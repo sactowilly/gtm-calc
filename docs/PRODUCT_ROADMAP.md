@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-24): Release hardening in progress.** PRs #11–#18 merged the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, and navigation design hardening. The current release candidate closes output/data-loss risks and adds atomic-failure, direct-source, production-artifact, scale, and release evidence without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. Owner policy decisions, physical Android/laptop acceptance, and a post-merge production smoke remain before Version 2 is complete.
+**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#19 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, and release evidence without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #19 head `22cf299` merged as `3e41007`; CI run `30130612587`, Pages run `30132341911`, live phone/laptop/privacy smoke, rollback/re-entry, and owner Android/laptop acceptance all passed. Version 2.5 backup and restore is the next phase; the `v2.0.0` tag follows verification of the closeout deployment.
 
 ### Objective
 
@@ -138,6 +138,8 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 - A user can start a new quote for a remembered customer, reopen a prior quote, and reuse saved customer and product details without retyping them.
 
 ## Version 2.5 — Backup and restore
+
+**Status (2026-07-27): Next.**
 
 ### Objective
 

@@ -138,7 +138,9 @@ Rollback: revert this hardening PR. PR #17 navigation and all Version 2 records 
 
 ### PR 19 — Version 2 release hardening
 
-Status: current release-hardening candidate.
+Status: complete.
+
+PR #19 merged and Version 2 was accepted on 2026-07-27.
 
 Goal: validate upgrades, recovery, accessibility, phone/laptop workflows, and production deployment before calling Version 2 stable.
 
@@ -158,12 +160,12 @@ Excluded: complete backup/restore (Version 2.5), PWA/offline shell (Version 3), 
 
 1. ~~Numbering year~~ — approved: use the finalization date's year.
 2. ~~Status transition matrix~~ — approved: Finalized → Sent/Cancelled; Sent → Accepted/Declined/Expired/Cancelled; outcome states are terminal.
-3. Draft deletion/archive behavior and retention of abandoned revisions.
-4. Customer/contact merge rules when names or email addresses match.
-5. Which fields a duplicate resets besides number, date, status, and events.
+3. ~~Draft deletion/archive behavior and retention of abandoned revisions~~ — approved: defer deletion, archive, and abandoned-revision cleanup to a separate roadmap slice.
+4. ~~Customer/contact merge rules~~ — approved as implemented for Version 2: use stable IDs for deliberately selected records; otherwise reuse the first exact normalized company-name match, then exact normalized email or blank-email exact buyer-name matches. Defer ambiguity prompts to a later approved slice.
+5. ~~Duplicate reset behavior~~ — approved: reset number, status/events, quote date, and expiration; retain customer/contact, items/pricing, rep, shipping, terms, and notes; keep `DUP` until the first successful save.
 6. ~~Revision source~~ — approved: only the latest finalized version can start a revision.
 
-The remaining owner decisions and physical-device evidence are tracked in `docs/V2_RELEASE_CHECKLIST.md`. PR #19 remains a release candidate until those checks are recorded. A small post-merge closeout change records the production smoke, marks Version 2 complete, advances the infographic to Version 2.5, and creates the `v2.0.0` tag.
+The owner decisions and physical-device evidence are recorded in `docs/V2_RELEASE_CHECKLIST.md`. PR #19 head `22cf299` merged as `3e41007`; CI run `30130612587`, Pages run `30132341911`, live production smoke, rollback/re-entry, Android acceptance, and owner-approved laptop Chromium acceptance passed. Version 2 is complete and Version 2.5 is next. The final `v2.0.0` tag follows verification of the closeout deployment.
 
 ## Version 2 completion gate
 
@@ -174,3 +176,5 @@ The remaining owner decisions and physical-device evidence are tracked in `docs/
 - Duplicate and revision are visibly different operations with the required lineage.
 - Corrupt records do not prevent healthy quotes from loading.
 - Android and laptop workflows pass, CI/build pass, and the Pages production path remains `/gtm-calc/`.
+
+Completion evidence: PASS on 2026-07-27. See `docs/V2_RELEASE_CHECKLIST.md` for the exact commits, CI/Pages runs, devices, production smoke, privacy confirmation, and rollback/re-entry result.
