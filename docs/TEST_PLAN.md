@@ -177,6 +177,8 @@ PR #19 release-hardening coverage additionally requires:
 
 ### Complete backup/restore
 
+Implementation status (2026-08-03): the Version 2.5 foundation covers consistent all-store snapshots, scoped localStorage capture, stable ordering/checksums, prototype-safe canonicalization, unsupported schema/duplicate/reference rejection, payload tampering, and immutable-version hash verification. File download, size guards, restore preview, transactional merge/replace, and CSV/individual exports remain later Version 2.5 gates.
+
 - Deterministic valid backup, checksum tampering, truncated/oversized JSON, unsupported future schema, duplicate IDs/numbers, missing references, altered immutable hash, and malicious/prototype-shaped data.
 - Round trip all stores preserves records/relationships/hashes and excludes runtime Blob URLs.
 - Merge identical skip, mutable conflict, and immutable/number collision reports.

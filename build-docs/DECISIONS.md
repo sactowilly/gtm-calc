@@ -1,5 +1,13 @@
 # Decisions
 
+## Version 2.5 Lossless Backup Boundary
+
+**DECISION:** Define the authoritative JSON backup as a checksummed envelope containing an exact, consistently read snapshot of all eight `gtm_quote_manager` stores plus allowlisted serialized localStorage business/recovery entries. Exclude navigation/session signals, unrelated origin keys, generated PDFs, and CSV reports. Build and verify the read-only foundation before exposing download or restore writes.
+**RATIONALE:** The prior domain sketch omitted recovery/migration metadata, the legacy active quote, the previous catalog, and usage data, so it could not truthfully support a complete restore. Exact scoped values preserve current and recovery data without coupling the format to UI projections; staged delivery prevents an unreviewed restore path from risking the accepted Version 2 library.
+**DATE:** 2026-08-03
+**PARTIES:** Codex, Will Z
+
+
 ## Version 2 Stable Acceptance
 
 **DECISION:** Accept Version 2 as complete after PR #19 head `22cf299` merged as `3e41007`, CI run `30130612587` and Pages run `30132341911` passed, live production phone/laptop/privacy smoke passed, Android and owner-approved laptop Chromium acceptance passed, and rollback/re-entry preserved the legacy and IndexedDB inventories. Advance the roadmap to Version 2.5. Create `v2.0.0` only after the closeout deployment is verified.

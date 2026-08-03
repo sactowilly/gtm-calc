@@ -1,4 +1,6 @@
-export const ACTIVE_QUOTE_STORAGE_KEY = 'gtm_quote_calculator_v1';
+import { ACTIVE_QUOTE_STORAGE_KEY } from '../domain/storage-contract.js';
+
+export { ACTIVE_QUOTE_STORAGE_KEY };
 
 export function saveActiveQuote(storage, quote) {
   try {

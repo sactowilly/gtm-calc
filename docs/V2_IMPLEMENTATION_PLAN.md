@@ -165,7 +165,7 @@ Excluded: complete backup/restore (Version 2.5), PWA/offline shell (Version 3), 
 5. ~~Duplicate reset behavior~~ — approved: reset number, status/events, quote date, and expiration; retain customer/contact, items/pricing, rep, shipping, terms, and notes; keep `DUP` until the first successful save.
 6. ~~Revision source~~ — approved: only the latest finalized version can start a revision.
 
-The owner decisions and physical-device evidence are recorded in `docs/V2_RELEASE_CHECKLIST.md`. PR #19 head `22cf299` merged as `3e41007`; candidate CI/deployment, live production smoke, rollback/re-entry, Android acceptance, and owner-approved laptop Chromium acceptance passed. PR #20 then merged the stable closeout as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2 is complete and Version 2.5 is current/next.
+The owner decisions and physical-device evidence are recorded in `docs/V2_RELEASE_CHECKLIST.md`. PR #19 head `22cf299` merged as `3e41007`; candidate CI/deployment, live production smoke, rollback/re-entry, Android acceptance, and owner-approved laptop Chromium acceptance passed. PR #20 then merged the stable closeout as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2 is complete and Version 2.5 backup/restore is now in progress under `V25_IMPLEMENTATION_PLAN.md`.
 
 ## Version 2 completion gate
 

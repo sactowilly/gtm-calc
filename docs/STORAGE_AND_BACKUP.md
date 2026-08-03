@@ -210,11 +210,13 @@ Rules:
 
 ## Backup format and creation
 
-Version 2.5 uses the `BackupEnvelope` in `DOMAIN_MODEL.md` with `format`, backup/app/database versions, source device, export timestamp, payload, and SHA-256 checksum. Serialize deterministically for checksums where practical. PDF files are regenerated and need not bloat the complete backup; template/policy versions are retained.
+Version 2.5 uses the `BackupEnvelope` in `DOMAIN_MODEL.md` with `format`, backup/app/database versions, source device, export timestamp, payload, and SHA-256 checksum. Canonical serialization and stable record/key ordering make payload checksums deterministic. PDF files are regenerated and need not bloat the complete backup; template/policy versions are retained.
+
+Foundation implementation status (2026-08-03): `exportSnapshot()` reads all eight IndexedDB stores through one readonly transaction. `snapshotBackupLocalStorage()` captures the active quote, active/prior catalog, manual-item, usage, and recovery values exactly while excluding navigation/session and unrelated origin keys. `createBackupEnvelope()` and `validateBackupEnvelope()` verify the supported contract, known local envelopes, duplicate primary keys/numbers, cross-record ownership, finalized content hashes, JSON serialization round trips, and the full payload checksum. Non-JSON structured-clone values fail explicitly rather than being silently changed. These services are not connected to a user-facing download or any write path yet.
 
 Backup workflow:
 
-1. Read a consistent snapshot in readonly transactions.
+1. Read the complete IndexedDB state in one multi-store readonly transaction and capture scoped localStorage without mutation.
 2. Validate references/counts before offering the file.
 3. Build JSON locally and download with a dated filename such as `gtm-calc-backup-2026-07-13.json`.
 4. Clearly warn that it contains customer and pricing data.

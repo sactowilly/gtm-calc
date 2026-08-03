@@ -243,7 +243,7 @@ function sortForCanonicalJson(value) {
       const sorted = sortForCanonicalJson(value[key]);
       if (sorted !== undefined) result[key] = sorted;
       return result;
-    }, {});
+    }, Object.create(null));
   }
   return value;
 }
