@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#20 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, release evidence, and stable closeout without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup and restore is current/next.
+**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#20 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, release evidence, and stable closeout without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup and restore is now in progress.
 
 ### Objective
 
@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-07-27): Next.**
+**Status (2026-08-03): In progress.** The first slice establishes a lossless readonly snapshot across all eight IndexedDB stores and scoped quote/catalog localStorage records, a schema-versioned envelope, deterministic SHA-256 checksum, reference validation, and immutable-version hash verification. Download UI and every restore write remain in later reviewable pull requests documented in `V25_IMPLEMENTATION_PLAN.md`.
 
 ### Objective
 

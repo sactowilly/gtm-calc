@@ -1,5 +1,17 @@
 # Build Log
 
+### 2026-08-03 -- Version 2.5 backup foundation started
+
+- Created `feature/v25-backup-foundation` from clean `main`/`origin/main` release record `3a62da4`; existing local `.codex/` data remains untracked and untouched.
+- Added a lossless, readonly snapshot across all eight quote-library IndexedDB stores and an allowlisted capture of the active quote, current/prior catalog, manual items, usage history, and recovery localStorage values.
+- Added the Version 2.5 backup envelope, deterministic canonical ordering, SHA-256 payload checksum, known-record validation, duplicate/reference checks, immutable quote-version hash verification, and prototype-safe canonicalization.
+- Advanced the development marker to `v2.5.0 · backup-foundation.1` and package version to `2.5.0-alpha.1`; updated the Version 2.5 plan, roadmap, domain/storage/current-state/test documentation, and infographic status.
+- No UI, download, restore write, CSV export, PWA, backend, authentication, calculation, PDF, email, or production-deployment behavior is introduced in this foundation slice.
+- After independent Chief of Staff, code, and QA review, hardened the contract against unsupported schemas, malformed local records, cross-quote history links, non-JSON structured-clone data, locale-dependent ordering, prototype-shaped input, and serialized checksum drift. Added a golden Version 2 immutable-content hash regression.
+- Verified a clean `npm ci` with zero audit vulnerabilities, JavaScript checks, 115 unit/domain/storage tests, 16 customer-PDF visual/privacy tests, one direct-source Pages smoke, and one production-artifact smoke/build. The build retains only the two known warnings for vendored non-module PDF scripts.
+- Verified all 29 compatibility/accessibility workflows separately in Chromium, WebKit, Android Chrome, and iPhone Safari. Firefox first passed 27/29 in a parallel run with two initialization timing failures; both passed immediately in isolation, and the complete Firefox profile then passed 29/29 serially. The backup creation/JSON round-trip smoke passed in all five profiles using real IndexedDB and Web Crypto.
+- Regenerated and visually inspected the roadmap PNG; Version 2 remains complete, Version 2.5 is clearly in progress, and later phases remain planned. `git diff --check` passes; `.codex/` remains unrelated and untracked.
+
 ### 2026-07-27 -- Version 2 stable acceptance and closeout
 
 - Recorded PR #19 head `22cf299`, merge `3e41007`, passing CI run `30130612587`, and successful Pages run `30132341911`.

@@ -2,6 +2,11 @@
 // GitHub Pages serves the source tree directly, without Vite rewriting imports.
 import { deleteDB, openDB } from '../../vendor/idb.js';
 import {
+  QUOTE_LIBRARY_DATABASE_NAME,
+  QUOTE_LIBRARY_DATABASE_VERSION,
+  QUOTE_LIBRARY_STORES
+} from '../domain/storage-contract.js';
+import {
   QUOTE_RECORD_SCHEMA_VERSION,
   buildDisplayNumber,
   canTransitionQuoteStatus,
@@ -17,19 +22,7 @@ import {
   validateQuoteVersion
 } from '../domain/quote-library.js';
 
-export const QUOTE_LIBRARY_DATABASE_NAME = 'gtm_quote_manager';
-export const QUOTE_LIBRARY_DATABASE_VERSION = 1;
-
-export const QUOTE_LIBRARY_STORES = Object.freeze({
-  quotes: 'quotes',
-  quoteVersions: 'quoteVersions',
-  quoteEvents: 'quoteEvents',
-  customers: 'customers',
-  contacts: 'contacts',
-  settings: 'settings',
-  recoveryRecords: 'recoveryRecords',
-  migrationLog: 'migrationLog'
-});
+export { QUOTE_LIBRARY_DATABASE_NAME, QUOTE_LIBRARY_DATABASE_VERSION, QUOTE_LIBRARY_STORES };
 
 function defaultIdFactory() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -797,6 +790,23 @@ export function createQuoteLibraryRepository({
     return records.sort((left, right) => right.detectedAt.localeCompare(left.detectedAt)).map(cloneQuoteData);
   }
 
+  async function exportSnapshot() {
+    const database = await openDatabase();
+    const storeNames = Object.values(QUOTE_LIBRARY_STORES);
+    const transaction = database.transaction(storeNames, 'readonly');
+    const entries = await Promise.all(storeNames.map(async (storeName) => [
+      storeName,
+      (await transaction.objectStore(storeName).getAll()).map(cloneQuoteData)
+    ]));
+    await transaction.done;
+    return {
+      databaseName: QUOTE_LIBRARY_DATABASE_NAME,
+      databaseVersion: database.version,
+      recordSchemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
+      stores: Object.fromEntries(entries)
+    };
+  }
+
   async function close() {
     if (!databasePromise) return;
     const database = await databasePromise;
@@ -833,6 +843,7 @@ export function createQuoteLibraryRepository({
     duplicateAsNew,
     listEvents,
     getRecoveryRecords,
+    exportSnapshot,
     close,
     destroy
   };

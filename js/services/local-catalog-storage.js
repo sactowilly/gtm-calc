@@ -1,9 +1,12 @@
 import { buildCatalogSearchFields } from '../catalog/catalog-normalization.js';
+import {
+  CATALOG_STORAGE_KEY,
+  CATALOG_USAGE_STORAGE_KEY,
+  MANUAL_ITEMS_STORAGE_KEY,
+  PREVIOUS_CATALOG_STORAGE_KEY
+} from '../domain/storage-contract.js';
 
-export const CATALOG_STORAGE_KEY = 'gtm_catalog_v1';
-export const PREVIOUS_CATALOG_STORAGE_KEY = 'gtm_catalog_v1_previous';
-export const MANUAL_ITEMS_STORAGE_KEY = 'gtm_manual_items_v1';
-export const CATALOG_USAGE_STORAGE_KEY = 'gtm_catalog_usage_v1';
+export { CATALOG_STORAGE_KEY, CATALOG_USAGE_STORAGE_KEY, MANUAL_ITEMS_STORAGE_KEY, PREVIOUS_CATALOG_STORAGE_KEY };
 export const MAX_CATALOG_STORAGE_CHARACTERS = 2_500_000;
 
 const SCHEMA_VERSION = 1;

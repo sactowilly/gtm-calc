@@ -70,6 +70,22 @@ describe('IndexedDB quote library repository', () => {
     database.close();
   });
 
+  it('exports all stores through one read-only snapshot without returning live record references', async () => {
+    const { repository } = makeRepository();
+    const draft = await repository.createDraftFromLegacyQuote(makeLegacyQuote());
+    const snapshot = await repository.exportSnapshot();
+
+    expect(Object.keys(snapshot.stores).sort()).toEqual(Object.values(QUOTE_LIBRARY_STORES).sort());
+    expect(snapshot).toMatchObject({ databaseVersion: QUOTE_LIBRARY_DATABASE_VERSION, recordSchemaVersion: 1 });
+    expect(snapshot.stores.quotes).toHaveLength(1);
+    expect(snapshot.stores.quoteEvents).toHaveLength(1);
+    expect(snapshot.stores.settings).toHaveLength(1);
+    expect(snapshot.stores.migrationLog).toHaveLength(1);
+
+    snapshot.stores.quotes[0].workingDraft.content.customer.companyName = 'Changed snapshot only';
+    expect((await repository.getQuote(draft.id)).workingDraft.content.customer.companyName).toBe('North River Packaging');
+  });
+
   it('imports the current active quote shape into an unnumbered searchable draft', async () => {
     const { repository } = makeRepository();
     const legacy = makeLegacyQuote();

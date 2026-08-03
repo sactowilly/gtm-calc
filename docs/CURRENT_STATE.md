@@ -8,7 +8,7 @@ Live application: <https://sactowilly.github.io/gtm-calc/>
 
 > Historical baseline: this document records the original `f7c35a1` audit. Subsequent Version 1 pull requests added Vite/ES modules, regression tests, phone-first quote controls, customer/buyer fields, UOM, explicit PDF download, and separate rep/customer email actions. The customer-PDF replacement branch removes the handwritten coordinate renderer in favor of the customer-safe HTML/CSS template documented in `PDF_TEMPLATE_FIELD_MAPPING.md` and `PDF_AND_SHARING.md`. The storage key and calculation formulas remain unchanged.
 
-## Current implementation update — 2026-07-27
+## Current implementation update — 2026-08-03
 
 The detailed audit below remains as historical evidence for the original baseline. The active code has since changed materially:
 
@@ -26,7 +26,9 @@ The detailed audit below remains as historical evidence for the original baselin
 - PR #17 merged the state-preserving Quote, Library, Customers, and Catalog workspaces. PR #18 merged navigation design hardening and passed GitHub CI plus the subsequent Pages deployment.
 - PR #19 head `22cf299` merged to `main` as `3e41007` after CI run `30130612587` passed. Pages run `30132341911` deployed the release candidate successfully.
 - Version 2 acceptance passed on 2026-07-27: live production phone/laptop/privacy smoke passed; Android Chrome passed on a Samsung Galaxy S24 Ultra; laptop Chromium passed on a Dell desktop in Chrome with the owner's approved substitution for Edge; and rollback/re-entry against accepted Version 1.5 commit `3f1f1a0` preserved the legacy raw value, IndexedDB counts, IDs, finalized hashes, counters, and recovery records before allocating `2026-002`.
-- Version 2 is complete with marker `v2.0.0 · stable` and package version `2.0.0`. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup/restore is current/next. Deletion/archive, PWA, backend, authentication, synchronization, and hosted access remain deferred according to the roadmap.
+- Version 2 is complete and tagged `v2.0.0` at verified production commit `b61890c`. Version 2.5 is now in progress with marker `v2.5.0 · backup-foundation.1` and package version `2.5.0-alpha.1` on its feature branch.
+- The Version 2.5 foundation adds a readonly, single-transaction snapshot of all eight `gtm_quote_manager` stores plus scoped capture of the active quote, active/prior catalogs, manual items, catalog usage, and recovery localStorage records. It adds deterministic SHA-256 envelope validation, reference checks, and immutable-version hash verification without exposing backup/restore UI or changing stored data.
+- Restore writes, merge/replace policy execution, CSV/individual exports, deletion/archive, PWA, backend, authentication, synchronization, and hosted access remain deferred according to the roadmap and `V25_IMPLEMENTATION_PLAN.md`.
 
 The current verification counts are recorded in `BUILD-LOG.md` after each verified branch. The live GitHub Pages site changes only after a feature branch is reviewed and merged to `main`.
 
@@ -132,7 +134,7 @@ There is exactly one application storage key:
 
 `saveQuote` writes `JSON.stringify(quote)` only when the user presses **Save**. Adding, updating, deleting, or changing customer/date calls `markUnsaved` but does not persist. `loadQuote` accepts any parsed object whose `items` property is an array, copies only `customerName`, `date`, and `items`, and does not validate item fields. A JSON parse error causes the only saved value to be deleted immediately. A structurally invalid but valid-JSON value is left in place and ignored. Storage write/read exceptions such as quota or disabled storage are not handled.
 
-This is browser/profile/origin-local data. It does not synchronize across devices, private browsing may discard it, clearing site data deletes it, and the repository contains no backup/export path.
+This is browser/profile/origin-local data. It does not synchronize across devices, private browsing may discard it, and clearing site data deletes it. The Version 2.5 feature branch now has a tested read-only backup foundation, but no user-facing download or restore control exists until the subsequent planned pull requests merge.
 
 ## Calculation behavior
 

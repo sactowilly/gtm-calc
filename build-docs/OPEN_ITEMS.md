@@ -23,4 +23,4 @@
 | Defer deletion/archive policy | complete | Deletion, archive, and abandoned-revision cleanup remain outside Version 2 and require a separate approved roadmap slice. |
 | Version 2 physical acceptance | complete | Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome passed on 2026-07-27; owner approved Chrome as the laptop Edge substitution. |
 | Version 2 stable closeout | complete | PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, live stable smoke, and annotated tag `v2.0.0` are verified. |
-| Version 2.5 backup and restore | current / next | Begin the separately planned schema-versioned backup/restore phase. |
+| Version 2.5 backup and restore | in progress | PR 1 backup foundation is active: complete readonly snapshots, deterministic SHA-256 envelope, record/reference/hash validation, and release-document synchronization. Download UI and all restore writes remain later gated PRs. |

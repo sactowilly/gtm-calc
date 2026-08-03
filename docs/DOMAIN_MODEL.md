@@ -352,6 +352,24 @@ Number allocation must update settings and create the finalized version in the s
 ## BackupEnvelope
 
 ```ts
+type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
+
+interface RecoveryRecord {
+  id: UUID;
+  schemaVersion: number;
+  storeName: string;
+  originalKey: string;
+  detectedAt: ISODateTime;
+  errors: string[];
+  rawRecord: JsonValue;
+}
+
+interface MigrationRecord {
+  version: number;
+  appliedAt: ISODateTime;
+  description: string;
+}
+
 interface BackupEnvelope {
   format: 'gtm-calc-backup';
   backupSchemaVersion: number;
@@ -362,19 +380,34 @@ interface BackupEnvelope {
   checksumAlgorithm: 'SHA-256';
   payloadChecksum: string;
   payload: {
-    quotes: Quote[];
-    quoteVersions: QuoteVersion[];
-    quoteEvents: QuoteEvent[];
-    customers: Customer[];
-    contacts: Contact[];
-    catalogItems: CatalogItem[];
-    manualItems: ManualItem[];
-    settings: ApplicationSettings;
+    quoteDatabase: {
+      databaseName: string;
+      databaseVersion: number;
+      recordSchemaVersion: number;
+      stores: {
+        quotes: Quote[];
+        quoteVersions: QuoteVersion[];
+        quoteEvents: QuoteEvent[];
+        customers: Customer[];
+        contacts: Contact[];
+        settings: ApplicationSettings[];
+        recoveryRecords: RecoveryRecord[];
+        migrationLog: MigrationRecord[];
+      };
+    };
+    localStorage: {
+      entries: Array<{
+        key: string;
+        value: string; // exact serialized value for lossless restore
+      }>;
+    };
   };
 }
 ```
 
-Backups contain sensitive customer/pricing data and must carry a warning. Validation checks the envelope, checksum, supported schema, unique IDs/numbers, references, immutable hashes, field types/ranges, and record counts before any write.
+The localStorage scope is an allowlist: `gtm_quote_calculator_v1`, the active/previous catalog, manual items, catalog usage, and their recovery-key variants. Navigation/session signals and unrelated origin keys are excluded. Exact serialized values preserve unknown fields and damaged recovery artifacts without treating CSV or generated PDFs as authoritative records. IndexedDB application records are constrained to JSON-safe values; optional object properties holding `undefined` are omitted, while dates, big integers, binary objects, non-finite numbers, circular structures, or other non-JSON values block creation with an explicit error rather than being silently corrupted.
+
+Backups contain sensitive customer/pricing data and must carry a warning. Validation checks the envelope, checksum, supported schema, unique IDs/numbers, references, immutable hashes, field types/ranges, and record counts before any write. Version 2.5 PR 1 implements creation/validation only; restore policies remain later gated operations.
 
 ## Required operations
 

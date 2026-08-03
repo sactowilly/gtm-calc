@@ -43,6 +43,21 @@ function legacyQuote() {
 }
 
 describe('quote-library domain mapping', () => {
+  it('preserves the accepted Version 2 canonical content hash', async () => {
+    const content = {
+      customer: { companyName: 'Golden V2 Company', addressText: '100 Main St' },
+      contact: { buyerName: 'Casey Buyer', email: 'casey@example.test', phone: '916-555-0100' },
+      salesRep: 'Rep', quoteDate: '2026-07-27', expirationDate: '', shipVia: 'Our Truck',
+      fobPoint: 'Sacramento', paymentTerms: 'NET30', customerNotes: '', internalNotes: '', currency: 'USD',
+      lines: [{
+        id: 'line-1', name: 'RSC 12x10x8', sku: '', quantity: 10, uom: 'EA', unitCost: 1.25, price: 2.5,
+        freight: 0, freightMode: 'perItem', freightPerUnit: 0, landedUnitCost: 1.25, totalCost: 12.5,
+        orderTotal: 25, gtmEachDollars: 1.25, gtmTotalDollars: 12.5, gtmEachPercent: 100,
+        gtmTotalPercent: 100, leadTime: '', position: 0
+      }]
+    };
+    expect(await hashQuoteContent(content)).toBe('0840bcf352bea93db5437c46da1c043cde8961f0314384ae4be384b706e5de16');
+  });
   it('round-trips the active quote shape without changing calculations or catalog snapshots', () => {
     const legacy = legacyQuote();
     const content = legacyQuoteToQuoteContent(legacy);
