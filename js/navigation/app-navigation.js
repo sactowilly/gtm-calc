@@ -35,7 +35,7 @@ export function initializeAppNavigation({ initialView = 'quote' } = {}) {
     });
 
     const panel = panelFor(currentView);
-    const details = panel?.querySelector('details');
+    const details = panel?.querySelector(':scope > details');
     if (details) details.open = true;
     if (scroll) panel?.scrollIntoView({ behavior: 'auto', block: 'start' });
     if (focus) buttonFor(currentView)?.focus({ preventScroll: true });
