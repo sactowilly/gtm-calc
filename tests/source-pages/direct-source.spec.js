@@ -21,6 +21,8 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
   await expect(page.locator('#quoteLibraryStatus')).toContainText('unnumbered draft');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
   await expect(page.locator('#backupExportHeading')).toHaveText('Backup & Export');
+  await expect(page.locator('#backupRestoreFile')).toBeVisible();
+  await expect(page.locator('#inspectBackup')).toBeDisabled();
 
   await page.reload();
   await page.getByRole('button', { name: 'Library', exact: true }).click();

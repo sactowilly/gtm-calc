@@ -243,6 +243,66 @@ h2 {
   font-size: 0.875rem;
 }
 
+.backup-restore-inspection {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.backup-restore-inspection h3 {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 1rem;
+}
+
+.backup-file-input {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.backup-file-input input {
+  min-height: 48px;
+  padding: 7px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.backup-file-input span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.backup-restore-inspection .backup-export-actions {
+  margin-top: 10px;
+}
+
+.backup-restore-unavailable {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--secondary);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--secondary);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.backup-inspection-conflict-warning {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+  border: 1px solid #c66e6e;
+  border-left-width: 5px;
+  border-radius: 7px;
+  background: #fff1f1;
+  color: var(--danger);
+  font-weight: 800;
+}
+
 .form-grid,
 .quote-meta {
   display: grid;

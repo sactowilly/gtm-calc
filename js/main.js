@@ -13,9 +13,11 @@ import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } fr
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
 import { initializeAppNavigation } from './navigation/app-navigation.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
+import { initializeBackupRestoreInspectionUi } from './backup/backup-restore-inspection-ui.js';
 import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
 import { initializeQuoteLibraryUi } from './quote-library/quote-library-ui.js';
 import { createBackupDownloadService } from './services/backup-download-service.js';
+import { createBackupRestoreInspectionService } from './services/backup-restore-inspection-service.js';
 import { createBackupService } from './services/backup-service.js';
 import { createQuoteLibraryRepository } from './services/indexeddb-quote-repository.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
@@ -869,10 +871,17 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     showQuoteWorkspace
   });
   const quoteLibraryReady = quoteLibraryController.initialize();
+  const backupService = createBackupService({ quoteRepository, storage: localStorage });
   initializeBackupExportUi({
     downloadService: createBackupDownloadService({
-      backupService: createBackupService({ quoteRepository, storage: localStorage }),
+      backupService,
       beforeCreate: () => quoteLibraryReady
+    })
+  });
+  initializeBackupRestoreInspectionUi({
+    inspectionService: createBackupRestoreInspectionService({
+      backupService,
+      beforeInspect: () => quoteLibraryReady
     })
   });
 })();

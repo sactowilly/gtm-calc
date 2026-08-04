@@ -22,7 +22,7 @@ This three-step flow documents the Version 1 target and is retained as historica
 
 ## Version 2 workspace navigation
 
-Version 2 uses one state-preserving document with four workspaces rather than URL routes: **Quote**, **Library**, **Clients** (saved customer records), and **Catalog**. Version 2.5 adds **Export** as a fifth destination. Phones use a fixed, thumb-reachable bottom bar; laptop layouts use the same destinations as a left navigation rail. The Quote form remains mounted when a user switches workspaces.
+Version 2 uses one state-preserving document with four workspaces rather than URL routes: **Quote**, **Library**, **Clients** (saved customer records), and **Catalog**. Version 2.5 adds **Export** as a fifth destination for complete-backup download and preview-only backup inspection. Phones use a fixed, thumb-reachable bottom bar; laptop layouts use the same destinations as a left navigation rail. The Quote form remains mounted when a user switches workspaces.
 
 Opening or reopening a quote returns to Quote and focuses the visible Active Quote heading. Applying a saved customer expands Customer & Quote Details, scrolls back to the active quote, focuses Customer, and announces the result. Selecting a catalog item returns to the item editor and focuses Quantity. If a saved customer or catalog item would replace non-empty, different values, the app confirms first and keeps the current work when cancelled.
 

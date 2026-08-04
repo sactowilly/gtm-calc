@@ -29,6 +29,8 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
   await page.locator('#saveQuote').click();
   await page.getByRole('button', { name: 'Export', exact: true }).click();
   await expect(page.locator('#backupExportHeading')).toHaveText('Backup & Export');
+  await expect(page.locator('#backupRestoreFile')).toBeVisible();
+  await expect(page.locator('#inspectBackup')).toBeDisabled();
   await page.getByRole('button', { name: 'Quote', exact: true }).click();
 
   await page.reload();

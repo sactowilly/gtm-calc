@@ -81,6 +81,13 @@ The Version 2.5 Export addition uses the shorter visible label **Clients** for t
 **DATE:** 2026-07-16
 **PARTIES:** Codex, Will Z
 
+## Restore Inspection Boundary
+
+**DECISION:** Version 2.5 PR 3 accepts a selected backup for inspection only when its declared size is at most 25 MiB. It reads UTF-8 strictly, validates the complete envelope before reading current-device state, and reports aggregate differences/conflicts without raw customer, contact, pricing, or record-identifier data. It exposes no merge, replace, repository-import, clear, or storage-write action.
+**RATIONALE:** The guard is comfortably above the expected 250-quote-per-year device backup and capped catalog snapshots while avoiding unnecessary phone-memory pressure. A safe preview gives the owner evidence for a later restore decision without creating an accidental destructive path or exposing sensitive data in the interface.
+**DATE:** 2026-08-04
+**PARTIES:** Codex, Will Z (continued implementation authorization)
+
 ## Quote Library Progressive Disclosure and Duplicate Review State
 
 **DECISION:** Show ten matching quote drafts initially and ten more per explicit request. Mark a newly duplicated draft with visible `DUP` text and pale shading while `sourceQuoteId` exists and `draftRevision` is zero; remove the marker after its first successful save without modifying the customer/company name.
