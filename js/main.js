@@ -644,10 +644,16 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     }
   }
 
-  async function openEmailWithDownloadedPdf(emailFunction) {
+  async function openEmailWithDownloadedPdf(emailFunction, { fromDialog = false } = {}) {
     syncQuoteMeta();
     if (emailFunction === emailCustomerQuoteText && !quote.buyerEmail) {
-      setStatus('Add Buyer Email before creating a customer email.', true);
+      if (fromDialog) {
+        setPdfStatus('Add Buyer Email before creating a customer email.', true);
+      } else {
+        document.querySelector('.quote-details').open = true;
+        setStatus('Add Buyer Email before creating a customer email.', true);
+        buyerEmail.focus();
+      }
       return;
     }
     const pdf = await ensureQuotePdf();
@@ -800,8 +806,8 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   document.getElementById('emailRep').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
   document.getElementById('emailCustomer').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
   document.getElementById('copyQuoteDialog').addEventListener('click', copyCustomerQuoteText);
-  document.getElementById('emailRepDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText); });
-  document.getElementById('emailCustomerDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText); });
+  document.getElementById('emailRepDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailRepQuoteText, { fromDialog: true }); });
+  document.getElementById('emailCustomerDialog').addEventListener('click', function () { openEmailWithDownloadedPdf(emailCustomerQuoteText, { fromDialog: true }); });
   document.getElementById('closeQuote').addEventListener('click', function () {
     if (typeof quoteDialog.close === 'function') {
       quoteDialog.close();
