@@ -1,5 +1,18 @@
 # Build Log
 
+### 2026-08-04 -- Version 2.5 validated backup download
+
+- Created `feature/v25-backup-download-workspace` from merged `main` commit `e88e914` after PR #23 passed CI and merged; existing local `.codex/` data remains untracked and untouched.
+- Added a fifth state-preserving `Export` workspace with a permanent warning that the complete unencrypted backup contains customer/contact and internal pricing/profitability data.
+- Shared the initialized quote repository between Library and Export, revalidated the exact readable JSON before Blob creation, used the deterministic UTC-derived `gtm-calc-backup-YYYY-MM-DD.json` filename, reported exact Blob bytes, and cleaned up the temporary anchor/object URL.
+- Kept the operation persisted-data-only and read-only: no restore picker/write, CSV/individual export, event, backup history, PWA, backend, authentication, cloud upload, or production-deployment behavior was added.
+- Advanced the development marker to `v2.5.0 · backup-download.2` and package version to `2.5.0-alpha.2`; synchronized the roadmap, current-state, storage/domain/test, decision, and open-item documentation while keeping Version 2.5 in progress.
+- Hardened unsupported-browser handling so missing Blob support produces a visible, retryable Export error instead of interrupting application startup. The five-destination phone navigation uses the matching visible and accessible label `Clients` for saved customer records so labels fit at 320 px.
+- Updated the Vite transitive PostCSS lock entry after npm reported a new moderate build-time advisory. A subsequent clean `npm ci` audited 75 packages with zero vulnerabilities.
+- Verified JavaScript checks, 123 unit/domain/storage/privacy tests, 16 customer-PDF visual/privacy tests, one direct-source GitHub Pages smoke, and one production-artifact smoke/build. The build transformed 31 modules for `/gtm-calc/` and retains only the two known warnings for vendored non-module PDF scripts.
+- Verified 172 compatibility/accessibility tests across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari, with three intentional non-Chromium skips for a controlled in-flight UI test. Firefox's parallel local run twice exposed the existing Vite/Firefox resource flake; the complete Firefox profile then passed 34/34 serially with retries disabled. The new backup tests cover exact downloaded bytes, checksum validation, no network or stored-data mutation, failure recovery, duplicate activation, keyboard activation, and live busy state.
+- Regenerated and visually inspected the roadmap PNG at 1200 × 1900. Version 2.5 remains visibly in progress with the backup foundation merged, validated local download in development, and restore writes still gated.
+
 ### 2026-08-03 -- Version 2.5 backup foundation started
 
 - Created `feature/v25-backup-foundation` from clean `main`/`origin/main` release record `3a62da4`; existing local `.codex/` data remains untracked and untouched.

@@ -7,6 +7,7 @@ import {
   parseQuantity
 } from './domain/calculations.js';
 import { APP_BUILD_LABEL } from './app-meta.js';
+import { initializeBackupExportUi } from './backup/backup-export-ui.js';
 import { initializeCatalogUi } from './catalog/catalog-ui.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
@@ -14,6 +15,9 @@ import { initializeAppNavigation } from './navigation/app-navigation.js';
 import { buildCustomerQuotePdfBlob } from './pdf/customer-quote-pdf.js';
 import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-service.js';
 import { initializeQuoteLibraryUi } from './quote-library/quote-library-ui.js';
+import { createBackupDownloadService } from './services/backup-download-service.js';
+import { createBackupService } from './services/backup-service.js';
+import { createQuoteLibraryRepository } from './services/indexeddb-quote-repository.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 
@@ -107,6 +111,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   let quoteLibraryController = null;
   let appNavigation = null;
   let quoteReadOnly = false;
+  const quoteRepository = createQuoteLibraryRepository();
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
 
@@ -850,6 +855,7 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   updateCalculatorPreview();
 
   quoteLibraryController = initializeQuoteLibraryUi({
+    repository: quoteRepository,
     getActiveQuote() {
       syncQuoteMeta();
       return typeof structuredClone === 'function'
@@ -862,5 +868,11 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     shouldConfirmReplace: hasActiveQuoteInformation,
     showQuoteWorkspace
   });
-  quoteLibraryController.initialize();
+  const quoteLibraryReady = quoteLibraryController.initialize();
+  initializeBackupExportUi({
+    downloadService: createBackupDownloadService({
+      backupService: createBackupService({ quoteRepository, storage: localStorage }),
+      beforeCreate: () => quoteLibraryReady
+    })
+  });
 })();

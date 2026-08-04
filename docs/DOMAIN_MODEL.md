@@ -407,7 +407,7 @@ interface BackupEnvelope {
 
 The localStorage scope is an allowlist: `gtm_quote_calculator_v1`, the active/previous catalog, manual items, catalog usage, and their recovery-key variants. Navigation/session signals and unrelated origin keys are excluded. Exact serialized values preserve unknown fields and damaged recovery artifacts without treating CSV or generated PDFs as authoritative records. IndexedDB application records are constrained to JSON-safe values; optional object properties holding `undefined` are omitted, while dates, big integers, binary objects, non-finite numbers, circular structures, or other non-JSON values block creation with an explicit error rather than being silently corrupted.
 
-Backups contain sensitive customer/pricing data and must carry a warning. Validation checks the envelope, checksum, supported schema, unique IDs/numbers, references, immutable hashes, field types/ranges, and record counts before any write. Version 2.5 PR 1 implements creation/validation only; restore policies remain later gated operations.
+Backups contain sensitive customer/pricing data and carry a permanent warning. Validation checks the envelope, checksum, supported schema, unique IDs/numbers, references, immutable hashes, field types/ranges, and record counts before any write. Version 2.5 PR 2 downloads the readable, revalidated envelope as an unencrypted UTF-8 JSON file named from `exportedAt`; it introduces no new entity or persisted record. Restore policies remain later gated operations.
 
 ## Required operations
 

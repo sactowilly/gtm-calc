@@ -1,4 +1,4 @@
-const VIEW_NAMES = Object.freeze(['quote', 'quotes', 'customers', 'catalog']);
+const VIEW_NAMES = Object.freeze(['quote', 'quotes', 'customers', 'catalog', 'export']);
 
 function normalizeView(view) {
   return VIEW_NAMES.includes(view) ? view : 'quote';

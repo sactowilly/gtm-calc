@@ -36,10 +36,12 @@ test('keeps an active quote intact while switching mobile workspaces', async ({ 
   await expect(page.locator('#quoteWorkspace')).toBeHidden();
   await expect(page.locator('#quoteLibraryTools')).toHaveAttribute('open', '');
 
-  await openWorkspace(page, 'Customers');
-  await expectCurrentWorkspace(page, 'Customers', 'customers');
+  await openWorkspace(page, 'Clients');
+  await expectCurrentWorkspace(page, 'Clients', 'customers');
   await openWorkspace(page, 'Catalog');
   await expectCurrentWorkspace(page, 'Catalog', 'catalog');
+  await openWorkspace(page, 'Export');
+  await expectCurrentWorkspace(page, 'Export', 'export');
   await openWorkspace(page, 'Quote');
   await expectCurrentWorkspace(page, 'Quote', 'quote');
 
@@ -65,7 +67,7 @@ test('preserves the chosen quote-details disclosure state across workspaces', as
 
   await quoteDetails.locator('summary').click();
   await expect(quoteDetails).not.toHaveAttribute('open', '');
-  await openWorkspace(page, 'Customers');
+  await openWorkspace(page, 'Clients');
   await expect(page.locator('#customerLibraryTools')).toHaveAttribute('open', '');
   await openWorkspace(page, 'Quote');
   await expect(quoteDetails).not.toHaveAttribute('open', '');

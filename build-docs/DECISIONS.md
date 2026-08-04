@@ -1,5 +1,13 @@
 # Decisions
 
+## Version 2.5 Local Backup Download Policy
+
+**DECISION:** Place the complete backup in a fifth `Export` workspace, include only persisted data, revalidate the exact readable JSON before Blob creation, name it `gtm-calc-backup-YYYY-MM-DD.json` from the envelope's UTC export date, and report that download was started rather than claiming the browser saved it. Display a permanent warning that the unencrypted file contains customer/contact and internal pricing/profitability data.
+**RATIONALE:** Export is a durable home for later CSV and individual-record downloads. Persisted-only capture preserves the accepted read-only storage contract, exact-byte validation prevents serialization drift, UTC naming is deterministic and customer-neutral, and conservative status wording reflects the browser API's inability to prove disk persistence.
+**DATE:** 2026-08-04
+**PARTIES:** Goodall program review, Codex, Will Z
+
+
 ## Version 2.5 Lossless Backup Boundary
 
 **DECISION:** Define the authoritative JSON backup as a checksummed envelope containing an exact, consistently read snapshot of all eight `gtm_quote_manager` stores plus allowlisted serialized localStorage business/recovery entries. Exclude navigation/session signals, unrelated origin keys, generated PDFs, and CSV reports. Build and verify the read-only foundation before exposing download or restore writes.
@@ -46,6 +54,8 @@
 ## Version 2 Workspace Navigation
 
 **DECISION:** Use four state-preserving workspaces—Quote, Library, Customers, and Catalog—with a fixed phone bottom bar and a sticky laptop navigation rail. Keep search and CSV import inside their relevant workspaces. Opening a quote, applying a customer, or selecting a catalog item returns to Quote.
+
+The Version 2.5 Export addition uses the shorter visible label **Clients** for the existing customer-record workspace so five labels fit a 320 px phone viewport. The accessible name matches the visible label for voice-control compatibility; underlying customer terminology and data are unchanged.
 **RATIONALE:** The prior one-document interface became difficult to scan once the quote library, customer recall, and catalog workflows grew. This improves wayfinding without adding routes, a framework, new storage, or an opportunity to discard unsaved quote state.
 **DATE:** 2026-07-22
 **PARTIES:** Codex, Will Z

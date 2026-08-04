@@ -74,7 +74,7 @@ button {
   bottom: 0;
   left: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 4px;
   min-height: var(--app-nav-height);
   padding: 8px 10px max(8px, env(safe-area-inset-bottom));
@@ -173,6 +173,74 @@ h2 {
   font-size: 0.875rem;
   font-weight: 700;
   text-align: right;
+}
+
+.backup-sensitive-warning {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #d59b20;
+  border-left-width: 5px;
+  border-radius: 8px;
+  background: #fff7df;
+  color: #4c3500;
+}
+
+.backup-sensitive-warning p,
+.backup-export-next {
+  margin: 6px 0 0;
+}
+
+.backup-export-actions .button {
+  width: 100%;
+  min-height: 48px;
+}
+
+.backup-status {
+  min-height: 1.5rem;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.backup-status.is-error {
+  color: var(--danger);
+}
+
+.backup-result {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.backup-result[hidden] {
+  display: none;
+}
+
+.backup-result div {
+  min-width: 0;
+}
+
+.backup-result dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backup-result dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.backup-export-next {
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
 .form-grid,
@@ -1052,8 +1120,13 @@ dialog .pdf-actions {
 
 @media (max-width: 359px) {
 
+  .app-navigation {
+    gap: 2px;
+    padding-inline: 4px;
+  }
+
   .app-navigation__button {
-    padding-inline: 2px;
+    padding-inline: 0;
     font-size: 0.7rem;
     letter-spacing: -0.01em;
   }
@@ -1133,6 +1206,18 @@ dialog .pdf-actions {
   .library-primary-actions {
     display: flex;
     justify-content: flex-start;
+  }
+
+  .backup-export-actions .button {
+    width: auto;
+  }
+
+  .backup-result {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .backup-result__wide {
+    grid-column: 1 / -1;
   }
 }
 
