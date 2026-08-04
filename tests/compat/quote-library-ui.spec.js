@@ -50,7 +50,7 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   await expect(page.locator('#statusMessage')).toContainText('previous library quote remains saved');
   await expect(reopenedLibrary.locator('.library-card')).toHaveCount(2);
   await page.locator('#itemName').fill('Unsaved item entry');
-  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  await page.getByRole('button', { name: 'Clients', exact: true }).click();
   const customerLibrary = page.locator('#customerLibraryTools');
   await customerLibrary.evaluate((details) => { details.open = true; });
   await customerLibrary.locator('#customerLibrarySearch').fill('Acme Packaging Updated');
@@ -76,7 +76,7 @@ test('protects unsaved customer details before applying a saved customer', async
   await page.locator('#customerName').fill('Unsaved Customer');
   await page.locator('#buyerEmail').fill('unsaved@example.test');
 
-  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  await page.getByRole('button', { name: 'Clients', exact: true }).click();
   const customerLibrary = page.locator('#customerLibraryTools');
   await customerLibrary.evaluate((details) => { details.open = true; });
   await customerLibrary.locator('#customerLibrarySearch').fill('Saved Customer');
@@ -114,7 +114,7 @@ test('does not treat default NET30 as unsaved customer data on an otherwise empt
     replacementDialogs += 1;
     await dialog.dismiss();
   });
-  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  await page.getByRole('button', { name: 'Clients', exact: true }).click();
   const customerLibrary = page.locator('#customerLibraryTools');
   await customerLibrary.evaluate((details) => { details.open = true; });
   await customerLibrary.locator('#customerLibrarySearch').fill('Saved Terms Customer');

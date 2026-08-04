@@ -29,8 +29,9 @@
       <nav id="appNavigation" class="app-navigation" aria-label="Primary navigation">
         <button type="button" class="app-navigation__button" data-app-view="quote" aria-current="page">Quote</button>
         <button type="button" class="app-navigation__button" data-app-view="quotes">Library</button>
-        <button type="button" class="app-navigation__button" data-app-view="customers">Customers</button>
+        <button type="button" class="app-navigation__button" data-app-view="customers">Clients</button>
         <button type="button" class="app-navigation__button" data-app-view="catalog">Catalog</button>
+        <button type="button" class="app-navigation__button" data-app-view="export">Export</button>
       </nav>
 
       <div class="app-views">
@@ -404,6 +405,46 @@
             <div id="catalogResults" class="catalog-results" aria-label="Catalog search results"></div>
           </div>
         </details>
+      </section>
+
+      <section id="exportWorkspace" class="app-view" data-app-view-panel="export" aria-labelledby="backupExportHeading" hidden>
+        <section class="panel backup-export-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Device data</p>
+              <h2 id="backupExportHeading">Backup &amp; Export</h2>
+            </div>
+          </div>
+
+          <p>Create a complete JSON backup of data already saved in this browser. Save the active quote or draft before downloading if you want its latest edits included.</p>
+
+          <div class="backup-sensitive-warning" role="note" aria-label="Sensitive backup warning">
+            <strong>Keep this file private.</strong>
+            <p>It is unencrypted and includes customer/contact information, quote pricing and internal profitability, catalogs, settings, and recovery records. The app creates it locally and does not upload it.</p>
+          </div>
+
+          <div class="backup-export-actions">
+            <button id="downloadCompleteBackup" type="button" class="button primary">Download Complete Backup</button>
+          </div>
+          <p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p>
+
+          <dl id="backupResult" class="backup-result" hidden>
+            <div>
+              <dt>Filename</dt>
+              <dd id="backupFilename"></dd>
+            </div>
+            <div>
+              <dt>File size</dt>
+              <dd id="backupFileSize"></dd>
+            </div>
+            <div class="backup-result__wide">
+              <dt>Included records</dt>
+              <dd id="backupRecordCounts"></dd>
+            </div>
+          </dl>
+
+          <p class="backup-export-next">Restore, CSV reports, and individual quote exports arrive in later Version 2.5 steps.</p>
+        </section>
       </section>
       </div>
     </main>

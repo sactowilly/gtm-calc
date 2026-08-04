@@ -27,6 +27,9 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
   await page.locator('#itemSubmit').click();
   await expect(page.locator('#orderTotal')).toHaveText('$25.00');
   await page.locator('#saveQuote').click();
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await expect(page.locator('#backupExportHeading')).toHaveText('Backup & Export');
+  await page.getByRole('button', { name: 'Quote', exact: true }).click();
 
   await page.reload();
   await expect(page.locator('#orderTotal')).toHaveText('$25.00');

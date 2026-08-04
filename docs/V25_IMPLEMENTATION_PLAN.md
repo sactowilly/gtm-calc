@@ -16,7 +16,7 @@ Give the user a complete, inspectable, device-local escape hatch for every quote
 
 ## Pull-request sequence
 
-### PR 1 — Backup foundation
+### PR 1 — Backup foundation (complete)
 
 Goal: establish the lossless, versioned backup contract and prove that all current stores can be read consistently without modifying them.
 
@@ -37,9 +37,28 @@ Acceptance:
 
 Rollback: revert this PR. The new services are not yet connected to the UI or write paths; Version 2 data remains unchanged.
 
-### PR 2 — Backup download and export workspace
+### PR 2 — Backup download and export workspace (in progress)
 
-Goal: provide an accessible Backup & Export surface and download a validated complete JSON backup. Include a sensitive-data warning, deterministic dated filename, progress/status messages, Blob download with explicit failure handling, file-size reporting, and phone/laptop coverage. The operation remains read-only.
+Goal: provide an accessible Backup & Export surface and download a validated complete JSON backup. Include a sensitive-data warning, deterministic UTC-dated filename, progress/status messages, Blob download with explicit failure handling, file-size reporting, and phone/laptop coverage. The operation remains read-only.
+
+Deliverables:
+
+- Add an `Export` phone/laptop workspace that preserves active quote state and provides one `Download Complete Backup` action.
+- Share the initialized quote repository with the backup workflow so a first click cannot race creation of the device settings record.
+- Revalidate the exact readable JSON bytes before creating an `application/json;charset=utf-8` Blob.
+- Download as `gtm-calc-backup-YYYY-MM-DD.json`, report the Blob's exact byte size, and use truthful “download requested” language that does not claim the browser saved the file.
+- Warn permanently that the unencrypted file includes customer/contact information and internal pricing/profitability; no data is uploaded.
+- The visible marker is `v2.5.0 · backup-download.2`; package version is `2.5.0-alpha.2`.
+
+Acceptance:
+
+- The actual downloaded file parses and passes full envelope/checksum validation.
+- All persisted business/recovery records are included; unrelated local/session/navigation data is excluded.
+- Successful and failed download attempts leave IndexedDB and browser storage unchanged.
+- Phone/laptop navigation, accessibility, busy state, cleanup, retry, direct-source hosting, and production build checks pass.
+- No restore, CSV, individual-record export, PWA, backend, or deployment behavior is introduced.
+
+Rollback: revert this PR. No schema migration or stored-data transformation occurs; downloaded files already saved by a user remain outside application control.
 
 ### PR 3 — Restore inspection and conflict planning
 

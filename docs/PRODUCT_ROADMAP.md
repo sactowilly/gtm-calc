@@ -113,7 +113,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 - Per-device/year base numbering (`2026-001`) and immutable version revisions (`2026-001-R1`).
 - Separate operations for duplicate-as-new and create-revision with source references.
 - Immutable finalized `QuoteVersion` snapshots and append-only events for status history.
-- A four-destination phone bottom navigation and laptop navigation rail for Quote, Library, Customers, and Catalog workflows.
+- A four-destination phone bottom navigation and laptop navigation rail for Quote, Library, Clients (customer records), and Catalog workflows; Version 2.5 adds Export as a fifth destination.
 
 ### Explicitly excluded
 
@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-08-03): In progress.** The first slice establishes a lossless readonly snapshot across all eight IndexedDB stores and scoped quote/catalog localStorage records, a schema-versioned envelope, deterministic SHA-256 checksum, reference validation, and immutable-version hash verification. Download UI and every restore write remain in later reviewable pull requests documented in `V25_IMPLEMENTATION_PLAN.md`.
+**Status (2026-08-04): In progress.** The merged first slice establishes a lossless readonly snapshot across all eight IndexedDB stores and scoped quote/catalog localStorage records, a schema-versioned envelope, deterministic SHA-256 checksum, reference validation, and immutable-version hash verification. The current slice adds an accessible Export workspace and validated local JSON download. Restore inspection and every restore write remain in later reviewable pull requests documented in `V25_IMPLEMENTATION_PLAN.md`.
 
 ### Objective
 

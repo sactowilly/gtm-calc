@@ -115,7 +115,7 @@ The quote-library usability follow-up seeds 50 deterministically ordered drafts,
 
 PR #15 adds repository and phone-browser coverage for finalization-date-year base numbers, immutable read-only viewing, customer-safe quote-number output/filenames, historical version selection, sequential revision finalization, latest-version-only revision starts, controlled status events, terminal outcomes, and finalized-version duplication as a new unnumbered `DUP` draft.
 
-The Version 2 workspace-navigation slice verifies that Quote, Library, Customers, and Catalog remain distinct accessible destinations on a phone and laptop; exactly one destination exposes `aria-current="page"`; switching destinations retains unsaved active-quote fields; and the bottom bar and laptop rail retain 44 px or larger controls without label clipping at 320 px.
+The workspace-navigation suite verifies that Quote, Library, Clients (customer records), Catalog, and the Version 2.5 Export workspace remain distinct accessible destinations on a phone and laptop; each visible label is contained in its accessible name; exactly one destination exposes `aria-current="page"`; switching destinations retains unsaved active-quote fields; and the bottom bar and laptop rail retain 44 px or larger controls without label clipping at 320 px.
 
 The navigation design-hardening regression set verifies that opening a quote focuses the visible Active Quote heading; using a saved customer expands quote details, focuses Customer, and announces a visible result; catalog selection focuses Quantity; and cancelling a replacement preserves every non-empty item/customer value. It also verifies that focused or short-height phone forms release sticky item actions, no phone navigation label overflows, the card quote layout remains active at 900 px, and the desktop table activates at 1120 px or wider.
 
@@ -177,7 +177,11 @@ PR #19 release-hardening coverage additionally requires:
 
 ### Complete backup/restore
 
-Implementation status (2026-08-03): the Version 2.5 foundation covers consistent all-store snapshots, scoped localStorage capture, stable ordering/checksums, prototype-safe canonicalization, unsupported schema/duplicate/reference rejection, payload tampering, and immutable-version hash verification. File download, size guards, restore preview, transactional merge/replace, and CSV/individual exports remain later Version 2.5 gates.
+Implementation status (2026-08-04): the Version 2.5 foundation covers consistent all-store snapshots, scoped localStorage capture, stable ordering/checksums, prototype-safe canonicalization, unsupported schema/duplicate/reference rejection, payload tampering, and immutable-version hash verification. The current download slice adds exact serialized-byte revalidation, UTF-8 Blob/MIME and byte-size checks, deterministic UTC filenames, temporary object-URL cleanup, truthful success/failure states, real browser download parsing, five-workspace navigation, and before/after storage equality. Restore size guards, restore preview, transactional merge/replace, and CSV/individual exports remain later Version 2.5 gates.
+
+- Complete-backup download tests must prove validation occurs before Blob/URL/click, Unicode file size comes from encoded Blob bytes, double activation cannot create concurrent exports, and every failure path re-enables the action without claiming success.
+- Browser tests capture the downloaded file, parse and revalidate it, verify all eight stores and scoped local keys, assert sensitive sentinels are included while unrelated/session keys are excluded, and prove no persisted state or outbound network request changes.
+- Export workspace tests cover 320–390 px phones, laptop rail, 44 px controls, unclipped five-item navigation, live busy/status announcements, keyboard operation, and zero serious/critical accessibility findings.
 
 - Deterministic valid backup, checksum tampering, truncated/oversized JSON, unsupported future schema, duplicate IDs/numbers, missing references, altered immutable hash, and malicious/prototype-shaped data.
 - Round trip all stores preserves records/relationships/hashes and excludes runtime Blob URLs.

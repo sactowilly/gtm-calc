@@ -16,7 +16,14 @@ test('keeps every release workspace accessible on phone and laptop layouts', asy
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./');
 
-  for (const name of ['Quote', 'Library', 'Customers', 'Catalog']) {
+  const navigationButtons = page.locator('#appNavigation button');
+  for (let index = 0; index < await navigationButtons.count(); index += 1) {
+    const button = navigationButtons.nth(index);
+    const visibleLabel = (await button.textContent()).trim();
+    await expect(button).toHaveAccessibleName(new RegExp(visibleLabel, 'i'));
+  }
+
+  for (const name of ['Quote', 'Library', 'Clients', 'Catalog', 'Export']) {
     await page.getByRole('button', { name, exact: true }).click();
     await expectNoSeriousViolations(page, `phone-${name}`);
   }
@@ -24,6 +31,8 @@ test('keeps every release workspace accessible on phone and laptop layouts', asy
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.getByRole('button', { name: 'Quote', exact: true }).click();
   await expectNoSeriousViolations(page, 'laptop-Quote');
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await expectNoSeriousViolations(page, 'laptop-Export');
 
   const undersized = await page.locator('#appNavigation button').evaluateAll((buttons) => buttons
     .filter((button) => {
