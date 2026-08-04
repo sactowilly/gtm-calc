@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is now in progress. The checksummed read-only foundation is merged, and the current slice adds a local Backup & Export workspace that validates and downloads the complete persisted dataset without introducing restore writes.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is now in progress. The checksummed backup foundation, download, and safe restore inspection are merged; the current slice adds an owner-confirmed, device-local transactional restore with a safety-backup download before any write.
 
 The release smoke checks remain:
 
@@ -58,7 +58,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
 - **Version 2.0 - Local Quote Library (complete):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Clients/Catalog workspaces are accepted. Version 2.5 adds the fifth Export destination.
-- **Version 2.5 - Backup and Restore (in progress):** the complete read-only JSON/checksum foundation and validated local backup download are merged. The current slice is preview-only restore inspection; transactional merge/replace, CSV exports, quote JSON export, and PDF export remain later reviewable slices.
+- **Version 2.5 - Backup and Restore (in progress):** the complete JSON/checksum foundation, validated local backup download, and restore inspection are merged. The current slice adds explicit Merge/Replace restore choices, typed owner confirmation, a pre-write safety backup, transactional local restore, and post-restore validation. CSV exports, quote JSON export, and PDF export remain later reviewable slices.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
 - **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.

@@ -1,5 +1,15 @@
 # Build Log
 
+### 2026-08-04 -- Version 2.5 transactional restore (in progress)
+
+- Created the owner-confirmed local restore workflow on `feature/v25-restore-transaction` after PR #25 merge `ac288a4`; the unrelated `.codex/` directory remains untracked and untouched.
+- Added a hidden-until-inspected Merge/Replace choice, exact typed `RESTORE` confirmation, accessible busy/error/result announcements, and a destructive Replace explanation. The UI keeps raw records, customer/contact values, pricing, and IDs out of the restore display.
+- The restore coordinator re-reads and revalidates the selected JSON at commit time. It requests the normal local safety-backup download before transaction writes, reports its neutral filename, and blocks immutable history or finalized-number conflicts.
+- After a successful restore, the calculator header, navigation, and workspaces become inert and the application reloads fresh persisted state, preventing a stale in-memory quote from being saved over the restored device data.
+- Advanced the marker to `v2.5.0 Â· restore-transaction.4` and package version to `2.5.0-alpha.4`; reviewed/updated the roadmap SVG/PNG, README, V2.5 plan, current state, storage/test plan, decision, and open-item documentation. Version 2.5 remains in progress; no owner acceptance or release completion is claimed.
+- Verified `npm run check`, `npm test` (139 tests), all 16 customer-PDF visual/privacy tests, direct-source and built-`dist` `/gtm-calc/` smokes, `git diff --check`, and the focused transactional restore browser suite: 10 passing checks across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari. The production build transformed 36 modules and retains only the two known warnings for vendored non-module PDF scripts.
+
+
 ### 2026-08-04 -- Version 2.5 restore inspection
 
 - Created `feature/v25-restore-inspection` from merged `main` commit `c1cd4c2`; the unrelated local `.codex/` directory remains untracked and untouched.

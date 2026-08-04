@@ -18,6 +18,7 @@ import { buildAttachmentInstruction, buildMailtoUrl } from './services/email-ser
 import { initializeQuoteLibraryUi } from './quote-library/quote-library-ui.js';
 import { createBackupDownloadService } from './services/backup-download-service.js';
 import { createBackupRestoreInspectionService } from './services/backup-restore-inspection-service.js';
+import { createBackupRestoreTransactionService } from './services/backup-restore-transaction-service.js';
 import { createBackupService } from './services/backup-service.js';
 import { createQuoteLibraryRepository } from './services/indexeddb-quote-repository.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
@@ -882,6 +883,12 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     inspectionService: createBackupRestoreInspectionService({
       backupService,
       beforeInspect: () => quoteLibraryReady
+    }),
+    restoreService: createBackupRestoreTransactionService({
+      backupService,
+      quoteRepository,
+      storage: localStorage,
+      beforeRestore: () => quoteLibraryReady
     })
   });
 })();

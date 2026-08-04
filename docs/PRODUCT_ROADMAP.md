@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-08-04): In progress.** The merged first slice establishes a lossless readonly snapshot across all eight IndexedDB stores and scoped quote/catalog localStorage records, a schema-versioned envelope, deterministic SHA-256 checksum, reference validation, and immutable-version hash verification. PR #24 merged the accessible Export workspace and validated local JSON download. The current slice is preview-only restore inspection; every restore write remains in later reviewable pull requests documented in `V25_IMPLEMENTATION_PLAN.md`.
+**Status (2026-08-04): In progress.** The merged first slice establishes a lossless readonly snapshot across all eight IndexedDB stores and scoped quote/catalog localStorage records, a schema-versioned envelope, deterministic SHA-256 checksum, reference validation, and immutable-version hash verification. PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged the safe preview-only inspection with green CI. The current slice is an owner-confirmed transactional Merge/Replace restore with a pre-write safety backup, rollback, and post-restore validation. CSV and individual-record exports remain later reviewable pull requests documented in `V25_IMPLEMENTATION_PLAN.md`.
 
 ### Objective
 

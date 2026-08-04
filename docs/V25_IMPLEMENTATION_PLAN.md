@@ -62,7 +62,7 @@ Acceptance record: PR #24 merged as `c1cd4c2` with green pull-request CI. Physic
 
 Rollback: revert this PR. No schema migration or stored-data transformation occurs; downloaded files already saved by a user remain outside application control.
 
-### PR 3 — Restore inspection and conflict planning (in progress)
+### PR 3 — Restore inspection and conflict planning (complete)
 
 Goal: parse a selected JSON file without writes and show a complete restore preview. Include a file-size guard, schema/checksum/version validation, record counts, corrupt/unsupported record isolation, missing-reference reporting, duplicate ID/number/hash analysis, and an explicit merge-versus-replace plan. Invalid files make no changes.
 
@@ -83,9 +83,34 @@ Acceptance:
 
 Rollback: revert this PR. No repository restore/import/clear API, schema migration, or data transformation is introduced.
 
-### PR 4 — Transactional merge and replace
+Acceptance record: PR #25 merged as `ac288a4` with green pull-request CI. The no-write browser UI intentionally shows only aggregate counts/conflicts and the PR 2 physical backup-download checks remain separate Version 2.5 release evidence.
+
+### PR 4 — Transactional merge and replace (in progress)
 
 Goal: execute an owner-confirmed restore safely. Require a pre-restore safety backup, refuse immutable-version conflicts, apply explicit mutable-record policies, use a single multi-store IndexedDB transaction, coordinate localStorage staging/rollback, and perform post-restore validation with a detailed report.
+
+Deliverables:
+
+- Revalidate the selected file and its full envelope immediately before a restore; the UI never passes raw record content to the screen.
+- Keep restore choices hidden until a valid local inspection completes. Offer Merge, which preserves this device's mutable conflicts, and Replace, which intentionally replaces the scoped local dataset.
+- Require the owner to type `RESTORE`; disable both choices for immutable-version/event conflicts or finalized-number collisions.
+- Request/download a new complete safety backup before the first IndexedDB or scoped localStorage write. Announce its neutral filename before the transaction starts.
+- Apply the chosen scoped restore in one multi-store IndexedDB transaction with staged localStorage rollback. Validate the committed state and report only aggregate completion data.
+- Immediately lock the stale in-memory calculator/library UI after a successful restore and reload the application before the restored data can be saved over by pre-restore memory.
+- Preserve `gtm_quote_calculator_v1`, calculation behavior, customer PDF/privacy rules, GitHub Pages source, and the existing Export download behavior.
+- The visible marker is `v2.5.0 · restore-transaction.4`; package version is `2.5.0-alpha.4`.
+
+Acceptance:
+
+- Invalid, altered, oversized, or newly conflicting files make no change, including when they were valid at inspection time.
+- No write begins unless the safety-backup download request succeeds; a failed request leaves all persisted state unchanged.
+- Injected IndexedDB/localStorage/post-validation failures restore the prior state or leave it unchanged; no partial records remain.
+- Merge adds only safe incoming records and keeps current mutable conflict records. Replace restores the selected backup's scoped records while retaining an immediately downloadable safety backup.
+- The phone/laptop UI has 44 px controls, keyboard-operable radio/confirmation flow, clear destructive wording, live busy/error announcements, no raw backup/customer/pricing content, and no accidental double activation.
+- A successful restore disables stale application controls and reloads fresh persisted state before any quote/library action can run.
+- Browser, source-hosting, production-build, accessibility, privacy, and transaction tests pass; physical release evidence remains for PR 6.
+
+Rollback: revert this PR. If a restore has already completed, retain the automatically requested safety backup, inspect it, then restore it through the same confirmed workflow; do not clear browser storage manually.
 
 ### PR 5 — CSV and individual-record exports
 

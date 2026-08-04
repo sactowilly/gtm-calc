@@ -6,18 +6,20 @@ function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 }
 
+const buildLabel = `v2.5.0 ${String.fromCharCode(0x00b7)} restore-transaction.4`;
+
 describe('Version 2.5 development metadata', () => {
-  it('keeps the Version 2.5 restore-inspection marker and package version aligned', () => {
+  it('keeps the Version 2.5 restore-transaction marker and package version aligned', () => {
     const packageMetadata = JSON.parse(read('package.json'));
-    expect(APP_BUILD_LABEL).toBe('v2.5.0 · restore-inspection.3');
-    expect(packageMetadata.version).toBe('2.5.0-alpha.3');
+    expect(APP_BUILD_LABEL).toBe(buildLabel);
+    expect(packageMetadata.version).toBe('2.5.0-alpha.4');
     expect(APP_RELEASE_VERSION).toBe(packageMetadata.version);
   });
 
   it('keeps the completed Version 2 and in-progress Version 2.5 status consistent', () => {
     expect(read('README.md')).toContain('Version 2 is complete');
     expect(read('README.md')).toContain('Version 2.5 backup and restore is now in progress');
-    expect(read('docs/CURRENT_STATE.md')).toContain('v2.5.0 · restore-inspection.3');
+    expect(read('docs/CURRENT_STATE.md')).toContain(buildLabel);
     expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Version 2.0 is complete');
     expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Status (2026-08-04): In progress.');
     expect(read('docs/V2_IMPLEMENTATION_PLAN.md')).toContain('Status: complete.');

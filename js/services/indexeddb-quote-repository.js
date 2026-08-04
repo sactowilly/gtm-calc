@@ -21,6 +21,13 @@ import {
   validateQuoteRecord,
   validateQuoteVersion
 } from '../domain/quote-library.js';
+import {
+  MUTABLE_CONFLICT_POLICY,
+  RESTORE_MODE,
+  RESTORE_STORE_NAMES,
+  planRestoreTransaction,
+  restoreSummary
+} from '../domain/backup-restore-transaction.js';
 
 export { QUOTE_LIBRARY_DATABASE_NAME, QUOTE_LIBRARY_DATABASE_VERSION, QUOTE_LIBRARY_STORES };
 
@@ -807,6 +814,76 @@ export function createQuoteLibraryRepository({
     };
   }
 
+  /**
+   * Apply a prevalidated restore snapshot in one transaction across every quote
+   * library store. This is intentionally a narrow low-level primitive: callers
+   * must validate the backup envelope and projected result before calling it.
+   */
+  async function applyRestoreSnapshot({
+    mode,
+    snapshot,
+    mutableConflictPolicy = MUTABLE_CONFLICT_POLICY.KEEP_CURRENT,
+    expectedCurrentSnapshot,
+    failAfterStore
+  } = {}) {
+    if (!Object.values(RESTORE_MODE).includes(mode)) throw new Error('Restore mode must be merge or replace.');
+    if (!Object.values(MUTABLE_CONFLICT_POLICY).includes(mutableConflictPolicy)) {
+      throw new Error('Mutable conflict policy must keep current data or replace it with the backup.');
+    }
+    if (!snapshot || snapshot.databaseName !== QUOTE_LIBRARY_DATABASE_NAME
+      || snapshot.databaseVersion !== QUOTE_LIBRARY_DATABASE_VERSION
+      || !snapshot.stores) {
+      throw new Error('A complete, validated quote-library snapshot is required.');
+    }
+    if (failAfterStore != null && !RESTORE_STORE_NAMES.includes(failAfterStore)) {
+      throw new Error('Controlled restore failure must name a quote-library store.');
+    }
+
+    const database = await openDatabase();
+    const transaction = database.transaction(RESTORE_STORE_NAMES, 'readwrite');
+    try {
+      const currentEntries = await Promise.all(RESTORE_STORE_NAMES.map(async (storeName) => [
+        storeName,
+        (await transaction.objectStore(storeName).getAll()).map(cloneQuoteData)
+      ]));
+      const currentSnapshot = {
+        databaseName: QUOTE_LIBRARY_DATABASE_NAME,
+        databaseVersion: database.version,
+        recordSchemaVersion: QUOTE_RECORD_SCHEMA_VERSION,
+        stores: Object.fromEntries(currentEntries)
+      };
+      if (expectedCurrentSnapshot && canonicalJson(currentSnapshot) !== canonicalJson(expectedCurrentSnapshot)) {
+        throw new Error('Quote-library data changed after restore preparation. Inspect the backup again before restoring.');
+      }
+      const plan = planRestoreTransaction({
+        incomingSnapshot: snapshot,
+        currentSnapshot,
+        mode,
+        mutableConflictPolicy
+      });
+      if (!plan.allowed) {
+        throw new Error('Restore is blocked by immutable record or quote-number conflicts.');
+      }
+
+      for (const storeName of RESTORE_STORE_NAMES) {
+        const store = transaction.objectStore(storeName);
+        if (mode === RESTORE_MODE.REPLACE) await store.clear();
+        for (const action of plan.actions[storeName]) await store.put(action.record);
+        if (failAfterStore === storeName) throw new Error(`Injected restore failure after ${storeName}.`);
+      }
+      await transaction.done;
+      return restoreSummary(plan);
+    } catch (error) {
+      try {
+        transaction.abort();
+      } catch {
+        // The transaction may have already completed or aborted.
+      }
+      await transaction.done.catch(() => {});
+      throw error;
+    }
+  }
+
   async function close() {
     if (!databasePromise) return;
     const database = await databasePromise;
@@ -844,6 +921,7 @@ export function createQuoteLibraryRepository({
     listEvents,
     getRecoveryRecords,
     exportSnapshot,
+    applyRestoreSnapshot,
     close,
     destroy
   };

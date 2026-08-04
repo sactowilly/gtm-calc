@@ -212,7 +212,7 @@ Rules:
 
 Version 2.5 uses the `BackupEnvelope` in `DOMAIN_MODEL.md` with `format`, backup/app/database versions, source device, export timestamp, payload, and SHA-256 checksum. Canonical serialization and stable record/key ordering make payload checksums deterministic. PDF files are regenerated and need not bloat the complete backup; template/policy versions are retained.
 
-Implementation status (2026-08-04): `exportSnapshot()` reads all eight IndexedDB stores through one readonly transaction. `snapshotBackupLocalStorage()` captures the active quote, active/prior catalog, manual-item, usage, and recovery values exactly while excluding navigation/session and unrelated origin keys. `createBackupEnvelope()` and `validateBackupEnvelope()` verify the supported contract, known local envelopes, duplicate primary keys/numbers, cross-record ownership, finalized content hashes, JSON serialization round trips, and the full payload checksum. Non-JSON structured-clone values fail explicitly rather than being silently changed. The Export workspace serializes readable JSON, parses and revalidates those exact bytes, creates a UTF-8 JSON Blob, starts a local dated download, reports exact Blob bytes, and cleans up its temporary anchor/object URL. The current preview-only inspection path rejects files over 25 MiB before reading, decodes UTF-8 strictly, validates the incoming envelope before snapshotting current data, and renders only safe aggregate comparisons. It does not write stored data or provide restore controls.
+Implementation status (2026-08-04): `exportSnapshot()` reads all eight IndexedDB stores through one readonly transaction. `snapshotBackupLocalStorage()` captures the active quote, active/prior catalog, manual-item, usage, and recovery values exactly while excluding navigation/session and unrelated origin keys. `createBackupEnvelope()` and `validateBackupEnvelope()` verify the supported contract, known local envelopes, duplicate primary keys/numbers, cross-record ownership, finalized content hashes, JSON serialization round trips, and the full payload checksum. Non-JSON structured-clone values fail explicitly rather than being silently changed. The Export workspace serializes readable JSON, parses and revalidates those exact bytes, creates a UTF-8 JSON Blob, starts a local dated download, reports exact Blob bytes, and cleans up its temporary anchor/object URL. PR #25 adds a 25 MiB, strict UTF-8, no-write preview. The current transactional slice revalidates the selected file before any write, requires typed owner confirmation and an explicit Merge/Replace choice, requests a complete safety-backup download first, applies the scoped data locally with transaction/rollback protection, and validates the outcome. Its interface still renders only aggregate comparisons and result counts.
 
 Backup workflow:
 
@@ -233,12 +233,12 @@ Restore is a staged operation:
 3. Show counts, warnings, unsupported records, and collision policy.
 4. Create/download a safety backup of current data before replace or a material merge.
 5. Apply in a single multi-store readwrite transaction when feasible. On any error, abort all writes.
-6. Re-read and validate resulting counts/references; present a detailed report.
+6. Re-read and validate resulting counts/references; present an aggregate report, lock stale in-memory UI state, and reload fresh persisted data before another quote save can occur.
 
 Merge rules:
 
 - Same stable ID and identical hash: skip.
-- Same ID but different mutable record: owner-select newest/keep-local/import-copy according to record type and report it.
+- Same ID but different mutable record: Merge keeps this device's current record; Replace uses the selected backup's scoped record. Both policies are shown before typed owner confirmation.
 - Same finalized-version ID or display number with different content hash: never overwrite; quarantine/report as a conflict.
 - Number collision from another device: preserve both records and require an explicit resolution/migration strategy; do not silently renumber finalized history.
 
