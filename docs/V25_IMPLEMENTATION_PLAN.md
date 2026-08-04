@@ -37,7 +37,7 @@ Acceptance:
 
 Rollback: revert this PR. The new services are not yet connected to the UI or write paths; Version 2 data remains unchanged.
 
-### PR 2 — Backup download and export workspace (in progress)
+### PR 2 — Backup download and export workspace (complete)
 
 Goal: provide an accessible Backup & Export surface and download a validated complete JSON backup. Include a sensitive-data warning, deterministic UTC-dated filename, progress/status messages, Blob download with explicit failure handling, file-size reporting, and phone/laptop coverage. The operation remains read-only.
 
@@ -58,11 +58,30 @@ Acceptance:
 - Phone/laptop navigation, accessibility, busy state, cleanup, retry, direct-source hosting, and production build checks pass.
 - No restore, CSV, individual-record export, PWA, backend, or deployment behavior is introduced.
 
+Acceptance record: PR #24 merged as `c1cd4c2` with green pull-request CI. Physical Android Chrome and laptop Chromium download acceptance remains required Version 2.5 release evidence; it is tracked separately and has not been claimed complete.
+
 Rollback: revert this PR. No schema migration or stored-data transformation occurs; downloaded files already saved by a user remain outside application control.
 
-### PR 3 — Restore inspection and conflict planning
+### PR 3 — Restore inspection and conflict planning (in progress)
 
 Goal: parse a selected JSON file without writes and show a complete restore preview. Include a file-size guard, schema/checksum/version validation, record counts, corrupt/unsupported record isolation, missing-reference reporting, duplicate ID/number/hash analysis, and an explicit merge-versus-replace plan. Invalid files make no changes.
+
+Deliverables:
+
+- A 25 MiB pre-read file guard, strict UTF-8 decoding, local JSON parsing, and full existing-envelope validation.
+- A readonly current-device snapshot only after the incoming file validates.
+- Sanitized aggregate preview data: incoming/current totals, mutable/local-storage differences, immutable-version/event conflicts, and quote-number collisions without customer names, emails, IDs, pricing, or raw file content.
+- A phone/laptop accessible Export preview UI with no Merge or Replace control and clear recovery/retry states.
+- The visible marker is `v2.5.0 · restore-inspection.3`; package version is `2.5.0-alpha.3`.
+
+Acceptance:
+
+- Empty, oversized, malformed, non-UTF-8, unsupported, tampered, duplicate, and broken-reference files cause no read beyond the needed guard and no stored-data mutation.
+- Valid files show only safe metadata/counts and a future restore plan; inspection never writes IndexedDB, localStorage, or sessionStorage and never sends a network request.
+- Same-ID immutable version/event changes and finalized-number collisions are visibly blocking for a future merge.
+- Accessibility, direct-source Pages, production-build, and mobile/laptop coverage pass.
+
+Rollback: revert this PR. No repository restore/import/clear API, schema migration, or data transformation is introduced.
 
 ### PR 4 — Transactional merge and replace
 

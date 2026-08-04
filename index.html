@@ -443,7 +443,78 @@
             </div>
           </dl>
 
-          <p class="backup-export-next">Restore, CSV reports, and individual quote exports arrive in later Version 2.5 steps.</p>
+          <section class="backup-restore-inspection" aria-labelledby="backupRestoreHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Restore preview</p>
+                <h3 id="backupRestoreHeading">Inspect a Backup</h3>
+              </div>
+            </div>
+            <p>Choose a complete JSON backup to validate and preview it on this device. Inspection does not restore, merge, replace, upload, or change any saved data.</p>
+            <label class="backup-file-input">
+              Backup JSON file
+              <input id="backupRestoreFile" type="file" accept="application/json,.json">
+              <span>Maximum file size: 25 MiB. Keep the original backup file private.</span>
+            </label>
+            <div class="backup-export-actions">
+              <button id="inspectBackup" type="button" class="button secondary" disabled>Inspect Backup</button>
+            </div>
+            <p id="backupInspectionStatus" class="backup-status" role="status" aria-live="polite"></p>
+            <dl id="backupInspectionReport" class="backup-result" aria-label="Backup inspection report" hidden>
+              <div>
+                <dt>Selected file</dt>
+                <dd id="backupInspectionFilename"></dd>
+              </div>
+              <div>
+                <dt>File size</dt>
+                <dd id="backupInspectionFileSize"></dd>
+              </div>
+              <div>
+                <dt>Schema version</dt>
+                <dd id="backupInspectionSchemaVersion"></dd>
+              </div>
+              <div>
+                <dt>Exported</dt>
+                <dd id="backupInspectionExportedAt"></dd>
+              </div>
+              <div class="backup-result__wide">
+                <dt>Included records</dt>
+                <dd id="backupInspectionRecordCounts"></dd>
+              </div>
+              <div>
+                <dt>Incoming record total</dt>
+                <dd id="backupInspectionIncomingTotal"></dd>
+              </div>
+              <div>
+                <dt>Current device record total</dt>
+                <dd id="backupInspectionCurrentTotal"></dd>
+              </div>
+              <div>
+                <dt>Local storage differences</dt>
+                <dd id="backupInspectionLocalStorageDifferences"></dd>
+              </div>
+              <div>
+                <dt>Mutable differences</dt>
+                <dd id="backupInspectionMutableDifferences"></dd>
+              </div>
+              <div>
+                <dt>Blocking immutable conflicts</dt>
+                <dd id="backupInspectionImmutableConflicts"></dd>
+              </div>
+              <div>
+                <dt>Quote-number collisions</dt>
+                <dd id="backupInspectionNumberCollisions"></dd>
+              </div>
+              <div class="backup-result__wide">
+                <dt>Future merge availability</dt>
+                <dd id="backupInspectionMergeAvailability"></dd>
+              </div>
+            </dl>
+            <p id="backupInspectionConflictWarning" class="backup-inspection-conflict-warning" role="alert" hidden></p>
+            <p class="backup-restore-unavailable" role="note">Preview only: Merge and Replace will be added in a later, separately confirmed restore step. They are unavailable here.</p>
+          </section>
+
+          <p class="backup-export-next">CSV reports and individual quote exports arrive in later Version 2.5 steps.</p>
         </section>
       </section>
       </div>

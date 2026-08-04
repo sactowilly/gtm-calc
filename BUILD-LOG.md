@@ -1,5 +1,16 @@
 # Build Log
 
+### 2026-08-04 -- Version 2.5 restore inspection
+
+- Created `feature/v25-restore-inspection` from merged `main` commit `c1cd4c2`; the unrelated local `.codex/` directory remains untracked and untouched.
+- Added a preview-only `Inspect a Backup` workflow in Export. It rejects files larger than 25 MiB before startup/read work, decodes strict UTF-8 JSON, fully validates the selected envelope before taking a readonly current-device snapshot, and reports only aggregate counts and future-restore conflict totals.
+- The inspection screen cannot merge, replace, clear, import, write IndexedDB/localStorage/sessionStorage, upload data, or reveal customer names, contacts, IDs, pricing, or raw backup content. Same-ID altered immutable quote versions/events and finalized-number collisions are visibly blocking for a future merge.
+- Advanced the development marker to `v2.5.0 · restore-inspection.3` and the package to `2.5.0-alpha.3`; reviewed and updated the roadmap infographic plus the Version 2.5 plan, current-state, storage/domain/UX/test, decision, and open-item documentation.
+- PR 2's validated backup-download merge remains recorded; physical Android Chrome and laptop Chromium download acceptance is still pending release evidence and is not represented as complete.
+- Verified JavaScript checks, 127 unit/domain/storage/privacy tests, and 16 customer-PDF visual/privacy tests. Direct-source Pages-style and built-`dist` `/gtm-calc/` smoke tests passed; the production build transformed 34 modules and retains only the two known warnings for vendored non-module PDF scripts.
+- The new restore-inspection browser workflow passed 17 checks across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari, with three intentional non-Chromium skips for a controlled in-flight Blob-read case covered in Chromium. An initial full 195-check parallel compatibility run exposed a WebKit-incompatible synthetic size override in the oversize-file fixture. The fixture now patches the native Blob size getter only for its temporary test file; the affected Firefox/WebKit serial check and the corrected five-profile restore workflow both pass. A subsequent complete local compatibility attempt exceeded the ten-minute execution limit before a final result, so CI remains the clean full-suite gate and this is not recorded as a full local pass.
+- `git diff --check` passed. No production deployment runs from this feature branch.
+
 ### 2026-08-04 -- Version 2.5 validated backup download
 
 - Created `feature/v25-backup-download-workspace` from merged `main` commit `e88e914` after PR #23 passed CI and merged; existing local `.codex/` data remains untracked and untouched.
