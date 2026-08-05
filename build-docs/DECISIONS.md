@@ -88,6 +88,13 @@ The Version 2.5 Export addition uses the shorter visible label **Clients** for t
 **DATE:** 2026-08-04
 **PARTIES:** Codex, Will Z (continued implementation authorization)
 
+## Owner-Confirmed Restore Transaction Boundary
+
+**DECISION:** Version 2.5 PR 4 exposes restore only after a successful local inspection. It revalidates the selected file at commit time, blocks immutable-version/event conflicts and finalized-number collisions, requires an explicit Merge or Replace selection plus the typed confirmation `RESTORE`, and requests a complete safety-backup download before any local write. Merge preserves current mutable conflicts; Replace substitutes the selected backup's scoped data. The user interface may show only aggregate counts, neutral filenames, and outcome summaries.
+**RATIONALE:** Inspection-time validity cannot authorize a later destructive write because the file or current device may have changed. A pre-write safety backup, explicit destructive choice, single transaction/rollback, and no raw-data UI prevent accidental loss while keeping recovery entirely local and usable on a phone.
+**DATE:** 2026-08-04
+**PARTIES:** Goodall program review, Codex, Will Z (continued implementation authorization)
+
 ## Quote Library Progressive Disclosure and Duplicate Review State
 
 **DECISION:** Show ten matching quote drafts initially and ten more per explicit request. Mark a newly duplicated draft with visible `DUP` text and pale shading while `sourceQuoteId` exists and `draftRevision` is zero; remove the marker after its first successful save without modifying the customer/company name.

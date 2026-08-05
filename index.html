@@ -450,7 +450,7 @@
                 <h3 id="backupRestoreHeading">Inspect a Backup</h3>
               </div>
             </div>
-            <p>Choose a complete JSON backup to validate and preview it on this device. Inspection does not restore, merge, replace, upload, or change any saved data.</p>
+            <p>Choose a complete JSON backup to validate and preview it on this device. Nothing changes until a valid backup is reviewed, a restore mode is chosen, and the owner confirms the restore.</p>
             <label class="backup-file-input">
               Backup JSON file
               <input id="backupRestoreFile" type="file" accept="application/json,.json">
@@ -511,7 +511,51 @@
               </div>
             </dl>
             <p id="backupInspectionConflictWarning" class="backup-inspection-conflict-warning" role="alert" hidden></p>
-            <p class="backup-restore-unavailable" role="note">Preview only: Merge and Replace will be added in a later, separately confirmed restore step. They are unavailable here.</p>
+
+            <section id="backupRestoreAction" class="backup-restore-action" aria-labelledby="backupRestoreActionHeading" hidden>
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Owner-confirmed restore</p>
+                  <h3 id="backupRestoreActionHeading">Choose how to restore</h3>
+                </div>
+              </div>
+              <p class="backup-restore-action__intro">The selected backup will be validated again immediately before any change. A new complete safety backup of this device is requested first, so it can be used to recover the current state.</p>
+              <fieldset id="backupRestoreMode" class="backup-restore-modes">
+                <legend>Restore mode</legend>
+                <label class="backup-restore-mode">
+                  <input id="restoreModeMerge" name="restoreMode" type="radio" value="merge" checked>
+                  <span><strong>Merge</strong><small>Add backup-only records. When a mutable record conflicts, keep this device’s current record.</small></span>
+                </label>
+                <label class="backup-restore-mode backup-restore-mode--danger">
+                  <input id="restoreModeReplace" name="restoreMode" type="radio" value="replace">
+                  <span><strong>Replace this device</strong><small>Replace this device’s saved quote, customer, catalog, settings, and recovery records with the backup after its safety backup is requested.</small></span>
+                </label>
+              </fieldset>
+              <p id="backupRestoreModeWarning" class="backup-inspection-conflict-warning" role="alert" hidden></p>
+              <label class="backup-restore-confirmation" for="backupRestoreConfirmation">
+                Type <strong>RESTORE</strong> to confirm
+                <input id="backupRestoreConfirmation" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="backupRestoreConfirmationHelp">
+                <span id="backupRestoreConfirmationHelp">This restores only this browser or device. It never uploads the backup.</span>
+              </label>
+              <div class="backup-export-actions">
+                <button id="restoreBackup" type="button" class="button danger" disabled>Restore Selected Backup</button>
+              </div>
+              <p id="backupRestoreStatus" class="backup-status" role="status" aria-live="polite"></p>
+              <dl id="backupRestoreResult" class="backup-result" aria-label="Backup restore result" hidden>
+                <div>
+                  <dt>Safety backup</dt>
+                  <dd id="backupRestoreSafetyFilename"></dd>
+                </div>
+                <div>
+                  <dt>Restore mode</dt>
+                  <dd id="backupRestoreResultMode"></dd>
+                </div>
+                <div class="backup-result__wide">
+                  <dt>Restored records</dt>
+                  <dd id="backupRestoreRecordSummary"></dd>
+                </div>
+              </dl>
+            </section>
           </section>
 
           <p class="backup-export-next">CSV reports and individual quote exports arrive in later Version 2.5 steps.</p>

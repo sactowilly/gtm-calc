@@ -140,7 +140,10 @@ test('inspects a valid local backup selected through the file chooser without ch
   await expect(page.locator('#backupInspectionFilename')).toHaveText('restore-fixture.json');
   await expect(page.locator('#backupInspectionSchemaVersion')).toHaveText('1');
   await expect(page.locator('#backupInspectionRecordCounts')).toContainText('1 quotes');
-  await expect(page.locator('.backup-restore-unavailable')).toContainText('Merge and Replace');
+  await expect(page.locator('#backupRestoreAction')).toBeVisible();
+  await expect(page.locator('#restoreModeMerge')).toBeChecked();
+  await expect(page.locator('#restoreModeMerge')).toBeEnabled();
+  await expect(page.locator('#restoreBackup')).toBeDisabled();
   await assertSanitizedInspection(page, ['Restore Inspection Customer', '1.23456', '2.34567']);
   expect(outbound).toEqual([]);
   expect(await captureStoredState(page)).toEqual(before);
@@ -211,9 +214,12 @@ test('reports a same-ID changed quote event as a blocking future-merge conflict 
   await page.locator('#inspectBackup').click();
   await expect(page.locator('#backupInspectionStatus')).toContainText('Backup inspection passed');
   await expect(page.locator('#backupInspectionImmutableConflicts')).toHaveText('1');
-  await expect(page.locator('#backupInspectionMergeAvailability')).toHaveText('Blocked by future-restore conflicts');
+  await expect(page.locator('#backupInspectionMergeAvailability')).toHaveText('Blocked by restore conflicts');
   await expect(page.locator('#backupInspectionConflictWarning')).toBeVisible();
   await expect(page.locator('#backupInspectionConflictWarning')).toContainText('blocking conflicts');
+  await expect(page.locator('#restoreModeMerge')).toBeDisabled();
+  await expect(page.locator('#restoreModeReplace')).toBeDisabled();
+  await expect(page.locator('#restoreBackup')).toBeDisabled();
   await assertSanitizedInspection(page, [
     'Restore Inspection Customer',
     'independently changed immutable event',

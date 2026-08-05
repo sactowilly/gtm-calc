@@ -1,10 +1,12 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+const appBuildLabel = `v2.5.0 ${String.fromCharCode(0x00b7)} restore-transaction.4`;
+
 test('loads, exposes accessible controls, and preserves approved defaults', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { name: 'GTM Calc and Quote Tool' })).toBeVisible();
-  await expect(page.locator('#appVersion')).toContainText('v2.5.0 · restore-inspection.3');
+  await expect(page.locator('#appVersion')).toContainText(appBuildLabel);
   await expect(page.getByRole('button', { name: 'New Quote' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'View Quote' })).toBeVisible();
   await page.locator('.quote-details').evaluate((details) => { details.open = true; });

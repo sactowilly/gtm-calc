@@ -292,6 +292,128 @@ h2 {
   font-weight: 700;
 }
 
+.backup-restore-action {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.backup-restore-action h3 {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 1rem;
+}
+
+.backup-restore-action__intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.backup-restore-modes {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.backup-restore-modes legend {
+  margin-bottom: 8px;
+  color: var(--secondary);
+  font-weight: 800;
+}
+
+.backup-restore-mode {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  min-height: 64px;
+  padding: 12px;
+  border: 1px solid #a9cfc2;
+  border-radius: 8px;
+  background: #f1faf6;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.backup-restore-mode:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.backup-restore-mode:has(input:checked) {
+  border-width: 2px;
+  border-color: var(--accent);
+}
+
+.backup-restore-mode input {
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  accent-color: var(--accent);
+}
+
+.backup-restore-mode strong,
+.backup-restore-mode small {
+  display: block;
+}
+
+.backup-restore-mode small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.backup-restore-mode--danger {
+  border-color: #d9aaaa;
+  background: #fff5f5;
+}
+
+.backup-restore-mode--danger:has(input:checked) {
+  border-color: var(--danger);
+}
+
+.backup-restore-mode--danger input {
+  accent-color: var(--danger);
+}
+
+.backup-restore-mode:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.backup-restore-confirmation {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.backup-restore-confirmation input {
+  min-height: 48px;
+  margin: 7px 0;
+  text-transform: uppercase;
+}
+
+.backup-restore-confirmation span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.button.danger {
+  background: var(--danger);
+}
+
+.button.danger:hover:not(:disabled) {
+  background: #742020;
+}
+
 .backup-inspection-conflict-warning {
   margin: 14px 0 0;
   padding: 11px 12px;
