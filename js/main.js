@@ -8,6 +8,7 @@ import {
 } from './domain/calculations.js';
 import { APP_BUILD_LABEL } from './app-meta.js';
 import { initializeBackupExportUi } from './backup/backup-export-ui.js';
+import { initializeQuoteExportUi } from './backup/quote-export-ui.js';
 import { initializeCatalogUi } from './catalog/catalog-ui.js';
 import { buildCustomerQuoteText, formatQuantityWithUom, getQuotePdfFilename } from './domain/quote-output.js';
 import { formatMoney, formatPercent, formatUnitMoney } from './domain/formatters.js';
@@ -21,6 +22,7 @@ import { createBackupRestoreInspectionService } from './services/backup-restore-
 import { createBackupRestoreTransactionService } from './services/backup-restore-transaction-service.js';
 import { createBackupService } from './services/backup-service.js';
 import { createQuoteLibraryRepository } from './services/indexeddb-quote-repository.js';
+import { createQuoteExportService } from './services/quote-export-service.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 
@@ -857,6 +859,10 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   renderQuote();
   updateCalculatorPreview();
 
+  const quoteExportService = createQuoteExportService({
+    repository: quoteRepository,
+    pdfService: { buildCustomerQuotePdfBlob }
+  });
   quoteLibraryController = initializeQuoteLibraryUi({
     repository: quoteRepository,
     getActiveQuote() {
@@ -869,7 +875,10 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
     applyCustomerDetails,
     saveActiveFallback: saveActiveQuoteFallback,
     shouldConfirmReplace: hasActiveQuoteInformation,
-    showQuoteWorkspace
+    showQuoteWorkspace,
+    exportQuote: ({ quote: savedQuote, versionId, kind }) => kind === 'pdf'
+      ? quoteExportService.exportCustomerPdf({ quote: savedQuote, versionId })
+      : quoteExportService.exportQuoteJson({ quote: savedQuote, versionId })
   });
   const quoteLibraryReady = quoteLibraryController.initialize();
   const backupService = createBackupService({ quoteRepository, storage: localStorage });
@@ -878,6 +887,11 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
       backupService,
       beforeCreate: () => quoteLibraryReady
     })
+  });
+  initializeQuoteExportUi({
+    exportService: quoteExportService,
+    repository: quoteRepository,
+    storage: localStorage
   });
   initializeBackupRestoreInspectionUi({
     inspectionService: createBackupRestoreInspectionService({

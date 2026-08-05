@@ -85,7 +85,7 @@ Rollback: revert this PR. No repository restore/import/clear API, schema migrati
 
 Acceptance record: PR #25 merged as `ac288a4` with green pull-request CI. The no-write browser UI intentionally shows only aggregate counts/conflicts and the PR 2 physical backup-download checks remain separate Version 2.5 release evidence.
 
-### PR 4 — Transactional merge and replace (in progress)
+### PR 4 — Transactional merge and replace (complete)
 
 Goal: execute an owner-confirmed restore safely. Require a pre-restore safety backup, refuse immutable-version conflicts, apply explicit mutable-record policies, use a single multi-store IndexedDB transaction, coordinate localStorage staging/rollback, and perform post-restore validation with a detailed report.
 
@@ -112,9 +112,31 @@ Acceptance:
 
 Rollback: revert this PR. If a restore has already completed, retain the automatically requested safety backup, inspect it, then restore it through the same confirmed workflow; do not clear browser storage manually.
 
+Acceptance record: PR #26 merged into `main` as `5ed749f` with the full pull-request CI workflow green (`test-and-build`, run `31023072205`).
+
 ### PR 5 — CSV and individual-record exports
 
 Goal: deliver quote-list, customer, and manual-item CSV exports with RFC 4180 quoting and formula-injection protection; individual quote JSON export; and existing customer-safe PDF export from a chosen immutable version.
+
+Status: in progress on `feature/v25-exports` from updated `main`. The visible marker is `v2.5.0 · record-exports.5`; package version is `2.5.0-alpha.5`.
+
+Deliverables:
+
+- Add local Export-workspace buttons for quote-list, customer, and manual-item CSV reports. Reports are sorted, UTF-8 Blob downloads with CRLF/RFC 4180 quoting and formula-like cell protection.
+- Add saved-quote-card actions for individual JSON and customer-safe PDF downloads. Drafts export their working content; finalized quotes export only an explicitly selected immutable version, including historical version actions.
+- Keep the existing `gtm_quote_calculator_v1` and customer-PDF allowlist unchanged. Export status remains neutral and reports no raw customer, pricing, or identifier data.
+- Add unit and five-profile browser coverage for serialization, privacy, immutable-version selection, deterministic filenames, local download behavior, status/error recovery, and no-network behavior.
+
+Acceptance:
+
+- Each CSV button requests a deterministic local download and leaves persisted data unchanged; empty, Unicode, multiline, quoted, and formula-like values remain safe and parseable.
+- Quote-list, customer, and manual-item reports contain only their documented reporting fields; no internal cost/margin columns are present.
+- Draft JSON exports open as valid individual records; finalized JSON/PDF exports reject an omitted version and preserve the selected immutable display number/content.
+- Customer PDF exports continue through `toCustomerQuoteDocument` and expose no cost, freight, landed cost, GTM, internal note, vendor, or internal-ID fields.
+- Phone/laptop controls remain accessible with truthful status/error recovery and no production deployment from the feature branch.
+
+Rollback: revert this PR. Export buttons and services are read-only; already-downloaded files are outside application control. Existing quote storage, backup/restore, PDF, email, and calculation behavior remain available after revert.
+
 
 ### PR 6 — Version 2.5 release hardening and closeout
 

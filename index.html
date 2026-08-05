@@ -558,7 +558,18 @@
             </section>
           </section>
 
-          <p class="backup-export-next">CSV reports and individual quote exports arrive in later Version 2.5 steps.</p>
+          <section class="quote-report-exports" aria-labelledby="quoteReportExportsHeading">
+            <p class="eyebrow">Reports</p>
+            <h3 id="quoteReportExportsHeading">Local CSV reports</h3>
+            <p>Download reports from this device. These exports do not change saved quotes or upload data.</p>
+            <div class="backup-export-actions">
+              <button id="exportQuoteListCsv" type="button" class="button secondary">Export Quote List CSV</button>
+              <button id="exportCustomersCsv" type="button" class="button secondary">Export Customers CSV</button>
+              <button id="exportManualItemsCsv" type="button" class="button secondary">Export Manual Items CSV</button>
+            </div>
+            <p id="quoteExportStatus" class="backup-status" role="status" aria-live="polite"></p>
+          </section>
+          <p class="backup-export-next">Individual quote JSON and customer-safe PDF downloads are available from each saved quote card.</p>
         </section>
       </section>
       </div>

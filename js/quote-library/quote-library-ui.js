@@ -79,7 +79,8 @@ export function initializeQuoteLibraryUi({
   applyCustomerDetails,
   saveActiveFallback,
   shouldConfirmReplace = () => false,
-  showQuoteWorkspace = () => {}
+  showQuoteWorkspace = () => {},
+  exportQuote = undefined
 }) {
   const tools = document.getElementById('quoteLibraryTools');
   const summary = document.getElementById('quoteLibrarySummary');
@@ -111,6 +112,20 @@ export function initializeQuoteLibraryUi({
   function setCustomerStatus(message, isError = false) {
     customerStatus.textContent = message;
     customerStatus.classList.toggle('is-error', isError);
+  }
+
+  async function requestQuoteExport(quote, versionId, kind) {
+    if (typeof exportQuote !== 'function') {
+      setLibraryStatus('Quote exports are not available in this build.', true);
+      return;
+    }
+    const label = kind === 'pdf' ? 'Customer PDF' : 'quote JSON';
+    try {
+      const result = await exportQuote({ quote, versionId, kind });
+      setLibraryStatus(`${label} download started${result?.filename ? `: ${result.filename}` : '.'}`);
+    } catch (error) {
+      setLibraryStatus(`${label} export could not be prepared. No saved data was changed.`, true);
+    }
   }
 
   function readSessionSelection() {
@@ -308,12 +323,16 @@ export function initializeQuoteLibraryUi({
         actions.append(
           makeButton(quote.id === boundQuoteId && !boundVersionId ? 'Reopen' : 'Open', 'button secondary', () => openDraft(quote.id)),
           makeButton('Duplicate', 'button secondary', () => duplicateQuote(quote.id)),
-          makeButton('Finalize', 'button primary', () => finalizeDraft(quote.id))
+          makeButton('Finalize', 'button primary', () => finalizeDraft(quote.id)),
+          makeButton('Export JSON', 'button secondary', () => requestQuoteExport(quote, undefined, 'json')),
+          makeButton('Export PDF', 'button secondary', () => requestQuoteExport(quote, undefined, 'pdf'))
         );
       } else {
         actions.append(
           makeButton('View', 'button secondary', () => openFinalized(quote.id, quote.latestVersionId)),
-          makeButton('Duplicate', 'button secondary', () => duplicateQuote(quote.id, quote.latestVersionId))
+          makeButton('Duplicate', 'button secondary', () => duplicateQuote(quote.id, quote.latestVersionId)),
+          makeButton('Export JSON', 'button secondary', () => requestQuoteExport(quote, quote.latestVersionId, 'json')),
+          makeButton('Export PDF', 'button secondary', () => requestQuoteExport(quote, quote.latestVersionId, 'pdf'))
         );
         if (['finalized', 'sent'].includes(quote.currentStatus)) {
           actions.append(makeButton('Create Revision', 'button primary', () => createRevision(quote.id, quote.latestVersionId)));
@@ -329,11 +348,14 @@ export function initializeQuoteLibraryUi({
         const versionList = document.createElement('div');
         versionList.className = 'library-card__version-list';
         quote.libraryVersions.forEach((version) => {
-          versionList.append(makeButton(
-            `View ${version.displayNumber}`,
-            'button secondary',
-            () => openFinalized(quote.id, version.id)
-          ));
+          const versionActions = document.createElement('div');
+          versionActions.className = 'library-card__version-actions';
+          versionActions.append(
+            makeButton(`View ${version.displayNumber}`, 'button secondary', () => openFinalized(quote.id, version.id)),
+            makeButton('JSON', 'button secondary', () => requestQuoteExport(quote, version.id, 'json')),
+            makeButton('PDF', 'button secondary', () => requestQuoteExport(quote, version.id, 'pdf'))
+          );
+          versionList.append(versionActions);
         });
         history.append(historySummary, versionList);
         card.append(history);

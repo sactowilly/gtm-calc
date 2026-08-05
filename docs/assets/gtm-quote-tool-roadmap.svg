@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1900" viewBox="0 0 1200 1900" role="img" aria-labelledby="title description">
   <title id="title">GTM Quote Tool product roadmap</title>
-  <desc id="description">Versions 1.0, 1.5, and 2.0 are complete. Version 2.5 Backup and Restore is in progress; its complete read-only backup foundation, validated local JSON download, and safe restore inspection are merged, and owner-confirmed transactional restore is in development. Versions 3.0 through 4.0 remain planned future phases.</desc>
+  <desc id="description">Versions 1.0, 1.5, and 2.0 are complete. Version 2.5 Backup and Restore is in progress; its complete backup, validated local JSON download, safe inspection, and owner-confirmed transactional restore are merged, and CSV plus individual quote exports are in development. Versions 3.0 through 4.0 remain planned future phases.</desc>
   <defs>
     <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#062b4c"/>
@@ -28,7 +28,7 @@
   <text x="600" y="92" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="900" text-anchor="middle" letter-spacing="2">GTM QUOTE TOOL ROADMAP</text>
   <rect x="485" y="122" width="230" height="7" rx="4" fill="#f59a23"/>
   <text x="600" y="181" fill="#f7a43a" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" font-style="italic" text-anchor="middle">From mobile calculator to connected company system</text>
-  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.0 complete • Version 2.5 is in progress</text>
+  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.0 complete • Version 2.5 exports are in progress</text>
 
   <line x1="105" y1="330" x2="105" y2="1620" stroke="#082b4b" stroke-width="10" stroke-linecap="round"/>
 
@@ -78,7 +78,7 @@
   <text class="version" x="225" y="975" fill="#f06400">V2.5</text>
   <text class="heading" x="385" y="973">BACKUP &amp; RESTORE</text>
   <text class="body" x="225" y="1020">JSON backup/restore • Validation • Merge or replace • CSV &amp; quote exports</text>
-  <text class="body" x="225" y="1057">Inspection merged • Transactional restore in progress</text>
+  <text class="body" x="225" y="1057">Transactional restore merged • CSV and individual exports in progress</text>
   <rect x="800" y="908" width="285" height="37" rx="18" fill="#f47a00"/>
   <text class="status" x="942" y="934" fill="#fff" text-anchor="middle">IN PROGRESS</text>
 
@@ -120,5 +120,5 @@
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
   <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V2.5 BACKUP AND RESTORE</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Backup, download, and inspection merged; transactional restore now in development.</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Backup, inspection, and transactional restore merged; CSV and quote exports now in development.</text>
 </svg>

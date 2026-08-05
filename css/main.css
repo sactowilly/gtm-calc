@@ -243,6 +243,30 @@ h2 {
   font-size: 0.875rem;
 }
 
+.quote-report-exports {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.quote-report-exports h3 {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 1rem;
+}
+
+.quote-report-exports > p:not(.eyebrow):not(.backup-status) {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.quote-report-exports .backup-export-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .backup-restore-inspection {
   margin-top: 20px;
   padding-top: 18px;
@@ -699,6 +723,12 @@ h2 {
 
 .library-card__version-list {
   display: grid;
+  gap: 8px;
+}
+
+.library-card__version-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px 72px;
   gap: 8px;
 }
 
