@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const appBuildLabel = `v2.5.0 ${String.fromCharCode(0x00b7)} restore-transaction.4`;
+const appBuildLabel = `v2.5.0 ${String.fromCharCode(0x00b7)} record-exports.5`;
 
 test('loads, exposes accessible controls, and preserves approved defaults', async ({ page }) => {
   await page.goto('./');

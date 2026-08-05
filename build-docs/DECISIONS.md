@@ -95,6 +95,13 @@ The Version 2.5 Export addition uses the shorter visible label **Clients** for t
 **DATE:** 2026-08-04
 **PARTIES:** Goodall program review, Codex, Will Z (continued implementation authorization)
 
+## Version 2.5 Reporting Export Boundary
+
+**DECISION:** Keep CSV reports explicitly lossy and read-only. Serialize quote-list, customer, and manual-item projections with RFC 4180 quoting, CRLF line endings, deterministic local filenames, and formula-like cell neutralization. Export individual drafts from working content; finalized JSON/PDF output must resolve an explicitly selected immutable version, and customer PDFs continue through the existing privacy allowlist.
+**RATIONALE:** Reports support local business workflows without creating a second backup format or exposing internal profitability in customer output. Explicit immutable-version selection preserves finalized history and prevents a later mutable draft from silently changing a historical export.
+**DATE:** 2026-08-05
+**PARTIES:** Goodall program review, Codex, Will Z (continued implementation authorization)
+
 ## Quote Library Progressive Disclosure and Duplicate Review State
 
 **DECISION:** Show ten matching quote drafts initially and ten more per explicit request. Mark a newly duplicated draft with visible `DUP` text and pale shading while `sourceQuoteId` exists and `draftRevision` is zero; remove the marker after its first successful save without modifying the customer/company name.

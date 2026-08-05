@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is now in progress. The checksummed backup foundation, download, and safe restore inspection are merged; the current slice adds an owner-confirmed, device-local transactional restore with a safety-backup download before any write.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is now in progress. The checksummed backup foundation, download, safe restore inspection, and owner-confirmed transactional restore are merged; the current slice adds CSV reports plus individual quote JSON and customer-safe PDF exports.
 
 The release smoke checks remain:
 
@@ -50,6 +50,8 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Share the generated PDF through the native mobile Share Sheet when file sharing is supported; otherwise download it and open a prepared email with the exact attachment filename.
 - Show the current app version/build marker on load.
 - Download a complete, validated JSON backup of saved quote, customer, catalog, settings, and recovery data from the local-only Export workspace. The file is unencrypted and contains internal pricing, so the app displays a permanent privacy warning.
+- Download quote-list, customer, and manual-item CSV reports from the local-only Export workspace. CSV is a lossy report format and formula-like values are neutralized before download.
+- Download an individual saved quote as JSON or a customer-safe PDF from its library card; finalized exports require the selected immutable version and preserve the existing customer-output privacy boundary.
 
 ## Roadmap
 
@@ -58,7 +60,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - **Version 1.0 - Reliable Mobile Quoting:** phone-first calculator, branded customer PDF, download/share/email, and local active quote storage.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
 - **Version 2.0 - Local Quote Library (complete):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Clients/Catalog workspaces are accepted. Version 2.5 adds the fifth Export destination.
-- **Version 2.5 - Backup and Restore (in progress):** the complete JSON/checksum foundation, validated local backup download, and restore inspection are merged. The current slice adds explicit Merge/Replace restore choices, typed owner confirmation, a pre-write safety backup, transactional local restore, and post-restore validation. CSV exports, quote JSON export, and PDF export remain later reviewable slices.
+- **Version 2.5 - Backup and Restore (in progress):** the complete JSON/checksum foundation, validated local backup download, restore inspection, and explicit Merge/Replace transaction are merged. The current slice adds RFC 4180/formula-safe CSV reports and individual quote JSON/customer-safe PDF downloads. Physical release evidence and closeout remain for PR 6.
 - **Version 3.0 - Progressive Web App:** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
 - **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.

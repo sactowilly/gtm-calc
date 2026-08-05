@@ -1,5 +1,14 @@
 # Build Log
 
+### 2026-08-05 -- Version 2.5 CSV and individual-record exports (in progress)
+
+- Created `feature/v25-exports` from updated `main` after PR #26 merged as `5ed749f`; the unrelated `.codex/` directory remains untracked and untouched.
+- Added read-only quote-list, customer, and manual-item CSV reports with RFC 4180/CRLF serialization, formula-injection protection, deterministic local filenames, and neutral status/error recovery. Added individual draft JSON and finalized immutable-version JSON/customer-safe PDF actions to saved quote cards, including historical version actions.
+- Preserved `gtm_quote_calculator_v1`, calculations, customer PDF privacy projection, existing backup/restore, email, share, and GitHub Pages behavior. No schema migration, PWA, backend, network call, or production deployment was added.
+- Advanced the marker to `v2.5.0 · record-exports.5` and package version to `2.5.0-alpha.5`; reviewed and updated the README, Version 2.5 plan, current state, roadmap, storage/test documentation, decision/open-item memory, and roadmap SVG/PNG. Version 2.5 remains in progress; PR 6 physical evidence and owner acceptance are not claimed.
+- Verified `npm run check`, export unit tests (14/14), full unit suite (152 tests), export compatibility (20/20 across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari), and `npm run build` for `/gtm-calc/`. The build retains only the two known warnings for vendored non-module PDF scripts.
+- Remaining verification before publish: complete visual/source/production smokes, `git diff --check`, and the GitHub Actions PR matrix. No production deployment runs from this feature branch.
+
 ### 2026-08-04 -- Version 2.5 transactional restore (in progress)
 
 - Created the owner-confirmed local restore workflow on `feature/v25-restore-transaction` after PR #25 merge `ac288a4`; the unrelated `.codex/` directory remains untracked and untouched.
