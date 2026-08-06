@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-06 -- Version 2.5 release hardening (in progress)
+
+- Created `feature/v25-release-closeout` from updated `origin/main` at `90823ea` after PR #27 merged. The unrelated `.codex/` directory remains untracked and untouched.
+- Added `docs/V25_RELEASE_CHECKLIST.md` to separate automated evidence from the still-required physical Android Chrome/laptop acceptance and owner approval. No stable `v2.5.0` tag is created on this branch.
+- Advanced the development marker to `v2.5.0 · release-closeout.6` and package version to `2.5.0-alpha.6`; reviewed and updated the README, current state, roadmap, Version 2.5 plan, test plan, and roadmap status wording. Version 2.5 remains unreleased until PR6 acceptance is complete.
+- Confirmed from GitHub: PR #27 merge commit `90823ea`, pull-request CI success, Pages deployment success, live marker `record-exports.5`, and no existing `v2.5.0` tag. The closeout marker will be verified again after merge.
+- Verified on the closeout branch: `npm run check`, `npm test` (153/153), `npm run build`, direct-source smoke (1/1), production build/smoke (1/1), and the application compatibility/accessibility profile (15/15 across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari). The build retains the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-08-05 -- Version 2.5 CSV and individual-record exports (in progress)
 
 - Created `feature/v25-exports` from updated `main` after PR #26 merged as `5ed749f`; the unrelated `.codex/` directory remains untracked and untouched.

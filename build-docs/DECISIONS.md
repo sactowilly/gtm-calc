@@ -95,6 +95,13 @@ The Version 2.5 Export addition uses the shorter visible label **Clients** for t
 **DATE:** 2026-08-04
 **PARTIES:** Goodall program review, Codex, Will Z (continued implementation authorization)
 
+## Version 2.5 Stable-Tag Gate
+
+**DECISION:** Treat PR6 as release hardening rather than a feature milestone. The annotated `v2.5.0` tag may be created only after automated evidence, physical Android Chrome and laptop Chromium acceptance, owner approval, post-merge Pages verification, and rollback instructions are recorded. The closeout branch uses `v2.5.0 · release-closeout.6` / `2.5.0-alpha.6` and does not alter application data or create a stable tag.
+**RATIONALE:** PR5 is merged and operational, but local browser storage and restore behavior require device-level evidence before Version 3 cache/service-worker work can be allowed to complicate recovery. A visible closeout marker keeps the release state honest and makes the stable boundary auditable.
+**DATE:** 2026-08-06
+**PARTIES:** Goodall program review, Codex, Will Z (continued implementation authorization)
+
 ## Version 2.5 Reporting Export Boundary
 
 **DECISION:** Keep CSV reports explicitly lossy and read-only. Serialize quote-list, customer, and manual-item projections with RFC 4180 quoting, CRLF line endings, deterministic local filenames, and formula-like cell neutralization. Export individual drafts from working content; finalized JSON/PDF output must resolve an explicitly selected immutable version, and customer PDFs continue through the existing privacy allowlist.

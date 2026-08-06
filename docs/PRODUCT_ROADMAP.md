@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-08-05): In progress.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; and PR #26 merged the owner-confirmed transactional Merge/Replace restore with a pre-write safety backup, rollback, and post-restore validation. This slice adds RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads. Physical release evidence and closeout remain for PR 6.
+**Status (2026-08-06): Release hardening.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; PR #26 merged the owner-confirmed transactional Merge/Replace restore; and PR #27 merged RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads. PR6 now records physical acceptance, post-merge Pages verification, owner approval, and the annotated `v2.5.0` tag before Version 3 begins.
 
 ### Objective
 
