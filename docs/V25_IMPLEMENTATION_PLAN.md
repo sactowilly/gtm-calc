@@ -114,11 +114,11 @@ Rollback: revert this PR. If a restore has already completed, retain the automat
 
 Acceptance record: PR #26 merged into `main` as `5ed749f` with the full pull-request CI workflow green (`test-and-build`, run `31023072205`).
 
-### PR 5 — CSV and individual-record exports
+### PR 5 — CSV and individual-record exports (complete)
 
 Goal: deliver quote-list, customer, and manual-item CSV exports with RFC 4180 quoting and formula-injection protection; individual quote JSON export; and existing customer-safe PDF export from a chosen immutable version.
 
-Status: in progress on `feature/v25-exports` from updated `main`. The visible marker is `v2.5.0 · record-exports.5`; package version is `2.5.0-alpha.5`.
+Status: complete. PR #27 merged into `main` as `90823ea` with green pull-request CI and successful Pages deployment. The next closeout branch advances the marker to `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`.
 
 Deliverables:
 
@@ -138,9 +138,18 @@ Acceptance:
 Rollback: revert this PR. Export buttons and services are read-only; already-downloaded files are outside application control. Existing quote storage, backup/restore, PDF, email, and calculation behavior remain available after revert.
 
 
-### PR 6 — Version 2.5 release hardening and closeout
+### PR 6 — Version 2.5 release hardening and closeout (in progress)
 
 Goal: verify the complete round trip on physical phone/laptop browsers and publish stable `v2.5.0` only after owner acceptance. Evidence includes merge/replace rehearsals, collision fixtures, immutable-hash preservation, corrupt-record recovery, large-file behavior, accessibility, direct-source Pages compatibility, production build, post-merge Pages smoke, rollback instructions, roadmap advancement to Version 3.0, and an annotated stable tag.
+
+Status: in progress on `feature/v25-release-closeout` from `origin/main` at `90823ea`. The visible marker is `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`. Automated evidence is recorded in `V25_RELEASE_CHECKLIST.md`; physical Android Chrome/laptop acceptance and owner approval remain open.
+
+Deliverables:
+
+- Record the merged PR5, green CI, successful Pages deployment, local checks, and current production marker.
+- Provide an explicit owner-facing device checklist for backup download, inspection, merge/replace, safety-backup recovery, rollback, CSV/JSON/PDF exports, privacy, and accessibility.
+- Do not create or move the stable `v2.5.0` tag until the two device results and owner acceptance are recorded.
+- After acceptance, update the roadmap infographic/docs to mark Version 2.5 complete and Version 3.0 active, merge the closeout PR, run post-merge Pages smoke, and create the annotated tag.
 
 ## Release acceptance
 
