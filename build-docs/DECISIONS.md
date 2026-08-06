@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Staged PWA Boundary
+
+**DECISION:** Begin Version 3.0 with a documentation-first, reviewable PR sequence: manifest/install metadata, service-worker cache policy, offline local-data readiness, safe update activation, then production closeout. Do not add a service worker, manifest, or cache files until the corresponding implementation PR is reviewed against `docs/V3_IMPLEMENTATION_PLAN.md`.
+**RATIONALE:** Version 2.5 is now tagged and provides recovery evidence, but PWA caching can create stale-code and data-loss risks. Separating metadata, caching, offline behavior, update UX, and release evidence keeps rollback and privacy boundaries testable.
+**DATE:** 2026-08-06
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 2.5 Stable Release Published
 
 **DECISION:** Publish annotated tag `v2.5.0` at verified production commit `7ab4d2e` after PR #29 merged, Pages deployment `31128724445` passed, and the live marker was confirmed. Treat Version 2.5 as closed and Version 3.0 PWA planning as active.
