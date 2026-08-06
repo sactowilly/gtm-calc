@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-08-06 -- Version 3.0 PWA plan initialized
+
+- Created `feature/v3-pwa-foundation` from updated `main` at `7c2fdb6` after Version 2.5.0 stable release closeout.
+- Added `docs/V3_IMPLEMENTATION_PLAN.md` with staged PR boundaries for manifest/install metadata, service-worker cache policy, offline local-data readiness, safe updates, and V3 production acceptance.
+- Linked the V3 plan from the README, product roadmap, current state, and open-item memory. No manifest, service worker, cache, or runtime behavior is implemented in this planning slice.
+- Reverified release metadata, JavaScript checks, production build, and roadmap infographic rendering; the two known vendored non-module PDF-script warnings remain.
+
 ### 2026-08-06 -- Version 2.5.0 stable tag published
 
 - PR #29 merged the acceptance documentation and roadmap activation as `7ab4d2e`.

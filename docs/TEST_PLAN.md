@@ -291,6 +291,10 @@ Release evidence is recorded against PR #19 head `22cf299` and merge commit `3e4
 - Owner acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome on 2026-08-06, covering backup download/inspection, Merge/Replace, safety-backup recovery, rollback, exports, privacy, corrupted-file no-write behavior, and accessibility/keyboard paths.
 - Local post-merge verification passed: `npm test` (153/153), `npm run build`, and `npm run test:production` (1/1). The build retains the two known warnings for vendored non-module PDF scripts.
 
+## Version 3.0 planned verification
+
+The staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for manifest/base-path resolution, icon loading, service-worker scope and cache contents, offline calculator/catalog/draft workflows, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No PWA test is claimed as passed until its implementation PR introduces the corresponding files.
+
 ## Current checks actually performed during planning
 
 These are assessment checks, not a substitute for the planned suite:

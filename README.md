@@ -61,7 +61,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
 - **Version 2.0 - Local Quote Library (complete):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Clients/Catalog workspaces are accepted. Version 2.5 adds the fifth Export destination.
 - **Version 2.5 - Backup and Restore (complete):** the complete JSON/checksum foundation, validated local backup download, restore inspection, explicit Merge/Replace transaction, RFC 4180/formula-safe CSV reports, and individual quote JSON/customer-safe PDF downloads passed physical acceptance, owner approval, and post-merge Pages verification. Annotated tag `v2.5.0` identifies verified production commit `7ab4d2e`.
-- **Version 3.0 - Progressive Web App (active planning):** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration. PWA implementation starts only from the verified V2.5 data/recovery boundary.
+- **Version 3.0 - Progressive Web App (active planning):** installable app shell, offline catalog/calculator/drafts, update notifications, and cache migration. The staged implementation sequence is [docs/V3_IMPLEMENTATION_PLAN.md](docs/V3_IMPLEMENTATION_PLAN.md); PWA implementation starts only from the verified V2.5 data/recovery boundary.
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
 - **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.
 
@@ -97,6 +97,7 @@ npm run test:production
 - `js/domain/` - pure legacy calculations, normalization, totals, and formatting
 - `js/pdf/` and `css/quote-pdf.css` - customer-safe document projection, HTML template, pagination, and browser PDF rendering
 - `tests/` - calculation, privacy, fixture, and browser layout regression tests
+- `docs/V3_IMPLEMENTATION_PLAN.md` - staged PWA implementation, cache, offline, update, and release gates
 - `assets/vision-industrial-packaging-logo.png` - complete logo artwork extracted from the approved quotation reference
 - `vite.config.js` - production build configuration for the GitHub Pages base path
 - `assets/gtm-calc-icon.png` - 1280x640 project image
