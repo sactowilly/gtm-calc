@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-08-06 -- Version 2.5.0 stable tag published
+
+- PR #29 merged the acceptance documentation and roadmap activation as `7ab4d2e`.
+- Pages deployment run `31128724445` passed for the merged production commit; live `/gtm-calc/` returned HTTP 200 and served `v2.5.0 · release-closeout.6`.
+- Created and pushed annotated tag `v2.5.0` at `7ab4d2e` after owner Android/laptop acceptance and post-merge verification passed.
+- Version 2.5 is now closed; Version 3.0 PWA planning is active. No application behavior, storage schema, calculation, privacy, PDF, email, or deployment configuration changed in this documentation synchronization.
+
 ### 2026-08-06 -- Version 2.5 acceptance and Version 3.0 planning activation
 
 - Owner confirmed the complete Version 2.5 physical acceptance checklist passed on Android Chrome using a Samsung Galaxy S24 Ultra and laptop Chromium using a Dell desktop/Chrome. Coverage included complete backup download/inspection, Merge/Replace, safety-backup recovery, rollback, CSV/JSON/PDF exports, email/PDF fallback, privacy, corrupted/oversized/tampered/conflicting no-write behavior, immutable quote data, and accessibility/keyboard paths.
