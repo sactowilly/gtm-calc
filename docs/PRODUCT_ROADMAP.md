@@ -99,7 +99,7 @@ Reduce quote-entry time through dependable local search across a standard catalo
 
 ## Version 2.0 — Local quote library
 
-**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#20 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, release evidence, and stable closeout without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup and restore is now in progress.
+**Status (2026-07-27): Complete.** Version 2.0 is complete. PRs #11–#20 delivered the IndexedDB foundation, visible draft/customer library, direct-source compatibility, phone-scale results, duplicate review state, lifecycle controls, four state-preserving workspaces, navigation design hardening, output/data-loss fixes, atomic-failure coverage, release evidence, and stable closeout without changing the `gtm_quote_calculator_v1` fallback or customer-privacy boundary. PR #20 merged as `b61890c`; CI run `30304252373`, Pages run `30304688708`, and the live stable smoke passed before annotated tag `v2.0.0` was published on that exact commit. Version 2.5 backup and restore is complete and Version 3.0 planning is now active.
 
 ### Objective
 
@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-08-06): Release hardening.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; PR #26 merged the owner-confirmed transactional Merge/Replace restore; and PR #27 merged RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads. PR6 now records physical acceptance, post-merge Pages verification, owner approval, and the annotated `v2.5.0` tag before Version 3 begins.
+**Status (2026-08-06): Complete.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; PR #26 merged the owner-confirmed transactional Merge/Replace restore; PR #27 merged RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads; and PR #28 merged release-hardening documentation at `0716350`. Owner Android Chrome and laptop Chromium acceptance passed, post-merge Pages deployment `31128417026` passed, and the annotated `v2.5.0` tag is the remaining release-boundary action before Version 3 implementation begins.
 
 ### Objective
 
@@ -172,6 +172,8 @@ Give users a complete, inspectable escape hatch before PWA/offline expectations 
 - Backup/restore round trips all records and preserves immutable version hashes.
 
 ## Version 3.0 — Progressive Web App
+
+**Status (2026-08-06): Active planning.** The V2.5 backup/restore and export boundary is accepted on physical devices and verified after merge. V3 planning may now define the manifest, service-worker cache policy, offline shell, update UX, and migration tests; implementation remains split into reviewable PRs and must not change persisted quote data without migration evidence.
 
 ### Objective
 

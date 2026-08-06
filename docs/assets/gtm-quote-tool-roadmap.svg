@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1900" viewBox="0 0 1200 1900" role="img" aria-labelledby="title description">
   <title id="title">GTM Quote Tool product roadmap</title>
-  <desc id="description">Versions 1.0, 1.5, and 2.0 are complete. Version 2.5 Backup and Restore is in release hardening; backup, download, inspection, transactional restore, CSV reports, and individual quote exports are merged, and physical acceptance is pending before Version 3.0 begins.</desc>
+  <desc id="description">Versions 1.0, 1.5, 2.0, and 2.5 are complete. Version 2.5 Backup and Restore passed automated, physical-device, owner, and post-merge Pages acceptance. Version 3.0 Progressive Web App planning is active.</desc>
   <defs>
     <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#062b4c"/>
@@ -28,7 +28,7 @@
   <text x="600" y="92" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="900" text-anchor="middle" letter-spacing="2">GTM QUOTE TOOL ROADMAP</text>
   <rect x="485" y="122" width="230" height="7" rx="4" fill="#f59a23"/>
   <text x="600" y="181" fill="#f7a43a" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" font-style="italic" text-anchor="middle">From mobile calculator to connected company system</text>
-  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.0 complete • Version 2.5 release hardening is in progress</text>
+  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.5 complete • Version 3.0 PWA planning is active</text>
 
   <line x1="105" y1="330" x2="105" y2="1620" stroke="#082b4b" stroke-width="10" stroke-linecap="round"/>
 
@@ -70,29 +70,29 @@
   <text class="status" x="992" y="839" fill="#fff" text-anchor="middle">COMPLETE</text>
 
   <!-- Version 2.5 -->
-  <circle cx="105" cy="990" r="56" fill="#f47a00" stroke="#fff" stroke-width="9" filter="url(#shadow)"/>
+  <circle cx="105" cy="990" r="49" fill="#167a55" stroke="#fff" stroke-width="9" filter="url(#shadow)"/>
   <text class="step" x="105" y="993">4</text>
   <g filter="url(#shadow)">
-    <rect x="180" y="900" width="950" height="190" rx="24" fill="url(#current)" stroke="#f47a00" stroke-width="5"/>
+    <rect class="card" x="180" y="900" width="950" height="190" rx="24"/>
   </g>
-  <text class="version" x="225" y="975" fill="#f06400">V2.5</text>
+  <text class="version" x="225" y="975" fill="#167a55">V2.5</text>
   <text class="heading" x="385" y="973">BACKUP &amp; RESTORE</text>
   <text class="body" x="225" y="1020">JSON backup/restore • Validation • Merge or replace • CSV &amp; quote exports</text>
-  <text class="body" x="225" y="1057">CSV and individual exports merged • Physical acceptance pending</text>
-  <rect x="800" y="908" width="285" height="37" rx="18" fill="#f47a00"/>
-  <text class="status" x="942" y="934" fill="#fff" text-anchor="middle">IN PROGRESS</text>
+  <text class="body" x="225" y="1057">CSV and individual exports • Owner and Pages acceptance passed</text>
+  <rect x="900" y="908" width="185" height="37" rx="18" fill="#167a55"/>
+  <text class="status" x="992" y="934" fill="#fff" text-anchor="middle">COMPLETE</text>
 
   <!-- Version 3.0 -->
-  <circle cx="105" cy="1195" r="49" fill="#0b365c" stroke="#fff" stroke-width="9" filter="url(#shadow)"/>
+  <circle cx="105" cy="1195" r="56" fill="#f47a00" stroke="#fff" stroke-width="9" filter="url(#shadow)"/>
   <text class="step" x="105" y="1198">5</text>
   <g filter="url(#shadow)">
-    <rect class="card" x="180" y="1115" width="950" height="170" rx="24"/>
+    <rect x="180" y="1115" width="950" height="170" rx="24" fill="url(#current)" stroke="#f47a00" stroke-width="5"/>
   </g>
-  <text class="version" x="225" y="1180" fill="#167a55">V3.0</text>
+  <text class="version" x="225" y="1180" fill="#f06400">V3.0</text>
   <text class="heading" x="385" y="1178">PROGRESSIVE WEB APP</text>
   <text class="body" x="225" y="1225">Installable • Offline calculator, catalog &amp; drafts • Safe cache migration</text>
-  <rect x="930" y="1235" width="155" height="34" rx="17" fill="#6f7f8c"/>
-  <text class="status" x="1007" y="1259" fill="#fff" text-anchor="middle">PLANNED</text>
+  <rect x="900" y="1235" width="185" height="34" rx="17" fill="#f47a00"/>
+  <text class="status" x="992" y="1259" fill="#fff" text-anchor="middle">ACTIVE PLAN</text>
 
   <!-- Version 3.5 -->
   <circle cx="105" cy="1400" r="49" fill="#0b365c" stroke="#fff" stroke-width="9" filter="url(#shadow)"/>
@@ -119,6 +119,6 @@
   <text class="status" x="1017" y="1669" fill="#fff" text-anchor="middle">FUTURE</text>
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
-  <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V2.5 RELEASE HARDENING</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Automated gates passed; owner device acceptance and stable tagging remain.</text>
+  <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V3.0 PWA PLANNING</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Version 2.5 accepted; publish v2.5.0, then design the offline boundary.</text>
 </svg>

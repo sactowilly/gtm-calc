@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-06 -- Version 2.5 acceptance and Version 3.0 planning activation
+
+- Owner confirmed the complete Version 2.5 physical acceptance checklist passed on Android Chrome using a Samsung Galaxy S24 Ultra and laptop Chromium using a Dell desktop/Chrome. Coverage included complete backup download/inspection, Merge/Replace, safety-backup recovery, rollback, CSV/JSON/PDF exports, email/PDF fallback, privacy, corrupted/oversized/tampered/conflicting no-write behavior, immutable quote data, and accessibility/keyboard paths.
+- Created `feature/v25-release-acceptance` from updated `main` at `0716350` and recorded the acceptance results in `docs/V25_RELEASE_CHECKLIST.md`. The unrelated `.codex/` directory remains untracked and untouched.
+- Updated the README, current state, Version 2.5 plan, test plan, decision/open-item logs, and roadmap SVG/PNG to mark Version 2.5 complete and Version 3.0 active planning. The annotated `v2.5.0` tag remains the final release action.
+- Confirmed post-merge Pages deployment run `31128417026` succeeded for `0716350`; live `/gtm-calc/` returned HTTP 200 and served `v2.5.0 · release-closeout.6`.
+- Reverified on merged `main`: `npm test` (153/153), `npm run build`, and `npm run test:production` (1/1). The build retains the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-08-06 -- Version 2.5 release hardening (in progress)
 
 - Created `feature/v25-release-closeout` from updated `origin/main` at `90823ea` after PR #27 merged. The unrelated `.codex/` directory remains untracked and untouched.
