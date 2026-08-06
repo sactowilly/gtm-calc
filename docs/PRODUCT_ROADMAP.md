@@ -139,7 +139,7 @@ Replace the single active quote with a durable IndexedDB quote/customer library 
 
 ## Version 2.5 — Backup and restore
 
-**Status (2026-08-06): Complete.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; PR #26 merged the owner-confirmed transactional Merge/Replace restore; PR #27 merged RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads; and PR #28 merged release-hardening documentation at `0716350`. Owner Android Chrome and laptop Chromium acceptance passed, post-merge Pages deployment `31128417026` passed, and the annotated `v2.5.0` tag is the remaining release-boundary action before Version 3 implementation begins.
+**Status (2026-08-06): Complete.** PR #24 merged the accessible Export workspace and validated local JSON download; PR #25 merged safe preview-only inspection; PR #26 merged the owner-confirmed transactional Merge/Replace restore; PR #27 merged RFC 4180/formula-safe CSV reports plus individual quote JSON and customer-safe PDF downloads; and PR #28 merged release-hardening documentation at `0716350`. Owner Android Chrome and laptop Chromium acceptance passed, post-merge Pages deployment `31128417026` passed, and annotated tag `v2.5.0` identifies the verified production closeout commit `7ab4d2e`.
 
 ### Objective
 
@@ -173,7 +173,7 @@ Give users a complete, inspectable escape hatch before PWA/offline expectations 
 
 ## Version 3.0 — Progressive Web App
 
-**Status (2026-08-06): Active planning.** The V2.5 backup/restore and export boundary is accepted on physical devices and verified after merge. V3 planning may now define the manifest, service-worker cache policy, offline shell, update UX, and migration tests; implementation remains split into reviewable PRs and must not change persisted quote data without migration evidence.
+**Status (2026-08-06): Active planning.** The V2.5 backup/restore and export boundary is accepted on physical devices, verified after merge, and tagged `v2.5.0`. V3 planning may now define the manifest, service-worker cache policy, offline shell, update UX, and migration tests; implementation remains split into reviewable PRs and must not change persisted quote data without migration evidence.
 
 ### Objective
 

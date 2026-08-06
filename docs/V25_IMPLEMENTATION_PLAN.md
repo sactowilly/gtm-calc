@@ -1,6 +1,6 @@
 # Version 2.5 Implementation Plan — Backup and Restore
 
-Status: complete after owner acceptance and post-merge Pages verification on 2026-08-06. Version 3.0 planning is now active from the verified Version 2.5 recovery boundary.
+Status: complete after owner acceptance, post-merge Pages verification, and annotated tag `v2.5.0` publication on 2026-08-06. Version 3.0 planning is now active from the verified Version 2.5 recovery boundary.
 
 ## Release objective
 
@@ -142,7 +142,7 @@ Rollback: revert this PR. Export buttons and services are read-only; already-dow
 
 Goal: verify the complete round trip on physical phone/laptop browsers and publish stable `v2.5.0` only after owner acceptance. Evidence includes merge/replace rehearsals, collision fixtures, immutable-hash preservation, corrupt-record recovery, large-file behavior, accessibility, direct-source Pages compatibility, production build, post-merge Pages smoke, rollback instructions, roadmap advancement to Version 3.0, and an annotated stable tag.
 
-Status: complete. PR #28 merged to `main` as `0716350`; the visible marker is `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`. Owner acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome on 2026-08-06. Pages deployment `31128417026` and post-merge smoke passed. The annotated `v2.5.0` tag remains the final release action.
+Status: complete. PR #28 merged to `main` as `0716350`; the visible marker is `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`. Owner acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome on 2026-08-06. Pages deployment `31128417026` and post-merge smoke passed. Annotated tag `v2.5.0` identifies the verified closeout merge `7ab4d2e`.
 
 Deliverables:
 
@@ -159,8 +159,8 @@ Deliverables:
 - Replace is reversible through the safety backup; injected failures leave the prior state intact.
 - CSV exports cannot execute spreadsheet formulas from customer-entered values.
 - Customer-facing PDFs/exports retain the existing privacy allowlist.
-- Physical Android Chrome and laptop Chromium acceptance plus automated unit, browser, accessibility, source-hosting, and production-build checks pass. The remaining release action is publishing the annotated `v2.5.0` tag.
+- Physical Android Chrome and laptop Chromium acceptance plus automated unit, browser, accessibility, source-hosting, and production-build checks pass. Annotated tag `v2.5.0` now identifies the verified production commit.
 
 ## Deliberately deferred
 
-PWA installation/offline caching is the active Version 3.0 planning scope; implementation remains deferred until the stable `v2.5.0` tag is published. Favorites and other workflow optimizations belong to Version 3.5. Shared storage, authentication, centralized numbering, server email, CRM/ERP integrations, and permissions belong to the possible Version 4 hosted migration.
+PWA installation/offline caching is the active Version 3.0 planning scope. Favorites and other workflow optimizations belong to Version 3.5. Shared storage, authentication, centralized numbering, server email, CRM/ERP integrations, and permissions belong to the possible Version 4 hosted migration.

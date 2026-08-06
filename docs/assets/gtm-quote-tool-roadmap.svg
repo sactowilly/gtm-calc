@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1900" viewBox="0 0 1200 1900" role="img" aria-labelledby="title description">
   <title id="title">GTM Quote Tool product roadmap</title>
-  <desc id="description">Versions 1.0, 1.5, 2.0, and 2.5 are complete. Version 2.5 Backup and Restore passed automated, physical-device, owner, and post-merge Pages acceptance. Version 3.0 Progressive Web App planning is active.</desc>
+  <desc id="description">Versions 1.0, 1.5, 2.0, and 2.5 are complete. Annotated tag v2.5.0 identifies the verified Version 2.5 production closeout. Version 3.0 Progressive Web App planning is active.</desc>
   <defs>
     <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#062b4c"/>
@@ -78,7 +78,7 @@
   <text class="version" x="225" y="975" fill="#167a55">V2.5</text>
   <text class="heading" x="385" y="973">BACKUP &amp; RESTORE</text>
   <text class="body" x="225" y="1020">JSON backup/restore • Validation • Merge or replace • CSV &amp; quote exports</text>
-  <text class="body" x="225" y="1057">CSV and individual exports • Owner and Pages acceptance passed</text>
+  <text class="body" x="225" y="1057">CSV and individual exports • v2.5.0 production tag published</text>
   <rect x="900" y="908" width="185" height="37" rx="18" fill="#167a55"/>
   <text class="status" x="992" y="934" fill="#fff" text-anchor="middle">COMPLETE</text>
 
@@ -120,5 +120,5 @@
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
   <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V3.0 PWA PLANNING</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Version 2.5 accepted; publish v2.5.0, then design the offline boundary.</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Version 2.5.0 published; design the offline boundary from verified recovery data.</text>
 </svg>

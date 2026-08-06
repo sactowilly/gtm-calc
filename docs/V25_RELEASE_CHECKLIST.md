@@ -1,8 +1,8 @@
 # Version 2.5 Release Closeout Checklist
 
-Status: complete after PR #28 merged to `main` as `0716350` and owner acceptance was recorded on 2026-08-06.
+Status: complete. PR #28 merged to `main` as `0716350`, owner acceptance was recorded on 2026-08-06, and annotated tag `v2.5.0` was published at production commit `7ab4d2e`.
 
-This checklist is the evidence boundary for the stable `v2.5.0` tag. Automated checks, physical device checks, and owner acceptance are now complete; the tag is ready to be created at the verified production commit after this documentation is merged.
+This checklist is the evidence boundary for the stable `v2.5.0` tag. Automated checks, physical device checks, owner acceptance, post-merge Pages verification, and tag publication are complete.
 
 ## Automated evidence
 
@@ -13,6 +13,7 @@ This checklist is the evidence boundary for the stable `v2.5.0` tag. Automated c
 - [x] CSV formula-injection, JSON projection, immutable-version, and customer-PDF export tests pass.
 - [x] PR #28 merged to `main` as `0716350`.
 - [x] GitHub Pages deployed `0716350` successfully and the live marker is `v2.5.0 · release-closeout.6`.
+- [x] Annotated tag `v2.5.0` points to verified production commit `7ab4d2e`.
 - [x] Roadmap and release documentation identify Version 2.5 as complete and Version 3.0 as active.
 
 ## Physical acceptance required from owner
@@ -36,10 +37,10 @@ This checklist is the evidence boundary for the stable `v2.5.0` tag. Automated c
 
 1. Update `README.md`, `docs/CURRENT_STATE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/V25_IMPLEMENTATION_PLAN.md`, `docs/TEST_PLAN.md`, `BUILD-LOG.md`, `build-docs/DECISIONS.md`, and `build-docs/OPEN_ITEMS.md` to record acceptance.
 2. Update and visually inspect the roadmap SVG/PNG with Version 2.5 complete and Version 3.0 active.
-3. Merge this acceptance documentation PR to `main`.
+3. Merge the acceptance documentation PR to `main`.
 4. Run the post-merge Pages smoke test and verify the deployed commit.
-5. Create and push the annotated `v2.5.0` tag at the verified production commit.
+5. Create and push the annotated `v2.5.0` tag at the verified production commit. **Complete:** tag points to `7ab4d2e`.
 
 ## Rollback
 
-Before merge, close the PR and delete the feature branch. After merge, revert the acceptance commit if necessary; the stable tag should remain on the verified production commit. Existing local quote data and the V2.5 backup/restore workflows require no migration to roll back this documentation/verification slice.
+Before merge, close the PR and delete the feature branch. After merge, revert the acceptance commit if necessary; do not move the published stable tag. Existing local quote data and the V2.5 backup/restore workflows require no migration to roll back this documentation/verification slice.
