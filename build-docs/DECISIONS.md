@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 2.5 Acceptance and Version 3.0 Planning Gate
+
+**DECISION:** Accept Version 2.5 as complete after PR #28 merged as `0716350`, owner physical acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome, post-merge Pages deployment `31128417026` passed, and local post-merge unit/build/production smoke checks passed. Advance the roadmap to active Version 3.0 planning. Publish the annotated `v2.5.0` tag at the verified production commit before implementing service-worker or cache changes.
+**RATIONALE:** The complete backup/restore and export workflow now has automated, physical-device, owner, and production evidence. Keeping the stable tag as the remaining explicit release action preserves an auditable boundary before PWA caching can affect recovery behavior.
+**DATE:** 2026-08-06
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 2.5 Local Backup Download Policy
 
 **DECISION:** Place the complete backup in a fifth `Export` workspace, include only persisted data, revalidate the exact readable JSON before Blob creation, name it `gtm-calc-backup-YYYY-MM-DD.json` from the envelope's UTC export date, and report that download was started rather than claiming the browser saved it. Display a permanent warning that the unencrypted file contains customer/contact and internal pricing/profitability data.

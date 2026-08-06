@@ -1,6 +1,6 @@
 # Version 2.5 Implementation Plan — Backup and Restore
 
-Status: in progress. Version 2.5 began on 2026-08-03 from the verified `v2.0.0` release line.
+Status: complete after owner acceptance and post-merge Pages verification on 2026-08-06. Version 3.0 planning is now active from the verified Version 2.5 recovery boundary.
 
 ## Release objective
 
@@ -138,18 +138,18 @@ Acceptance:
 Rollback: revert this PR. Export buttons and services are read-only; already-downloaded files are outside application control. Existing quote storage, backup/restore, PDF, email, and calculation behavior remain available after revert.
 
 
-### PR 6 — Version 2.5 release hardening and closeout (in progress)
+### PR 6 — Version 2.5 release hardening and closeout (complete)
 
 Goal: verify the complete round trip on physical phone/laptop browsers and publish stable `v2.5.0` only after owner acceptance. Evidence includes merge/replace rehearsals, collision fixtures, immutable-hash preservation, corrupt-record recovery, large-file behavior, accessibility, direct-source Pages compatibility, production build, post-merge Pages smoke, rollback instructions, roadmap advancement to Version 3.0, and an annotated stable tag.
 
-Status: in progress on `feature/v25-release-closeout` from `origin/main` at `90823ea`. The visible marker is `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`. Automated evidence is recorded in `V25_RELEASE_CHECKLIST.md`; physical Android Chrome/laptop acceptance and owner approval remain open.
+Status: complete. PR #28 merged to `main` as `0716350`; the visible marker is `v2.5.0 · release-closeout.6`; package version is `2.5.0-alpha.6`. Owner acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome on 2026-08-06. Pages deployment `31128417026` and post-merge smoke passed. The annotated `v2.5.0` tag remains the final release action.
 
 Deliverables:
 
 - Record the merged PR5, green CI, successful Pages deployment, local checks, and current production marker.
 - Provide an explicit owner-facing device checklist for backup download, inspection, merge/replace, safety-backup recovery, rollback, CSV/JSON/PDF exports, privacy, and accessibility.
-- Do not create or move the stable `v2.5.0` tag until the two device results and owner acceptance are recorded.
-- After acceptance, update the roadmap infographic/docs to mark Version 2.5 complete and Version 3.0 active, merge the closeout PR, run post-merge Pages smoke, and create the annotated tag.
+- Record the two device results and owner acceptance in `V25_RELEASE_CHECKLIST.md`.
+- Update the roadmap infographic/docs to mark Version 2.5 complete and Version 3.0 active, merge the acceptance documentation, run post-merge Pages smoke, and create the annotated tag at the verified production commit.
 
 ## Release acceptance
 
@@ -159,8 +159,8 @@ Deliverables:
 - Replace is reversible through the safety backup; injected failures leave the prior state intact.
 - CSV exports cannot execute spreadsheet formulas from customer-entered values.
 - Customer-facing PDFs/exports retain the existing privacy allowlist.
-- Physical Android Chrome and laptop Chromium acceptance plus automated unit, browser, accessibility, source-hosting, and production-build checks pass.
+- Physical Android Chrome and laptop Chromium acceptance plus automated unit, browser, accessibility, source-hosting, and production-build checks pass. The remaining release action is publishing the annotated `v2.5.0` tag.
 
 ## Deliberately deferred
 
-PWA installation/offline caching belongs to Version 3.0. Favorites and other workflow optimizations belong to Version 3.5. Shared storage, authentication, centralized numbering, server email, CRM/ERP integrations, and permissions belong to the possible Version 4 hosted migration.
+PWA installation/offline caching is the active Version 3.0 planning scope; implementation remains deferred until the stable `v2.5.0` tag is published. Favorites and other workflow optimizations belong to Version 3.5. Shared storage, authentication, centralized numbering, server email, CRM/ERP integrations, and permissions belong to the possible Version 4 hosted migration.
