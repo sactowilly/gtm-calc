@@ -6,13 +6,13 @@ function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 }
 
-const buildLabel = `v2.5.0 ${String.fromCharCode(0x00b7)} release-closeout.6`;
+const buildLabel = `v3.0.0 ${String.fromCharCode(0x00b7)} install-metadata.1`;
 
-describe('Version 2.5 development metadata', () => {
-  it('keeps the Version 2.5 release-closeout marker and package version aligned', () => {
+describe('Version 3 development metadata', () => {
+  it('keeps the Version 3 install-metadata marker and package version aligned', () => {
     const packageMetadata = JSON.parse(read('package.json'));
     expect(APP_BUILD_LABEL).toBe(buildLabel);
-    expect(packageMetadata.version).toBe('2.5.0-alpha.6');
+    expect(packageMetadata.version).toBe('3.0.0-alpha.1');
     expect(APP_RELEASE_VERSION).toBe(packageMetadata.version);
   });
 
@@ -22,11 +22,11 @@ describe('Version 2.5 development metadata', () => {
     expect(read('docs/CURRENT_STATE.md')).toContain(buildLabel);
     expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Version 2.0 is complete');
     expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Status (2026-08-06): Complete.');
-    expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Status (2026-08-06): Active planning.');
+    expect(read('docs/PRODUCT_ROADMAP.md')).toContain('Status (2026-08-06): In progress.');
     expect(read('docs/V2_IMPLEMENTATION_PLAN.md')).toContain('Status: complete.');
     expect(read('docs/V25_IMPLEMENTATION_PLAN.md')).toContain('Status: complete after owner acceptance');
     expect(read('build-docs/OPEN_ITEMS.md')).toContain('Version 2.5 backup and restore');
-    expect(read('docs/assets/gtm-quote-tool-roadmap.svg')).toContain('CURRENT PHASE: V3.0 PWA PLANNING');
-    expect(read('docs/assets/gtm-quote-tool-roadmap.svg')).toContain('ACTIVE PLAN');
+    expect(read('docs/assets/gtm-quote-tool-roadmap.svg')).toContain('CURRENT PHASE: V3.0 INSTALL FOUNDATION');
+    expect(read('docs/assets/gtm-quote-tool-roadmap.svg')).toContain('IN PROGRESS');
   });
 });

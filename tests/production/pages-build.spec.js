@@ -14,7 +14,15 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
 
   await page.goto('./');
   await expect(page.locator('#appVersion')).toHaveText(APP_BUILD_LABEL);
-  await expect(page.locator('link[rel="manifest"]')).toHaveCount(0);
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/gtm-calc/manifest.webmanifest');
+  const manifestResponse = await page.request.get('./manifest.webmanifest');
+  expect(manifestResponse.ok()).toBe(true);
+  const manifest = await manifestResponse.json();
+  expect(manifest.start_url).toBe('/gtm-calc/');
+  expect(manifest.scope).toBe('/gtm-calc/');
+  for (const icon of manifest.icons) {
+    expect((await page.request.get(`./${icon.src}`)).ok()).toBe(true);
+  }
   expect(await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) return [];
     return (await navigator.serviceWorker.getRegistrations()).map((registration) => registration.scope);

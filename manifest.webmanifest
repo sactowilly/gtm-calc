@@ -1,0 +1,33 @@
+{
+  "id": "/gtm-calc/",
+  "name": "GTM Calc and Quote Tool",
+  "short_name": "GTM Quote",
+  "description": "Build, save, export, and share Vision Industrial Packaging quotes on this device.",
+  "start_url": "/gtm-calc/",
+  "scope": "/gtm-calc/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f2ed",
+  "theme_color": "#062b4c",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "assets/pwa/gtm-calc-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/pwa/gtm-calc-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/pwa/gtm-calc-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
