@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: active planning from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`).
+Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The manifest/install-metadata slice uses `v3.0.0 · install-metadata.1` / `3.0.0-alpha.1` and adds no service worker or offline cache.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -13,7 +13,7 @@ Version 3 adds installability and offline application behavior only after the Ve
 
 ## Pull-request sequence
 
-### PR 1 — Manifest and install metadata
+### PR 1 — Manifest and install metadata (in progress)
 
 Goal: make the application installable without changing runtime behavior.
 
@@ -25,6 +25,8 @@ Work:
 - Define the application name, short name, theme/background colors, standalone display, and approved icon assets at installable sizes.
 - Verify direct-source hosting and the Vite build both resolve the manifest and icons.
 - Add iPhone Safari and Android Chrome installation instructions without claiming offline support yet.
+
+Implementation record: `feature/v3-manifest-install-metadata` adds the root manifest, 180/192/512 and maskable branded PNG assets, theme/icon links, deterministic Vite copying, source/build coverage, and `docs/INSTALLATION.md`. The service-worker registration count remains zero in browser tests.
 
 Acceptance: manifest parses, icons load, the app remains unchanged in normal browser mode, and install metadata works from the built `/gtm-calc/` artifact.
 

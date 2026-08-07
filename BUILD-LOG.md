@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-06 -- Version 3.0 install metadata (in progress)
+
+- Created `feature/v3-manifest-install-metadata` from updated `main` at `83814e4`; the unrelated `.codex/` directory remains untracked and untouched.
+- Added a root `/gtm-calc/`-scoped manifest, 180/192/512 and maskable branded PNG icons derived from the approved Vision artwork, theme/favicon/Apple metadata, Android/iPhone installation guidance, and deterministic Vite copying for the production artifact.
+- Advanced the visible marker to `v3.0.0 · install-metadata.1` and package version to `3.0.0-alpha.1`; reviewed and updated all release-facing roadmap/current-state/implementation/test/memory documentation and the roadmap SVG/PNG.
+- Added unit, direct-source, and built-artifact checks for manifest scope, icon dimensions/loading, and the explicit absence of service-worker registrations. No service worker, fetch handler, cache, offline claim, data migration, backend, authentication, calculation, PDF, email, or privacy behavior is introduced.
+- Verified `npm run check`, 159 unit/metadata tests, the `/gtm-calc/` production build, direct-source smoke (1/1), production-artifact smoke (1/1), and the full compatibility/accessibility matrix (219 passed, 6 intentional skips) across Chromium, Firefox, WebKit, Android Chrome, and iPhone Safari. The build retains the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-08-06 -- Version 3.0 PWA plan initialized
 
 - Created `feature/v3-pwa-foundation` from updated `main` at `7c2fdb6` after Version 2.5.0 stable release closeout.

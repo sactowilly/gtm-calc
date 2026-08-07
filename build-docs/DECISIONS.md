@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Install-Metadata Boundary
+
+**DECISION:** The first Version 3 runtime slice adds a root `manifest.webmanifest`, `/gtm-calc/` ID/start/scope, standalone display metadata, branded square and maskable icons derived from the approved Vision artwork, and Android/iPhone installation guidance. It must keep service-worker registrations at zero and make no offline claim.
+**RATIONALE:** Install metadata can be verified independently from caching. Separating it from the service worker prevents an icon/manifest PR from silently changing network behavior or introducing stale-code and local-data risks.
+**DATE:** 2026-08-06
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Staged PWA Boundary
 
 **DECISION:** Begin Version 3.0 with a documentation-first, reviewable PR sequence: manifest/install metadata, service-worker cache policy, offline local-data readiness, safe update activation, then production closeout. Do not add a service worker, manifest, or cache files until the corresponding implementation PR is reviewed against `docs/V3_IMPLEMENTATION_PLAN.md`.

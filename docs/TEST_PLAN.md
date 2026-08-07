@@ -291,9 +291,11 @@ Release evidence is recorded against PR #19 head `22cf299` and merge commit `3e4
 - Owner acceptance passed on Samsung Galaxy S24 Ultra/Chrome and Dell desktop/Chrome on 2026-08-06, covering backup download/inspection, Merge/Replace, safety-backup recovery, rollback, exports, privacy, corrupted-file no-write behavior, and accessibility/keyboard paths.
 - Local post-merge verification passed: `npm test` (153/153), `npm run build`, and `npm run test:production` (1/1). The build retains the two known warnings for vendored non-module PDF scripts.
 
-## Version 3.0 planned verification
+## Version 3.0 verification
 
-The staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for manifest/base-path resolution, icon loading, service-worker scope and cache contents, offline calculator/catalog/draft workflows, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No PWA test is claimed as passed until its implementation PR introduces the corresponding files.
+Implementation status (2026-08-06): the manifest/install-metadata slice verifies manifest JSON, `/gtm-calc/` ID/start/scope, standalone display, theme/background colors, 180/192/512 PNG dimensions, a 512 maskable icon, HTML metadata, direct-source asset loading, built-artifact asset loading, and zero service-worker registrations. It does not claim offline support.
+
+The remaining staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for service-worker scope and cache contents, offline calculator/catalog/draft workflows, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No later PWA test is claimed as passed until its implementation PR introduces the corresponding behavior.
 
 ## Current checks actually performed during planning
 

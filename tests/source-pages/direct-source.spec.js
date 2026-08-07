@@ -14,6 +14,16 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
 
   await page.goto('./');
   await expect(page.locator('#appVersion')).toHaveText(APP_BUILD_LABEL);
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/gtm-calc/manifest.webmanifest');
+  const manifestResponse = await page.request.get('./manifest.webmanifest');
+  expect(manifestResponse.ok()).toBe(true);
+  const manifest = await manifestResponse.json();
+  expect(manifest.start_url).toBe('/gtm-calc/');
+  expect(manifest.scope).toBe('/gtm-calc/');
+  expect(await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return [];
+    return (await navigator.serviceWorker.getRegistrations()).map((registration) => registration.scope);
+  })).toEqual([]);
   await expect(page.locator('#appNavigation [aria-current="page"]')).toHaveCount(1);
   await page.locator('#customerName').fill('Direct Source Customer');
   await page.getByRole('button', { name: 'Library', exact: true }).click();

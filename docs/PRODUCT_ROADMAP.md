@@ -173,7 +173,7 @@ Give users a complete, inspectable escape hatch before PWA/offline expectations 
 
 ## Version 3.0 — Progressive Web App
 
-**Status (2026-08-06): Active planning.** The V2.5 backup/restore and export boundary is accepted on physical devices, verified after merge, and tagged `v2.5.0`. The staged work is recorded in [`docs/V3_IMPLEMENTATION_PLAN.md`](V3_IMPLEMENTATION_PLAN.md): manifest, service-worker cache policy, offline shell, update UX, and migration tests remain split into reviewable PRs and must not change persisted quote data without migration evidence.
+**Status (2026-08-06): In progress.** The V2.5 backup/restore and export boundary is accepted, verified, and tagged `v2.5.0`. The first runtime slice adds a `/gtm-calc/`-scoped manifest, branded install icons, browser metadata, installation guidance, and source/build tests with marker `v3.0.0 · install-metadata.1`. It deliberately adds no service worker or offline cache. Later work follows [`docs/V3_IMPLEMENTATION_PLAN.md`](V3_IMPLEMENTATION_PLAN.md) and must not change persisted quote data without migration evidence.
 
 ### Objective
 
