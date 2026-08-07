@@ -25,9 +25,9 @@ describe('Version 3 install metadata', () => {
     expect(manifest.theme_color).toBe('#062b4c');
     expect(manifest.background_color).toBe('#f4f2ed');
     expect(manifest.icons).toEqual(expect.arrayContaining([
-      expect.objectContaining({ sizes: '192x192', purpose: 'any' }),
-      expect.objectContaining({ sizes: '512x512', purpose: 'any' }),
-      expect.objectContaining({ sizes: '512x512', purpose: 'maskable' })
+      expect.objectContaining({ sizes: '192x192', purpose: 'any', src: 'assets/pwa/gtm-calc-192.png?v=2' }),
+      expect.objectContaining({ sizes: '512x512', purpose: 'any', src: 'assets/pwa/gtm-calc-512.png?v=2' }),
+      expect.objectContaining({ sizes: '512x512', purpose: 'maskable', src: 'assets/pwa/gtm-calc-maskable-512.png?v=2' })
     ]));
   });
 
@@ -42,9 +42,9 @@ describe('Version 3 install metadata', () => {
 
   it('links the manifest, theme color, favicon, and Apple touch icon from source HTML', () => {
     const html = read('index.html').toString('utf8');
-    expect(html).toContain('<link rel="manifest" href="/gtm-calc/manifest.webmanifest">');
+    expect(html).toContain('<link rel="manifest" href="/gtm-calc/manifest.webmanifest?v=2">');
     expect(html).toContain('<meta name="theme-color" content="#062b4c">');
-    expect(html).toContain('href="/gtm-calc/assets/pwa/gtm-calc-192.png"');
-    expect(html).toContain('href="/gtm-calc/assets/pwa/gtm-calc-180.png"');
+    expect(html).toContain('href="/gtm-calc/assets/pwa/gtm-calc-192.png?v=2"');
+    expect(html).toContain('href="/gtm-calc/assets/pwa/gtm-calc-180.png?v=2"');
   });
 });
