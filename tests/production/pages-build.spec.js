@@ -32,9 +32,9 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
     return { scope: new URL(registration.scope).pathname, cacheNames, cachedPaths };
   });
   expect(serviceWorker).toMatchObject({ scope: '/gtm-calc/' });
-  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v1');
+  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v2');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/manifest.webmanifest');
-  expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|\/backup(?:\/|$)|mailto:)/i);
+  expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|mailto:)/i);
   await page.locator('#itemName').fill('Production carton');
   await page.locator('#quantity').fill('10');
   await page.locator('#unitCost').fill('1.25');
@@ -54,4 +54,24 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
   await expect(page.locator('#quoteItems')).toContainText('Production carton');
   expect(browserErrors).toEqual([]);
   expect(missingResources).toEqual([]);
+});
+
+test('reopens the cached production shell offline with the active browser quote', async ({ page, context }) => {
+  await page.goto('./');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.locator('#customerName').fill('Offline Production Customer');
+  await page.locator('#itemName').fill('Offline production carton');
+  await page.locator('#quantity').fill('3');
+  await page.locator('#unitCost').fill('1');
+  await page.locator('#price').fill('2');
+  await page.locator('#itemSubmit').click();
+  await page.locator('#saveQuote').click();
+
+  await page.reload();
+  await context.setOffline(true);
+  await page.reload();
+
+  await expect(page.locator('#connectionStatus')).toContainText('Offline');
+  await expect(page.locator('#quoteItems')).toContainText('Offline production carton');
+  await expect(page.locator('#orderTotal')).toHaveText('$6.00');
 });

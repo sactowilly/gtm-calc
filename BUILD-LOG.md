@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-07 -- Version 3.0 offline shell and local-data readiness (in progress)
+
+- Created `feature/v3-offline-shell-local-data` from merged `main` commit `56cd679` after PR #34 passed GitHub Actions and merged; the unrelated `.codex/` directory remains untracked and untouched.
+- Added a versioned public application-shell cache with source Pages allowlisting and build-time Vite asset injection. Navigation uses network-first with cached-shell fallback; public static assets use cache-first delivery with a non-blocking network refresh. The worker never caches or changes PDFs, backup files, mailto URLs, IndexedDB, localStorage, customer records, pricing, catalogs, or quote data.
+- Added a compact connection-status announcement. After one successful online load, direct-source and production browser tests prove offline reload, existing local quote reopening, and calculator line-item entry. Safe update activation remains a separate PR.
+- Advanced the marker to `v3.0.0 · offline-shell.3` and package version to `3.0.0-alpha.3`; reviewed and updated the README, roadmap/current-state/install/implementation/test documentation, decision/open-item memory, and roadmap SVG/PNG.
+- Verified 167 unit tests, JavaScript/PWA syntax, direct-source and production offline smoke, 16 customer-PDF visual tests, and the focused Android Chrome compatibility/accessibility/library/catalog profile (15/15). Full compatibility matrix and physical Android/iPhone/laptop acceptance remain required before Version 3 completion. The build retains the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-08-07 -- Version 3.0 public bootstrap cache (in progress)
 
 - Created `feature/v3-service-worker-cache-policy` from updated `origin/main` at `a6fe721`; the unrelated `.codex/` directory remains untracked and untouched.

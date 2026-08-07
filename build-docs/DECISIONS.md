@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Offline Shell Boundary
+
+**DECISION:** The third Version 3 slice may cache only static public application files needed to reopen the app after one online launch: HTML navigation fallback, CSS, JavaScript, locally bundled vendor libraries, public logo artwork, manifest, and icons. It must use network-first navigation fallback and cache-first public-asset delivery, with a visible online/offline status. It must never cache, inspect, migrate, or write generated PDFs, backup files, mailto URLs, IndexedDB, localStorage, quotes, customers, contacts, pricing, or settings.
+**RATIONALE:** The calculator and library already use local browser storage, so offline capability only needs a reliable public shell. Separating shell caching from safe worker activation preserves the data-recovery boundary and prevents output or customer data from becoming a stale cache surface.
+**DATE:** 2026-08-07
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Public Bootstrap-Cache Boundary
 
 **DECISION:** The second Version 3 slice may register a classic `/gtm-calc/sw.js` worker with `updateViaCache: 'none'`, precache only a small public bootstrap set, and delete only retired `gtm-calc-app-shell-*` caches. It has no `fetch` listener and must not read, write, cache, or migrate IndexedDB/localStorage, quote/customer/catalog records, generated PDFs, backup files, mailto URLs, or external resources.

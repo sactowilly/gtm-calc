@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The service-worker cache-policy slice uses `v3.0.0 · shell-cache.2` / `3.0.0-alpha.2`: it registers a scoped worker and caches only public bootstrap files, with no fetch interception or offline-workflow claim.
+Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The offline-shell slice uses `v3.0.0 · offline-shell.3` / `3.0.0-alpha.3`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -32,7 +32,7 @@ Acceptance: manifest parses, icons load, the app remains unchanged in normal bro
 
 Rollback: remove the manifest link/assets and revert the documentation-only metadata changes; no stored-data migration is required.
 
-### PR 2 — Service-worker registration and cache policy (in progress)
+### PR 2 — Service-worker registration and cache policy (complete)
 
 Goal: introduce an explicit versioned application-shell cache without caching business data.
 
@@ -51,7 +51,7 @@ Acceptance: first-load network behavior is unchanged, cache contents contain no 
 
 Rollback: remove registration and ship a no-op worker or delete the worker; leave all application data untouched.
 
-### PR 3 — Offline shell and local-data readiness
+### PR 3 — Offline shell and local-data readiness (in progress)
 
 Goal: support offline launch, catalog search, calculator use, and draft creation after one successful online load.
 
@@ -64,9 +64,11 @@ Work:
 - Add explicit offline/online status messaging and retry guidance.
 - Test reload, draft save, quote reopen, catalog search, backup generation, and recovery while offline.
 
+Implementation record: `feature/v3-offline-shell-local-data` changes the worker to cache only public HTML, CSS, JavaScript, vendor libraries, logo, and install icons. Source Pages uses an explicit allowlist; the Vite build injects its emitted hashed assets into the built worker. Navigations are network-first with a cached app-shell fallback; public static files are cache-first while attempting a non-blocking refresh. A header status explains online versus offline local readiness. It does not cache or read generated PDFs, backups, mailto links, quote/customer/catalog records, IndexedDB, or localStorage. Source and production browser tests prove offline reload, reopen of an existing local quote, and calculator line-item entry.
+
 Acceptance: offline workflows never erase or mutate records unexpectedly; failed capabilities show recoverable guidance; customer-facing privacy rules remain unchanged.
 
-Rollback: disable offline fetch fallback while retaining the Version 2.5 local application and data stores.
+Rollback: ship a no-fetch worker/cache version or unregister the worker; no application data migration or cache-held business data needs recovery.
 
 ### PR 4 — Updates and safe activation
 

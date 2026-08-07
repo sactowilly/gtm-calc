@@ -1,6 +1,6 @@
 # Install the GTM Calc and Quote Tool
 
-Version 3 install metadata lets supported phones add the public GitHub Pages application to the home screen. The current slice registers a versioned cache for public bootstrap assets only; it does not yet support offline calculator, catalog, library, or draft workflows. Keep a network connection available until the later offline PR is released.
+Version 3 install metadata lets supported phones add the public GitHub Pages application to the home screen. After one successful online launch, the current slice caches the public application shell so the calculator and existing saved browser data can reopen offline. PDFs are still generated locally, but email apps need a connection to send and a failed download/share action should be retried after reconnecting.
 
 Application URL: <https://sactowilly.github.io/gtm-calc/>
 
@@ -12,7 +12,7 @@ Version markers and install metadata can remain visible in an already-open tab o
 2. Open <https://sactowilly.github.io/gtm-calc/?refresh=1> in the phone's normal browser and reload once.
 3. Confirm the marker under the title shows the current release before reopening or reinstalling the home-screen shortcut.
 
-This release has no service worker. Avoid **Clear site data** unless you have downloaded a backup first: quotes, customers, catalog data, and settings are stored locally in the browser and clearing site data can remove them.
+This release uses a service worker for public application files only. Avoid **Clear site data** unless you have downloaded a backup first: quotes, customers, catalog data, and settings are stored locally in the browser and clearing site data can remove them.
 
 ## Android — Chrome
 

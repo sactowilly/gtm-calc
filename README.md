@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is complete and tagged `v2.5.0` at verified production commit `7ab4d2e`. Version 3.0 is in progress with marker `v3.0.0 · shell-cache.2`: this second runtime slice registers a scoped service worker and caches only public bootstrap assets, without yet enabling offline workflows.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is complete and tagged `v2.5.0` at verified production commit `7ab4d2e`. Version 3.0 is in progress with marker `v3.0.0 · offline-shell.3`: after one successful online launch, the public application shell can reopen offline while the calculator, catalog, and saved browser data continue to use their existing local stores.
 
 The release smoke checks remain:
 
@@ -52,7 +52,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Download a complete, validated JSON backup of saved quote, customer, catalog, settings, and recovery data from the local-only Export workspace. The file is unencrypted and contains internal pricing, so the app displays a permanent privacy warning.
 - Download quote-list, customer, and manual-item CSV reports from the local-only Export workspace. CSV is a lossy report format and formula-like values are neutralized before download.
 - Download an individual saved quote as JSON or a customer-safe PDF from its library card; finalized exports require the selected immutable version and preserve the existing customer-output privacy boundary.
-- Expose GitHub Pages-scoped install metadata, branded home-screen icons, a versioned public bootstrap cache, and Android/iPhone installation guidance. Offline workflow support remains a later slice.
+- Expose GitHub Pages-scoped install metadata, branded home-screen icons, a versioned public application-shell cache, offline/online status, and Android/iPhone installation guidance. PDFs, backups, mailto links, and quote/customer data are never cached by the worker.
 
 ## Roadmap
 
@@ -62,7 +62,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - **Version 1.5 - Catalog Search (complete):** CSV import/reporting, normalized unified search, local catalog storage/rollback, manual items, and recent items are merged and owner-tested.
 - **Version 2.0 - Local Quote Library (complete):** IndexedDB-backed searchable drafts, customer recall, phone-scale results, highlighted duplicates, local quote numbers, immutable version history, revisions, controlled statuses, and separate Quote/Library/Clients/Catalog workspaces are accepted. Version 2.5 adds the fifth Export destination.
 - **Version 2.5 - Backup and Restore (complete):** the complete JSON/checksum foundation, validated local backup download, restore inspection, explicit Merge/Replace transaction, RFC 4180/formula-safe CSV reports, and individual quote JSON/customer-safe PDF downloads passed physical acceptance, owner approval, and post-merge Pages verification. Annotated tag `v2.5.0` identifies verified production commit `7ab4d2e`.
-- **Version 3.0 - Progressive Web App (in progress):** install metadata and the public bootstrap-cache policy are underway; offline catalog/calculator/drafts, update notifications, and cache migration remain later reviewable PRs. See [docs/V3_IMPLEMENTATION_PLAN.md](docs/V3_IMPLEMENTATION_PLAN.md) and [installation guidance](docs/INSTALLATION.md).
+- **Version 3.0 - Progressive Web App (in progress):** install metadata, the public shell cache, and offline calculator/library readiness are implemented; safe update activation and production device acceptance remain later reviewable PRs. See [docs/V3_IMPLEMENTATION_PLAN.md](docs/V3_IMPLEMENTATION_PLAN.md) and [installation guidance](docs/INSTALLATION.md).
 - **Version 3.5 - Mobile Workflow Improvements:** favorites, recent customers, frequent item combinations, pricing history, attachments, one-handed controls, and dark mode.
 - **Version 4.0 - Hosted Company System:** future centralized access with shared storage, authentication, synchronization, central quote numbering, integrations, reporting, and permissions.
 
@@ -99,7 +99,7 @@ npm run test:production
 - `js/pdf/` and `css/quote-pdf.css` - customer-safe document projection, HTML template, pagination, and browser PDF rendering
 - `tests/` - calculation, privacy, fixture, and browser layout regression tests
 - `docs/V3_IMPLEMENTATION_PLAN.md` - staged PWA implementation, cache, offline, update, and release gates
-- `manifest.webmanifest`, `sw.js`, `js/pwa/`, `assets/pwa/`, and `docs/INSTALLATION.md` - install metadata, scoped bootstrap-cache policy, branded icons, and phone installation guidance
+- `manifest.webmanifest`, `sw.js`, `js/pwa/`, `assets/pwa/`, and `docs/INSTALLATION.md` - install metadata, scoped public-shell cache, offline status, branded icons, and phone installation guidance
 - `assets/vision-industrial-packaging-logo.png` - complete logo artwork extracted from the approved quotation reference
 - `vite.config.js` - production build configuration for the GitHub Pages base path
 - `assets/gtm-calc-icon.png` - 1280x640 project image

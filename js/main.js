@@ -26,6 +26,7 @@ import { createQuoteExportService } from './services/quote-export-service.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 import { registerApplicationServiceWorker } from './pwa/service-worker-registration.js';
+import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
 
 (function () {
   const STORAGE_KEY = ACTIVE_QUOTE_STORAGE_KEY;
@@ -120,6 +121,7 @@ import { registerApplicationServiceWorker } from './pwa/service-worker-registrat
   const quoteRepository = createQuoteLibraryRepository();
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
+  initializeConnectivityStatus({ element: document.getElementById('connectionStatus') });
   // Vite's development server is not a release artifact; source Pages and built
   // artifacts still register the worker and are covered by dedicated smoke tests.
   if (!import.meta.env?.DEV) void registerApplicationServiceWorker();
