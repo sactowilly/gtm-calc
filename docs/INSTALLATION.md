@@ -4,6 +4,16 @@ Version 3 install metadata lets supported phones add the public GitHub Pages app
 
 Application URL: <https://sactowilly.github.io/gtm-calc/>
 
+## Updating an older installed copy
+
+Version markers and install metadata can remain visible in an already-open tab or home-screen window until it reloads the current Pages files. If the computer shows a newer marker than the phone:
+
+1. Close the home-screen app window and any open GTM Calc tab.
+2. Open <https://sactowilly.github.io/gtm-calc/?refresh=1> in the phone's normal browser and reload once.
+3. Confirm the marker under the title shows the current release before reopening or reinstalling the home-screen shortcut.
+
+This release has no service worker. Avoid **Clear site data** unless you have downloaded a backup first: quotes, customers, catalog data, and settings are stored locally in the browser and clearing site data can remove them.
+
 ## Android — Chrome
 
 1. Open the application URL in Chrome.

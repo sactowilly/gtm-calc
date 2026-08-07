@@ -14,7 +14,7 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
 
   await page.goto('./');
   await expect(page.locator('#appVersion')).toHaveText(APP_BUILD_LABEL);
-  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/gtm-calc/manifest.webmanifest');
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/gtm-calc/manifest.webmanifest?v=2');
   const manifestResponse = await page.request.get('./manifest.webmanifest');
   expect(manifestResponse.ok()).toBe(true);
   const manifest = await manifestResponse.json();
