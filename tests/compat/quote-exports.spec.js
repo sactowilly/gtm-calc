@@ -4,7 +4,7 @@ test.describe('Version 2.5 reporting exports in supported browsers', () => {
   test('keeps RFC 4180 quoting, formula protection, Unicode, and deterministic names in-browser', async ({ page }) => {
     const outbound = [];
     page.on('request', (request) => {
-      if (['fetch', 'xhr', 'websocket', 'eventsource'].includes(request.resourceType())) outbound.push(request.url());
+      if (['fetch', 'xhr', 'websocket', 'eventsource'].includes(request.resourceType()) && !request.url().endsWith('/sw.js')) outbound.push(request.url());
     });
     await page.goto('./');
 
@@ -79,7 +79,7 @@ test.describe('Version 2.5 reporting exports in supported browsers', () => {
   test('Export workspace exposes local CSV report actions and reports requested downloads', async ({ page }) => {
     const outbound = [];
     page.on('request', (request) => {
-      if (['fetch', 'xhr', 'websocket', 'eventsource'].includes(request.resourceType())) outbound.push(request.url());
+      if (['fetch', 'xhr', 'websocket', 'eventsource'].includes(request.resourceType()) && !request.url().endsWith('/sw.js')) outbound.push(request.url());
     });
     await page.goto('./');
     await page.getByRole('button', { name: 'Export', exact: true }).click();

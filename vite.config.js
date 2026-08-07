@@ -21,6 +21,7 @@ function copyRequiredStaticAssets() {
       });
 
       copyFileSync(resolve('manifest.webmanifest'), resolve(buildDirectory, 'manifest.webmanifest'));
+      copyFileSync(resolve('sw.js'), resolve(buildDirectory, 'sw.js'));
     }
   };
 }

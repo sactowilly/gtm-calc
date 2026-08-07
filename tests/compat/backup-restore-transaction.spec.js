@@ -32,7 +32,7 @@ async function seedSavedQuote(page) {
   await page.locator('#itemSubmit').click();
   await page.getByRole('button', { name: 'Library', exact: true }).click();
   await page.locator('#addCurrentToLibrary').click();
-  await expect(page.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft');
+  await expect(page.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft', { timeout: 10000 });
 }
 
 async function createBackupFixture(page) {

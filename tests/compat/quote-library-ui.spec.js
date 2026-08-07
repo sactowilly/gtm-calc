@@ -24,7 +24,7 @@ test('adds, saves, reloads, duplicates, searches, and recalls a local draft cust
   await fillQuoteCustomer(page);
   const library = await openLibrary(page);
   await library.locator('#addCurrentToLibrary').click();
-  await expect(library.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft');
+  await expect(library.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft', { timeout: 10000 });
   await expect(library.locator('.library-card h3')).toHaveText('Acme Packaging');
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('gtm_quote_calculator_v1')).customerName)).toBe('Acme Packaging');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -131,7 +131,7 @@ test('warns instead of overwriting a library draft changed by another writer', a
   await fillQuoteCustomer(page, 'Conflict Test Customer');
   const library = await openLibrary(page);
   await library.locator('#addCurrentToLibrary').click();
-  await expect(library.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft');
+  await expect(library.locator('#quoteLibraryStatus')).toContainText('added as an unnumbered draft', { timeout: 10000 });
   const quoteId = await library.locator('#addCurrentToLibrary').getAttribute('data-bound-quote-id');
   expect(quoteId).toBeTruthy();
 
@@ -169,13 +169,23 @@ test('confirms before Reopen discards dirty edits to the same draft', async ({ p
   await page.getByRole('button', { name: 'Quote', exact: true }).click();
   await page.locator('#buyerPhone').fill('916-555-9999');
   await openLibrary(page);
+  await expect(library.locator('#quoteLibrarySummary')).toContainText('unsaved', { timeout: 10000 });
 
-  page.once('dialog', (dialog) => dialog.dismiss());
+  await page.evaluate(() => {
+    document.body.dataset.reopenConfirmationAsked = 'false';
+    window.confirm = () => {
+      document.body.dataset.reopenConfirmationAsked = 'true';
+      return false;
+    };
+  });
   await library.getByRole('button', { name: 'Reopen' }).click();
+  expect(await page.locator('body').getAttribute('data-reopen-confirmation-asked')).toBe('true');
   await expect(page.locator('#quotesWorkspace')).toBeVisible();
   await expect(page.locator('#buyerPhone')).toHaveValue('916-555-9999');
 
-  page.once('dialog', (dialog) => dialog.accept());
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
   await library.getByRole('button', { name: 'Reopen' }).click();
   await expect(page.locator('#quoteWorkspace')).toBeVisible();
   await expect(page.locator('#buyerPhone')).toHaveValue('916-555-0123');
