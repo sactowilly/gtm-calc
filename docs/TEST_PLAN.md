@@ -293,9 +293,9 @@ Release evidence is recorded against PR #19 head `22cf299` and merge commit `3e4
 
 ## Version 3.0 verification
 
-Implementation status (2026-08-06): the manifest/install-metadata slice verifies manifest JSON, `/gtm-calc/` ID/start/scope, standalone display, theme/background colors, 180/192/512 PNG dimensions, a 512 maskable icon, HTML metadata, direct-source asset loading, built-artifact asset loading, and zero service-worker registrations. It does not claim offline support.
+Implementation status (2026-08-07): the manifest/install-metadata slice verifies manifest JSON, `/gtm-calc/` ID/start/scope, standalone display, theme/background colors, 180/192/512 PNG dimensions, a 512 maskable icon, and source/build asset loading. The cache-policy slice verifies scoped registration, non-fatal unsupported/failed registration, `updateViaCache: 'none'`, public bootstrap-only precache contents, retirement of only application-owned caches, absence of a fetch handler, and direct-source/production worker activation. It does not claim offline support.
 
-The remaining staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for service-worker scope and cache contents, offline calculator/catalog/draft workflows, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No later PWA test is claimed as passed until its implementation PR introduces the corresponding behavior.
+The remaining staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for offline calculator/catalog/draft workflows, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No later PWA test is claimed as passed until its implementation PR introduces the corresponding behavior.
 
 ## Current checks actually performed during planning
 

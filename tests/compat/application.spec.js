@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const appBuildLabel = `v3.0.0 ${String.fromCharCode(0x00b7)} install-metadata.1`;
+const appBuildLabel = `v3.0.0 ${String.fromCharCode(0x00b7)} shell-cache.2`;
 
 test('loads, exposes accessible controls, and preserves approved defaults', async ({ page }) => {
   await page.goto('./');

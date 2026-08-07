@@ -20,10 +20,18 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
   const manifest = await manifestResponse.json();
   expect(manifest.start_url).toBe('/gtm-calc/');
   expect(manifest.scope).toBe('/gtm-calc/');
-  expect(await page.evaluate(async () => {
-    if (!('serviceWorker' in navigator)) return [];
-    return (await navigator.serviceWorker.getRegistrations()).map((registration) => registration.scope);
-  })).toEqual([]);
+  const serviceWorker = await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return null;
+    const registration = await navigator.serviceWorker.ready;
+    const cacheNames = await caches.keys();
+    const shellCache = await caches.open(cacheNames.find((name) => name.startsWith('gtm-calc-app-shell-')));
+    const cachedPaths = (await shellCache.keys()).map((request) => new URL(request.url).pathname);
+    return { scope: new URL(registration.scope).pathname, cacheNames, cachedPaths };
+  });
+  expect(serviceWorker).toMatchObject({ scope: '/gtm-calc/' });
+  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v1');
+  expect(serviceWorker.cachedPaths).toContain('/gtm-calc/manifest.webmanifest');
+  expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|\/backup(?:\/|$)|mailto:)/i);
   await expect(page.locator('#appNavigation [aria-current="page"]')).toHaveCount(1);
   await page.locator('#customerName').fill('Direct Source Customer');
   await page.getByRole('button', { name: 'Library', exact: true }).click();

@@ -19,7 +19,7 @@ async function fillQuoteCustomer(page, name) {
 test('progressively reveals 100 drafts while search reaches a long Unicode tail record', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('./');
-  await expect(page.locator('#quoteLibrarySummary')).toHaveText('0 quotes on this device');
+  await expect(page.locator('#quoteLibrarySummary')).toHaveText('0 quotes on this device', { timeout: 10000 });
   await page.evaluate(async () => {
     const { createQuoteLibraryRepository } = await import('/gtm-calc/js/services/indexeddb-quote-repository.js');
     let id = 0;

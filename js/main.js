@@ -25,6 +25,7 @@ import { createQuoteLibraryRepository } from './services/indexeddb-quote-reposit
 import { createQuoteExportService } from './services/quote-export-service.js';
 import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
+import { registerApplicationServiceWorker } from './pwa/service-worker-registration.js';
 
 (function () {
   const STORAGE_KEY = ACTIVE_QUOTE_STORAGE_KEY;
@@ -119,6 +120,9 @@ import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActive
   const quoteRepository = createQuoteLibraryRepository();
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
+  // Vite's development server is not a release artifact; source Pages and built
+  // artifacts still register the worker and are covered by dedicated smoke tests.
+  if (!import.meta.env?.DEV) void registerApplicationServiceWorker();
 
   function getFreightMode() {
     const checked = itemForm.querySelector('input[name="freightMode"]:checked');

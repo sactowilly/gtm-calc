@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Public Bootstrap-Cache Boundary
+
+**DECISION:** The second Version 3 slice may register a classic `/gtm-calc/sw.js` worker with `updateViaCache: 'none'`, precache only a small public bootstrap set, and delete only retired `gtm-calc-app-shell-*` caches. It has no `fetch` listener and must not read, write, cache, or migrate IndexedDB/localStorage, quote/customer/catalog records, generated PDFs, backup files, mailto URLs, or external resources.
+**RATIONALE:** Registration and cache ownership can be verified before offline routing changes. A no-fetch worker leaves normal online behavior untouched and prevents cached business data or output from becoming a hidden recovery surface.
+**DATE:** 2026-08-07
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Install-Metadata Boundary
 
 **DECISION:** The first Version 3 runtime slice adds a root `manifest.webmanifest`, `/gtm-calc/` ID/start/scope, standalone display metadata, branded square and maskable icons derived from the approved Vision artwork, and Android/iPhone installation guidance. It must keep service-worker registrations at zero and make no offline claim.

@@ -23,10 +23,18 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
   for (const icon of manifest.icons) {
     expect((await page.request.get(`./${icon.src}`)).ok()).toBe(true);
   }
-  expect(await page.evaluate(async () => {
-    if (!('serviceWorker' in navigator)) return [];
-    return (await navigator.serviceWorker.getRegistrations()).map((registration) => registration.scope);
-  })).toEqual([]);
+  const serviceWorker = await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return null;
+    const registration = await navigator.serviceWorker.ready;
+    const cacheNames = await caches.keys();
+    const shellCache = await caches.open(cacheNames.find((name) => name.startsWith('gtm-calc-app-shell-')));
+    const cachedPaths = (await shellCache.keys()).map((request) => new URL(request.url).pathname);
+    return { scope: new URL(registration.scope).pathname, cacheNames, cachedPaths };
+  });
+  expect(serviceWorker).toMatchObject({ scope: '/gtm-calc/' });
+  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v1');
+  expect(serviceWorker.cachedPaths).toContain('/gtm-calc/manifest.webmanifest');
+  expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|\/backup(?:\/|$)|mailto:)/i);
   await page.locator('#itemName').fill('Production carton');
   await page.locator('#quantity').fill('10');
   await page.locator('#unitCost').fill('1.25');

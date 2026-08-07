@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The manifest/install-metadata slice uses `v3.0.0 · install-metadata.1` / `3.0.0-alpha.1` and adds no service worker or offline cache.
+Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The service-worker cache-policy slice uses `v3.0.0 · shell-cache.2` / `3.0.0-alpha.2`: it registers a scoped worker and caches only public bootstrap files, with no fetch interception or offline-workflow claim.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -13,7 +13,7 @@ Version 3 adds installability and offline application behavior only after the Ve
 
 ## Pull-request sequence
 
-### PR 1 — Manifest and install metadata (in progress)
+### PR 1 — Manifest and install metadata (complete)
 
 Goal: make the application installable without changing runtime behavior.
 
@@ -32,7 +32,7 @@ Acceptance: manifest parses, icons load, the app remains unchanged in normal bro
 
 Rollback: remove the manifest link/assets and revert the documentation-only metadata changes; no stored-data migration is required.
 
-### PR 2 — Service-worker registration and cache policy
+### PR 2 — Service-worker registration and cache policy (in progress)
 
 Goal: introduce an explicit versioned application-shell cache without caching business data.
 
@@ -44,6 +44,8 @@ Work:
 - Precache only the generated application shell and immutable static assets required for first launch.
 - Version cache names and delete only retired caches owned by this application.
 - Use network-first or bypass rules for navigations and never intercept downloads, PDFs, backups, mailto, or external URLs.
+
+Implementation record: `feature/v3-service-worker-cache-policy` registers a classic worker only at `/gtm-calc/`, uses `updateViaCache: 'none'`, precaches a small versioned set of public bootstrap assets, and deletes only superseded `gtm-calc-app-shell-*` caches. It has no `fetch` listener, so every request—including PDFs, backups, mailto, and external URLs—continues to use the browser's normal network path. It does not read or write IndexedDB, localStorage, quote records, customer data, or generated output.
 
 Acceptance: first-load network behavior is unchanged, cache contents contain no customer data, old caches are retired safely, and unregistering the worker restores normal behavior.
 

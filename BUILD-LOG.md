@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-07 -- Version 3.0 public bootstrap cache (in progress)
+
+- Created `feature/v3-service-worker-cache-policy` from updated `origin/main` at `a6fe721`; the unrelated `.codex/` directory remains untracked and untouched.
+- Added a classic `/gtm-calc/`-scoped worker with `updateViaCache: 'none'`. It versions and precaches only public bootstrap resources (the root, manifest, and branded icons), and deletes only superseded `gtm-calc-app-shell-*` caches.
+- The worker deliberately has no `fetch` handler in this slice: PDFs, backups, mailto links, quote/customer data, IndexedDB, localStorage, and every normal request retain existing browser/network behavior. Offline workflow support remains PR 3 work.
+- Advanced the visible marker to `v3.0.0 · shell-cache.2` and package version to `3.0.0-alpha.2`; reviewed and updated release-facing roadmap/current-state/implementation/test/memory documentation and the roadmap SVG/PNG.
+- Verified unit/metadata checks, JavaScript syntax checks, build, direct-source and built-artifact Pages smokes, and the 16-case PDF visual suite. A 3-worker full compatibility run exposed only pre-existing parallel IndexedDB/timing flakes (216 passed, 6 intentional skips); the affected restore transaction workflow then passed serially in all five profiles (10/10), and the Reopen confirmation coverage passed three consecutive Firefox runs. The build retains the two known warnings for vendored non-module PDF scripts.
+
 ### 2026-08-06 -- Version 3.0 install metadata (in progress)
 
 - Created `feature/v3-manifest-install-metadata` from updated `main` at `83814e4`; the unrelated `.codex/` directory remains untracked and untouched.
