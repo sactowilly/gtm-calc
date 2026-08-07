@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1900" viewBox="0 0 1200 1900" role="img" aria-labelledby="title description">
   <title id="title">GTM Quote Tool product roadmap</title>
-  <desc id="description">Versions 1.0, 1.5, 2.0, and 2.5 are complete. Version 3.0 Progressive Web App implementation is in progress with install metadata and a public bootstrap-cache policy; offline workflows remain later.</desc>
+  <desc id="description">Versions 1.0, 1.5, 2.0, and 2.5 are complete. Version 3.0 Progressive Web App implementation is in progress with install metadata and an offline public application shell; safe updates remain later.</desc>
   <defs>
     <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#062b4c"/>
@@ -28,7 +28,7 @@
   <text x="600" y="92" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="900" text-anchor="middle" letter-spacing="2">GTM QUOTE TOOL ROADMAP</text>
   <rect x="485" y="122" width="230" height="7" rx="4" fill="#f59a23"/>
   <text x="600" y="181" fill="#f7a43a" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700" font-style="italic" text-anchor="middle">From mobile calculator to connected company system</text>
-  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.5 complete • Version 3.0 cache foundation is in progress</text>
+  <text x="600" y="224" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="20" text-anchor="middle">Version 2.5 complete • Version 3.0 offline shell is in progress</text>
 
   <line x1="105" y1="330" x2="105" y2="1620" stroke="#082b4b" stroke-width="10" stroke-linecap="round"/>
 
@@ -90,7 +90,7 @@
   </g>
   <text class="version" x="225" y="1180" fill="#f06400">V3.0</text>
   <text class="heading" x="385" y="1178">PROGRESSIVE WEB APP</text>
-  <text class="body" x="225" y="1225">Install metadata &amp; public cache now • Offline calculator, catalog &amp; drafts later</text>
+  <text class="body" x="225" y="1225">Install metadata &amp; offline local shell now • Safe updates &amp; device acceptance next</text>
   <rect x="865" y="1235" width="220" height="34" rx="17" fill="#f47a00"/>
   <text class="status" x="975" y="1259" fill="#fff" text-anchor="middle">IN PROGRESS</text>
 
@@ -119,6 +119,6 @@
   <text class="status" x="1017" y="1669" fill="#fff" text-anchor="middle">FUTURE</text>
 
   <rect x="70" y="1745" width="1060" height="105" rx="24" fill="url(#header)"/>
-  <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V3.0 CACHE FOUNDATION</text>
-  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Public bootstrap cache now; offline workflows and safe updates remain separate.</text>
+  <text x="600" y="1790" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" text-anchor="middle">CURRENT PHASE: V3.0 OFFLINE SHELL</text>
+  <text x="600" y="1826" fill="#c8d8e5" font-family="Arial, Helvetica, sans-serif" font-size="21" text-anchor="middle">Offline local calculator and library now; safe updates remain separate.</text>
 </svg>
