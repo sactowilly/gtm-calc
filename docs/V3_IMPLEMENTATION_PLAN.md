@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The offline-shell slice uses `v3.0.0 · offline-shell.3` / `3.0.0-alpha.3`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores.
+Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The safe-update slice uses `v3.0.0 · safe-update.4` / `3.0.0-alpha.4`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores. Waiting updates require an explicit user action.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -70,7 +70,7 @@ Acceptance: offline workflows never erase or mutate records unexpectedly; failed
 
 Rollback: ship a no-fetch worker/cache version or unregister the worker; no application data migration or cache-held business data needs recovery.
 
-### PR 4 — Updates and safe activation
+### PR 4 — Updates and safe activation (complete)
 
 Goal: let users receive updates without losing in-progress quote work.
 
@@ -86,6 +86,10 @@ Work:
 Acceptance: update activation is deliberate, recoverable, accessible, and never clears quote/customer data.
 
 Rollback: disable update prompts and worker activation while retaining the previous cache version.
+
+Implementation record: `feature/v3-safe-update-activation` adds a non-blocking notice for a waiting worker, a user-triggered `SKIP_WAITING` message, and reload only after `controllerchange`. Quote edits are tracked in memory: an update prompts before discarding unsaved edits, and the restore UI reports its active transaction so update activation is blocked until it finishes. Cache `gtm-calc-app-shell-v3` removes only retired application-owned shell caches and claims clients only after activation. It does not inspect, delete, migrate, or cache local quote/customer/catalog data, PDFs, backups, or mailto URLs.
+
+Acceptance: unit coverage proves no automatic activation, unsaved-work confirmation, restore blocking, explicit skip-waiting, one-time reload, deferred notice handling, and retirement of only owned stale caches. Browser/physical-device evidence remains part of PR 5.
 
 ### PR 5 — V3 production closeout
 

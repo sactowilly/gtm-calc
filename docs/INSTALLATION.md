@@ -6,7 +6,7 @@ Application URL: <https://sactowilly.github.io/gtm-calc/>
 
 ## Updating an older installed copy
 
-Version markers and install metadata can remain visible in an already-open tab or home-screen window until it reloads the current Pages files. If the computer shows a newer marker than the phone:
+When a newer application worker is ready, the app shows a non-blocking **Reload update** notice. Save current quote edits first, then use that action. The app asks for confirmation if unsaved edits remain and will not apply the update during an active backup restore. If the computer shows a newer marker than the phone and no notice appears:
 
 1. Close the home-screen app window and any open GTM Calc tab.
 2. Open <https://sactowilly.github.io/gtm-calc/?refresh=1> in the phone's normal browser and reload once.

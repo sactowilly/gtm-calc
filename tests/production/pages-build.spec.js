@@ -32,7 +32,7 @@ test('serves the production artifact from /gtm-calc/ and preserves core local be
     return { scope: new URL(registration.scope).pathname, cacheNames, cachedPaths };
   });
   expect(serviceWorker).toMatchObject({ scope: '/gtm-calc/' });
-  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v2');
+  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v3');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/manifest.webmanifest');
   expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|mailto:)/i);
   await page.locator('#itemName').fill('Production carton');

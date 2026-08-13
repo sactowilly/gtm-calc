@@ -1,5 +1,13 @@
 # Build Log
 
+### 2026-08-13 -- Version 3.0 safe update activation (in progress)
+
+- Created `feature/v3-safe-update-activation` from merged `main` commit `79ec179`; the unrelated `.codex/` directory remains untracked and untouched.
+- Added a non-blocking waiting-update notice. The worker remains waiting until the user explicitly chooses Reload update; the application confirms when active quote edits are unsaved and blocks update activation during an active local restore transaction. The worker reloads only after the resulting `controllerchange` event.
+- Advanced the marker to `v3.0.0 · safe-update.4` and package version to `3.0.0-alpha.4`; reviewed and updated the README, roadmap/current-state/install/implementation/test documentation, decision/open-item memory, and roadmap SVG/PNG.
+- Verified `npm run check`, 174 unit tests, direct-source Pages smoke (2/2), production build/artifact smoke (2/2), and all 16 customer-PDF visual checks (run as three stable groups after a local Vite port-release retry). The build retains the two known warnings for vendored non-module PDF scripts. The local 225-test compatibility matrix was stopped after its known unrelated Chromium backup-inspection timing flake; Firefox and WebKit continued through the same inspection path before stop. PR CI remains the full-matrix gate.
+- Physical Android Chrome, iPhone Safari, laptop Chromium update/migration acceptance, post-merge Pages smoke, and the annotated `v3.0.0` tag remain the Version 3 closeout gate.
+
 ### 2026-08-07 -- Version 3.0 offline shell and local-data readiness (in progress)
 
 - Created `feature/v3-offline-shell-local-data` from merged `main` commit `56cd679` after PR #34 passed GitHub Actions and merged; the unrelated `.codex/` directory remains untracked and untouched.

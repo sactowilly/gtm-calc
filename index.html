@@ -30,6 +30,13 @@
           <button id="viewQuote" type="button" class="button secondary">View Quote</button>
         </div>
       </header>
+      <section id="updateNotice" class="update-notice" hidden aria-label="Application update">
+        <p id="updateNoticeText" role="status" aria-live="polite" aria-atomic="true">An update is ready. Save any changes, then reload when you are ready.</p>
+        <div class="update-notice__actions">
+          <button id="applyUpdate" type="button" class="button primary">Reload update</button>
+          <button id="dismissUpdate" type="button" class="button secondary">Later</button>
+        </div>
+      </section>
 
       <nav id="appNavigation" class="app-navigation" aria-label="Primary navigation">
         <button type="button" class="app-navigation__button" data-app-view="quote" aria-current="page">Quote</button>

@@ -144,6 +144,41 @@ button {
   color: #765000;
 }
 
+.update-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 1px solid #d59b20;
+  border-left: 5px solid #d59b20;
+  border-radius: var(--radius);
+  background: #fff7df;
+  color: #4c3500;
+  box-shadow: var(--shadow);
+}
+
+.update-notice[hidden] {
+  display: none;
+}
+
+.update-notice p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.update-notice__actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.update-notice .button {
+  min-height: 44px;
+}
+
 h1,
 h2 {
   margin: 0;
@@ -1323,6 +1358,15 @@ dialog .pdf-actions {
   }
 
   .app-header .button {
+    flex: 1 1 0;
+  }
+
+  .update-notice {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .update-notice__actions .button {
     flex: 1 1 0;
   }
 
