@@ -84,7 +84,7 @@ Do not build a general document framework in V1.
 3. Hold one `GeneratedPdf` for preview/download/share; regenerate only after quote changes.
 4. Create a Blob URL for preview and revoke the prior URL on regeneration/close/unload.
 5. Show an HTML customer preview even when the browser cannot embed a PDF.
-6. Offer explicit **Preview PDF**, **Open PDF**, and **Download PDF** controls with the visible filename.
+6. Offer explicit **Preview PDF**, **Open PDF**, and **Download PDF** controls with the visible filename. **Open PDF** is a direct user-initiated `blob:` link, so Android and other browsers do not depend on an embedded iframe viewer's own Open control.
 
 An iframe/object can be the desktop preview, but do not make inline rendering the only phone path. On iPhone or an unsupported viewer, use a user-initiated open/download link and keep the HTML preview. Catch generation/font/template failures and leave all quote data intact.
 

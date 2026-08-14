@@ -50,6 +50,7 @@ import { initializeUpdateCoordinator } from './pwa/update-coordinator.js';
   const quoteDialog = document.getElementById('quoteDialog');
   const quotePdf = document.getElementById('quotePdf');
   const quotePdfFilename = document.getElementById('quotePdfFilename');
+  const openQuotePdf = document.getElementById('openQuotePdf');
   const pdfStatus = document.getElementById('pdfStatus');
 
   const fields = {
@@ -588,6 +589,8 @@ import { initializeUpdateCoordinator } from './pwa/update-coordinator.js';
     quotePdfUrl = null;
     quotePdf.removeAttribute('src');
     quotePdfFilename.textContent = '';
+    openQuotePdf.removeAttribute('href');
+    openQuotePdf.hidden = true;
   }
 
   async function ensureQuotePdf() {
@@ -610,6 +613,8 @@ import { initializeUpdateCoordinator } from './pwa/update-coordinator.js';
 
     const filename = getQuotePdfFilename(quote);
     quotePdfFilename.textContent = `File: ${filename}`;
+    openQuotePdf.href = quotePdfUrl;
+    openQuotePdf.hidden = false;
 
     return { blob: quotePdfBlob, url: quotePdfUrl, filename };
   }

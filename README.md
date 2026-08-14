@@ -10,7 +10,7 @@ GitHub Pages URL: https://sactowilly.github.io/gtm-calc/
 
 ## Current Release Track
 
-Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is complete and tagged `v2.5.0` at verified production commit `7ab4d2e`. Version 3.0 is in progress with marker `v3.0.0 · safe-update.4`: after one successful online launch, the public application shell can reopen offline while the calculator, catalog, and saved browser data continue to use their existing local stores. A waiting update is applied only after the user chooses Reload update; unsaved quote edits require confirmation and an active backup restore blocks reload.
+Version 1 is the accepted mobile quote foundation. Version 1.5 catalog search is complete. Version 2 is complete: its IndexedDB-backed quote/customer library and lifecycle controls passed automated and owner device acceptance while retaining the original browser save as a fallback. Version 2.5 backup and restore is complete and tagged `v2.5.0` at verified production commit `7ab4d2e`. Version 3.0 is in progress with marker `v3.0.0 · pdf-open.5`: after one successful online launch, the public application shell can reopen offline while the calculator, catalog, and saved browser data continue to use their existing local stores. A waiting update is applied only after the user chooses Reload update; unsaved quote edits require confirmation and an active backup restore blocks reload. The PDF dialog also provides a direct Open PDF link when an embedded phone viewer cannot open its own control.
 
 The release smoke checks remain:
 
@@ -46,7 +46,7 @@ All costs, prices, freight, totals, and GTM dollar values are USD.
 - Finalize a saved draft with a local-device number, view immutable current or historical versions, regenerate customer-safe output, create a latest-version revision, and move quotes through the approved Finalized/Sent/outcome status workflow.
 - Copy explicitly labeled internal quote text from the workspace, or copy customer-safe text from the PDF dialog. Customer copy/email excludes cost and GTM fields and uses Buyer Email as the recipient.
 - Download the PDF and attach it manually: browser `mailto:` links cannot attach local files automatically.
-- Preview and explicitly download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
+- Preview, explicitly open, and download a branded customer quotation with wrapped fields, repeating multi-page item headers, notes, and a stable footer. The PDF omits internal cost and GTM values.
 - Share the generated PDF through the native mobile Share Sheet when file sharing is supported; otherwise download it and open a prepared email with the exact attachment filename.
 - Show the current app version/build marker on load.
 - Download a complete, validated JSON backup of saved quote, customer, catalog, settings, and recovery data from the local-only Export workspace. The file is unencrypted and contains internal pricing, so the app displays a permanent privacy warning.

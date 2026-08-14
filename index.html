@@ -594,11 +594,12 @@
       </div>
       <p id="quotePdfFilename" class="pdf-filename"></p>
       <p id="pdfStatus" class="pdf-status" role="status" aria-live="polite"></p>
-      <p class="pdf-sharing-help">On supported phones, Share PDF opens the native Share Sheet with the PDF attached. Email recipients may still need to be selected manually.</p>
+      <p class="pdf-sharing-help">On supported phones, Share PDF opens the native Share Sheet with the PDF attached. If the inline preview's Open control does nothing, use Open PDF or Download PDF below. Email recipients may still need to be selected manually.</p>
       <iframe id="quotePdf" title="Rendered quote PDF"></iframe>
       <div class="button-row pdf-actions">
         <button id="shareQuote" type="button" class="button primary">Share PDF</button>
         <button id="downloadQuote" type="button" class="button primary">Download PDF</button>
+        <a id="openQuotePdf" class="button secondary pdf-open-link" target="_blank" rel="noopener" hidden>Open PDF</a>
         <button id="copyBuyerEmail" type="button" class="button secondary">Copy Buyer Email</button>
         <button id="copyQuoteDialog" type="button" class="button secondary">Copy Customer Quote</button>
         <button id="emailRepDialog" type="button" class="button secondary">Email Rep</button>

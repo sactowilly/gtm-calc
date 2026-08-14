@@ -105,6 +105,8 @@ test('keeps missing-email guidance inside the PDF dialog', async ({ page }) => {
   await page.locator('#viewQuote').click();
   await expect(quoteDialog).toBeVisible();
   await expect(page.locator('#pdfStatus')).toContainText('PDF ready', { timeout: 30000 });
+  await expect(page.getByRole('link', { name: 'Open PDF', exact: true })).toHaveAttribute('href', /^blob:/);
+  await expect(page.getByRole('link', { name: 'Open PDF', exact: true })).toHaveAttribute('target', '_blank');
   await page.locator('#emailCustomerDialog').click();
 
   await expect(quoteDialog).toBeVisible();
