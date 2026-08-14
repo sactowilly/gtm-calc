@@ -27,6 +27,7 @@ import { createPdfFile, sharePdf } from './services/share-service.js';
 import { ACTIVE_QUOTE_STORAGE_KEY, clearActiveQuote, loadActiveQuote, saveActiveQuote } from './services/active-quote-storage.js';
 import { registerApplicationServiceWorker } from './pwa/service-worker-registration.js';
 import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
+import { initializeUpdateCoordinator } from './pwa/update-coordinator.js';
 
 (function () {
   const STORAGE_KEY = ACTIVE_QUOTE_STORAGE_KEY;
@@ -118,13 +119,16 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
   let quoteLibraryController = null;
   let appNavigation = null;
   let quoteReadOnly = false;
+  let quoteHasUnsavedChanges = false;
   const quoteRepository = createQuoteLibraryRepository();
 
   document.getElementById('appVersion').textContent = APP_BUILD_LABEL;
   initializeConnectivityStatus({ element: document.getElementById('connectionStatus') });
   // Vite's development server is not a release artifact; source Pages and built
   // artifacts still register the worker and are covered by dedicated smoke tests.
-  if (!import.meta.env?.DEV) void registerApplicationServiceWorker();
+  const serviceWorkerRegistration = !import.meta.env?.DEV
+    ? registerApplicationServiceWorker()
+    : Promise.resolve({ registered: false, reason: 'development-server' });
 
   function getFreightMode() {
     const checked = itemForm.querySelector('input[name="freightMode"]:checked');
@@ -144,6 +148,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
   function markUnsaved() {
     if (quoteReadOnly) return;
     releaseQuotePdf();
+    quoteHasUnsavedChanges = true;
     savedState.textContent = 'Not saved';
     quoteLibraryController?.markDirty();
   }
@@ -328,6 +333,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
 
   function replaceActiveQuote(source, options = {}) {
     quote = normalizeLegacyQuote(source);
+    quoteHasUnsavedChanges = false;
     releaseQuotePdf();
     itemForm.reset();
     catalogController?.clearSelection();
@@ -343,6 +349,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
   function applyCustomerDetails(details) {
     if (quoteReadOnly) return;
     quote = { ...quote, ...details };
+    quoteHasUnsavedChanges = true;
     releaseQuotePdf();
     populateQuoteMeta();
     savedState.textContent = 'Not saved';
@@ -377,6 +384,19 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
     );
   }
 
+  function hasPendingItemFormInput() {
+    return Boolean(
+      fields.itemName.value.trim() ||
+      fields.quantity.value ||
+      fields.uom.value !== 'EA' ||
+      fields.unitCost.value ||
+      fields.price.value ||
+      fields.leadTime.value.trim() ||
+      fields.freight.value ||
+      getFreightMode() !== 'perItem'
+    );
+  }
+
   function startNewQuote() {
     const hadLibraryQuote = Boolean(quoteLibraryController?.hasBoundQuote());
     const confirmationMessage = hadLibraryQuote
@@ -392,6 +412,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
 
     quoteLibraryController?.unbindCurrent();
     quote = createEmptyQuote();
+    quoteHasUnsavedChanges = false;
     setQuoteReadOnly(false, 'Not saved');
     const clearResult = clearActiveQuote(localStorage);
     releaseQuotePdf();
@@ -413,6 +434,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
     syncQuoteMeta();
     const result = saveActiveQuote(localStorage, quote);
     if (result.status === 'saved' && !preserveState) {
+      quoteHasUnsavedChanges = false;
       savedState.textContent = `Saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
     } else if (result.status !== 'saved') {
       savedState.textContent = 'Not saved';
@@ -899,7 +921,7 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
     repository: quoteRepository,
     storage: localStorage
   });
-  initializeBackupRestoreInspectionUi({
+  const backupRestoreController = initializeBackupRestoreInspectionUi({
     inspectionService: createBackupRestoreInspectionService({
       backupService,
       beforeInspect: () => quoteLibraryReady
@@ -910,5 +932,14 @@ import { initializeConnectivityStatus } from './pwa/connectivity-status.js';
       storage: localStorage,
       beforeRestore: () => quoteLibraryReady
     })
+  });
+  initializeUpdateCoordinator({
+    registrationPromise: serviceWorkerRegistration,
+    notice: document.getElementById('updateNotice'),
+    status: document.getElementById('updateNoticeText'),
+    applyButton: document.getElementById('applyUpdate'),
+    laterButton: document.getElementById('dismissUpdate'),
+    hasUnsavedChanges: () => quoteHasUnsavedChanges || hasPendingItemFormInput(),
+    isRestoreInProgress: () => backupRestoreController.isRestoreInProgress()
   });
 })();

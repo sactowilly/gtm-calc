@@ -11,6 +11,8 @@ async function loadWorker({ cacheNames = [], manifestAssets = [] } = {}) {
 
   globalThis.self = {
     location: { origin: 'https://example.test' },
+    clients: { claim: vi.fn().mockResolvedValue(undefined) },
+    skipWaiting: vi.fn(),
     addEventListener(type, listener) {
       listeners.set(type, listener);
     }
@@ -79,15 +81,24 @@ describe('Version 3 offline shell cache policy', () => {
 
   it('deletes only retired application-owned caches during activation', async () => {
     const { listeners, remove } = await loadWorker({
-      cacheNames: ['gtm-calc-app-shell-v0', 'gtm-calc-app-shell-v1', 'gtm-calc-app-shell-v2', 'third-party-cache']
+      cacheNames: ['gtm-calc-app-shell-v0', 'gtm-calc-app-shell-v1', 'gtm-calc-app-shell-v2', 'gtm-calc-app-shell-v3', 'third-party-cache']
     });
     const waitUntil = vi.fn();
 
     listeners.get('activate')({ waitUntil });
     await waitUntil.mock.calls[0][0];
 
-    expect(remove).toHaveBeenCalledTimes(2);
+    expect(remove).toHaveBeenCalledTimes(3);
     expect(remove).toHaveBeenCalledWith('gtm-calc-app-shell-v0');
     expect(remove).toHaveBeenCalledWith('gtm-calc-app-shell-v1');
+    expect(remove).toHaveBeenCalledWith('gtm-calc-app-shell-v2');
+  });
+
+  it('activates a waiting worker only after the page explicitly requests it', async () => {
+    const { listeners } = await loadWorker();
+
+    listeners.get('message')({ data: { type: 'SKIP_WAITING' } });
+
+    expect(globalThis.self.skipWaiting).toHaveBeenCalledOnce();
   });
 });

@@ -14,6 +14,7 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
 
   await page.goto('./');
   await expect(page.locator('#appVersion')).toHaveText(APP_BUILD_LABEL);
+  await expect(page.locator('#updateNotice')).toBeHidden();
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/gtm-calc/manifest.webmanifest?v=2');
   const manifestResponse = await page.request.get('./manifest.webmanifest');
   expect(manifestResponse.ok()).toBe(true);
@@ -29,10 +30,11 @@ test('runs the untransformed GitHub Pages source tree at the repository base pat
     return { scope: new URL(registration.scope).pathname, cacheNames, cachedPaths };
   });
   expect(serviceWorker).toMatchObject({ scope: '/gtm-calc/' });
-  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v2');
+  expect(serviceWorker.cacheNames).toContain('gtm-calc-app-shell-v3');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/manifest.webmanifest');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/js/main.js');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/js/pwa/connectivity-status.js');
+  expect(serviceWorker.cachedPaths).toContain('/gtm-calc/js/pwa/update-coordinator.js');
   expect(serviceWorker.cachedPaths).toContain('/gtm-calc/js/backup/backup-export-ui.js');
   expect(serviceWorker.cachedPaths.join('\n')).not.toMatch(/(?:\.pdf(?:$|\?)|mailto:)/i);
   await expect(page.locator('#appNavigation [aria-current="page"]')).toHaveCount(1);
@@ -63,7 +65,7 @@ test('reopens the cached source shell offline while retaining local quote work',
   await page.goto('./');
   await page.evaluate(() => navigator.serviceWorker.ready);
   const cachedPaths = await page.evaluate(async () => {
-    const cache = await caches.open('gtm-calc-app-shell-v2');
+    const cache = await caches.open('gtm-calc-app-shell-v3');
     return (await cache.keys()).map((request) => new URL(request.url).pathname);
   });
   expect(cachedPaths.filter((path) => path.includes('/backup/'))).toEqual([

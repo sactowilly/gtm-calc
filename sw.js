@@ -1,7 +1,7 @@
-/* Version 3 PR 3: cache only the public app shell. Never cache quote data or output. */
+/* Version 3 PR 4: cache only the public app shell. Never cache quote data or output. */
 const APP_SCOPE = '/gtm-calc/';
 const CACHE_PREFIX = 'gtm-calc-app-shell-';
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CACHE_NAME = `${CACHE_PREFIX}v3`;
 const SHELL_ASSETS = [
   '/gtm-calc/', '/gtm-calc/css/main.css', '/gtm-calc/css/quote-pdf.css',
   '/gtm-calc/vendor/html2canvas.min.js', '/gtm-calc/vendor/idb.js', '/gtm-calc/vendor/jspdf.umd.min.js',
@@ -16,7 +16,7 @@ const SHELL_ASSETS = [
   '/gtm-calc/js/domain/quote-library.js', '/gtm-calc/js/domain/quote-output.js', '/gtm-calc/js/domain/storage-contract.js',
   '/gtm-calc/js/navigation/app-navigation.js',
   '/gtm-calc/js/pdf/customer-quote-document.js', '/gtm-calc/js/pdf/customer-quote-pdf.js', '/gtm-calc/js/pdf/quote-template.js',
-  '/gtm-calc/js/pwa/connectivity-status.js', '/gtm-calc/js/pwa/service-worker-registration.js',
+  '/gtm-calc/js/pwa/connectivity-status.js', '/gtm-calc/js/pwa/service-worker-registration.js', '/gtm-calc/js/pwa/update-coordinator.js',
   '/gtm-calc/js/quote-library/quote-library-ui.js',
   '/gtm-calc/js/services/active-quote-storage.js', '/gtm-calc/js/services/backup-download-service.js',
   '/gtm-calc/js/services/backup-restore-inspection-service.js', '/gtm-calc/js/services/backup-restore-transaction-service.js',
@@ -110,10 +110,17 @@ if (typeof self !== 'undefined' && typeof self.addEventListener === 'function') 
 
   self.addEventListener('activate', (event) => {
     event.waitUntil(
-      caches.keys().then((cacheNames) => Promise.all(
-        cacheNames.filter(isRetiredApplicationCache).map((cacheName) => caches.delete(cacheName))
-      ))
+      Promise.all([
+        caches.keys().then((cacheNames) => Promise.all(
+          cacheNames.filter(isRetiredApplicationCache).map((cacheName) => caches.delete(cacheName))
+        )),
+        self.clients?.claim?.()
+      ])
     );
+  });
+
+  self.addEventListener('message', (event) => {
+    if (event.data?.type === 'SKIP_WAITING') self.skipWaiting?.();
   });
 
   self.addEventListener('fetch', (event) => {

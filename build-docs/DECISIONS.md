@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Safe Update Activation Boundary
+
+**DECISION:** A new shell worker must remain waiting until the current user explicitly chooses Reload update. The page must confirm before activating over unsaved active-quote edits and must block activation while the local backup-restore UI is busy or committed to reload. Only a user-confirmed `SKIP_WAITING` message may activate the worker; `clients.claim()` occurs after that activation so the page can reload exactly once. Cache migration may delete only retired `gtm-calc-app-shell-*` cache names and must never read, rewrite, delete, or cache browser-local business records or generated output.
+**RATIONALE:** A cached shell should not surprise a sales user by reloading a quote form or interrupting a restore transaction. Keeping update action explicit preserves the existing local-data recovery model while allowing an installed app to adopt a new, fully cached shell deliberately.
+**DATE:** 2026-08-13
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Offline Shell Boundary
 
 **DECISION:** The third Version 3 slice may cache only static public application files needed to reopen the app after one online launch: HTML navigation fallback, CSS, JavaScript, locally bundled vendor libraries, public logo artwork, manifest, and icons. It must use network-first navigation fallback and cache-first public-asset delivery, with a visible online/offline status. It must never cache, inspect, migrate, or write generated PDFs, backup files, mailto URLs, IndexedDB, localStorage, quotes, customers, contacts, pricing, or settings.

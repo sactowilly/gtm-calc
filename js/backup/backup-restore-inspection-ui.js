@@ -303,5 +303,10 @@ export function initializeBackupRestoreInspectionUi({
   restoreButton.addEventListener('click', restore);
   updateSelection();
 
-  return { inspect, restore, resetReport };
+  return {
+    inspect,
+    restore,
+    resetReport,
+    isRestoreInProgress: () => busy || restoreCommitted
+  };
 }
