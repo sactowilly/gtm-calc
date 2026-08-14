@@ -297,6 +297,8 @@ Implementation status (2026-08-13): the manifest/install-metadata slice verifies
 
 The remaining staged PWA plan in `docs/V3_IMPLEMENTATION_PLAN.md` requires separate gates for offline catalog search, library draft save/reopen, backup generation/recovery, update activation with unsaved work, cache migration failure, backup/restore preservation, privacy, accessibility, Android Chrome, iPhone Safari, laptop Chromium, direct-source Pages, and production artifacts. No later PWA test is claimed as passed until its implementation PR introduces the corresponding behavior.
 
+The exact pre-tag device, deployment, and owner-evidence gate is maintained in [`docs/V3_RELEASE_CHECKLIST.md`](V3_RELEASE_CHECKLIST.md). It must be completed before Version 3 is marked stable.
+
 ## Current checks actually performed during planning
 
 These are assessment checks, not a substitute for the planned suite:
