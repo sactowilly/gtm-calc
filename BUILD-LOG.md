@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-08-14 -- Version 3.0 direct PDF open fallback (in progress)
+
+- Created `feature/v3-pdf-open-fallback` from merged `main` commit `68f4a74` after PR #37 passed GitHub Actions and merged; the unrelated `.codex/` directory remains untracked and untouched.
+- Fixed Android Chrome's unreliable embedded-PDF viewer Open action by adding an app-owned direct **Open PDF** link to the same customer-safe generated Blob used for preview, download, share, and email preparation. No calculation, PDF layout, customer privacy, storage, email routing, or GitHub Pages configuration changed.
+- Advanced the marker to `v3.0.0 · pdf-open.5` and package version to `3.0.0-alpha.5`; reviewed the roadmap infographic, which remains accurate because Version 3 and its physical-acceptance next gate are unchanged. Updated the README, current state, roadmap, PDF/sharing, implementation, test, closeout, decision, and open-item documentation.
+- Verified `npm run check`, 174 unit tests, and the focused Android Chrome/Chromium workspace suite (12/12). Full PR CI remains required; physical Android retest, iPhone acceptance or approved deferral, laptop confirmation, deployment smoke, and stable tag publication remain open.
+
 ### 2026-08-13 -- Version 3.0 safe update activation (in progress)
 
 - Created `feature/v3-safe-update-activation` from merged `main` commit `79ec179`; the unrelated `.codex/` directory remains untracked and untouched.

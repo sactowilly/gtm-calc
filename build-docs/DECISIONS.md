@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Direct PDF Open Fallback
+
+**DECISION:** Keep the embedded PDF iframe as a preview only. After a customer-safe PDF Blob is generated, expose an application-owned **Open PDF** anchor to that exact Blob in a new browser tab alongside Download and Share. Do not depend on Android Chrome's embedded PDF viewer controls, which can display a non-functioning Open action. Do not create a separate PDF, window-popup-only path, or any new customer-data persistence.
+**RATIONALE:** The direct link is a user-initiated browser navigation and shares the already-reviewed Blob, filename, privacy projection, and lifecycle with Preview/Download/Share. It gives phones a deterministic fallback without changing PDFs, emails, calculations, or storage.
+**DATE:** 2026-08-14
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Safe Update Activation Boundary
 
 **DECISION:** A new shell worker must remain waiting until the current user explicitly chooses Reload update. The page must confirm before activating over unsaved active-quote edits and must block activation while the local backup-restore UI is busy or committed to reload. Only a user-confirmed `SKIP_WAITING` message may activate the worker; `clients.claim()` occurs after that activation so the page can reload exactly once. Cache migration may delete only retired `gtm-calc-app-shell-*` cache names and must never read, rewrite, delete, or cache browser-local business records or generated output.

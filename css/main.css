@@ -1084,6 +1084,9 @@ button:focus-visible,
 }
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 48px;
   border: 0;
   border-radius: 7px;
@@ -1091,6 +1094,7 @@ button:focus-visible,
   color: #fff;
   cursor: pointer;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .button.primary {
@@ -1334,6 +1338,10 @@ dialog .button-row {
 
 dialog .pdf-actions {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pdf-open-link[hidden] {
+  display: none;
 }
 
 .visually-hidden {
