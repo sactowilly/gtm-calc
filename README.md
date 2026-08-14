@@ -99,6 +99,7 @@ npm run test:production
 - `js/pdf/` and `css/quote-pdf.css` - customer-safe document projection, HTML template, pagination, and browser PDF rendering
 - `tests/` - calculation, privacy, fixture, and browser layout regression tests
 - `docs/V3_IMPLEMENTATION_PLAN.md` - staged PWA implementation, cache, offline, update, and release gates
+- `docs/V3_RELEASE_CHECKLIST.md` - exact Version 3 device-acceptance, deployment, and stable-tag gate
 - `manifest.webmanifest`, `sw.js`, `js/pwa/`, `assets/pwa/`, and `docs/INSTALLATION.md` - install metadata, scoped public-shell cache, offline status, branded icons, and phone installation guidance
 - `assets/vision-industrial-packaging-logo.png` - complete logo artwork extracted from the approved quotation reference
 - `vite.config.js` - production build configuration for the GitHub Pages base path
