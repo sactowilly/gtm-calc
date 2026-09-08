@@ -147,11 +147,12 @@
           -->
 
           <div class="form-grid">
-            <label class="field-full">
-              Item
+            <div class="field-full inline-catalog-field">
+              <label for="itemName">Item</label>
               <input id="itemName" name="itemName" type="text" autocomplete="off" required>
+              <div id="inlineCatalogResults" class="inline-catalog-results" role="region" aria-label="Matching catalog items" hidden></div>
               <span id="catalogSelection" class="catalog-selection" aria-live="polite"></span>
-            </label>
+            </div>
 
             <label>
               Qty
