@@ -1,5 +1,11 @@
 # Build Log
 
+### 2026-09-08 -- Version 3.0 release closeout (in progress)
+
+- Created `feature/v3-release-closeout` from merged PR #39 commit `0f15230`. PR #39 GitHub Actions run `34266091373` passed the full matrix after fixing the hidden quote-library pagination control, and Pages deployment `34268352795` passed.
+- Recorded owner device evidence: Samsung Galaxy S24 Ultra/Chrome passed the application-owned **Open PDF** fallback, download, email, and quote-output flow; the embedded Android viewer's own Open control remains a browser limitation and is explicitly bypassed. Dell desktop/Chrome was previously accepted for Chromium desktop behavior. iPhone Safari is explicitly deferred by the owner, not claimed as a pass.
+- Updated the stable marker/package to `v3.0.0 · stable` / `3.0.0`. Reviewed, updated, rendered, and visually inspected the roadmap SVG/PNG: Version 3.0 is complete and Version 3.5 Mobile Workflow is active, beginning with inline item search. Stable-tag publication remains pending this documentation merge and post-merge Pages smoke. The unrelated `.codex/` directory remains untracked and untouched.
+
 ### 2026-09-08 -- Version 3.0 hidden-control CI fix (in progress)
 
 - Reconciled merged PR #38 (`745f66a`) and its failed full compatibility run `31846676117`: 214/225 checks passed and all five browser profiles consistently failed only after the library's final pagination click because the hidden **Show 10 more** button remained visibly rendered.

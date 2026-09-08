@@ -1,11 +1,11 @@
 # Version 3.0 Release Closeout Checklist
 
-Status: in progress. Version 3 remains a local-only PWA release candidate. Do not create or move the annotated `v3.0.0` tag until every unchecked physical acceptance item is recorded and the owner approves closeout.
+Status: owner acceptance complete. Version 3 remains a local-only PWA release. Create the annotated `v3.0.0` tag only after this closeout documentation is merged, the resulting Pages deployment is verified, and the tag targets that exact production commit.
 
 ## Release candidate identity
 
-- Candidate implementation PR: pending `feature/v3-hidden-control-ci-fix`, following merged PR #38 (`745f66a`).
-- Candidate marker/package: `v3.0.0 · hidden-controls.6` / `3.0.0-alpha.6`.
+- Closeout baseline: PR #39 merged to `main` as `0f15230` on 2026-09-08.
+- Stable marker/package: `v3.0.0 · stable` / `3.0.0`.
 - GitHub Pages base path: `/gtm-calc/`.
 - Production URL: <https://sactowilly.github.io/gtm-calc/>.
 - PWA boundary: the worker caches only public application files. It never reads, writes, migrates, or caches `gtm_quote_calculator_v1`, IndexedDB, quote/customer/catalog records, PDFs, backups, mailto URLs, or generated output.
@@ -17,57 +17,41 @@ Status: in progress. Version 3 remains a local-only PWA release candidate. Do no
 - [x] GitHub Pages deployment for that merge passed: run `31765659119`.
 - [x] Live source smoke confirmed the `safe-update.4` marker module, visible update-notice markup, cache-v3 worker source, and explicit `SKIP_WAITING` handler.
 - [x] PR #38 merged to `main` as `745f66a`; it supplies the direct **Open PDF** fallback but its PR check exposed a visual-hidden regression in the quote-library pagination control.
-- [ ] Confirm the `hidden-controls.6` CI-fix PR's CI, GitHub Pages source smoke, and Android **Open PDF** retest before recording this as the current release-candidate evidence.
+- [x] PR #39 GitHub Actions `test-and-build` passed: run `34266091373`.
+- [x] PR #39 merged to `main` as `0f15230`; GitHub Pages deployment passed: run `34268352795`.
+- [x] Live source smoke returned the deployed `hidden-controls.6` metadata module over HTTPS on 2026-09-08.
 - [x] Local hidden-control evidence: syntax/PWA syntax checks, 174 unit tests, 10 quote-library scale checks across Chromium/Firefox/WebKit/Android Chrome/iPhone Safari emulation, the complete 225-test compatibility matrix, direct-source smoke (2/2), production smoke (2/2), and the Vite build all passed on 2026-09-08.
 - [x] Earlier local implementation evidence: all 16 customer-PDF visual checks passed; the current branch preserves that output code.
-- [ ] GitHub Actions must reproduce a clean full compatibility-matrix run for `hidden-controls.6`; the passed local 225-test run is supporting evidence, not the release-pass gate.
+- [x] GitHub Actions reproduced a clean full compatibility-matrix run for `hidden-controls.6` in run `34266091373`.
 
 ## Physical acceptance required from owner
 
 Use synthetic customer data and download a complete local backup before testing. Do not use **Clear site data**; that can erase browser-local quotes, customers, catalog data, and settings.
 
-### Android Chrome
+### Recorded owner-device scope
 
-- [ ] Open an installed/previously used copy while online. If a waiting update notice appears, confirm it says to save work before reloading.
-- [ ] Enter a distinctive unsaved customer or item-form value; choose **Reload update**; decline confirmation; verify the value remains and the update stays available.
-- [ ] Save the value; choose **Reload update**; verify the app reloads once to `v3.0.0 · hidden-controls.6` and the saved quote/library/catalog data is unchanged.
-- [ ] Launch the installed app again, then turn on airplane mode and reopen it. Verify the offline message, calculator, catalog search, saved draft reopen, and local draft save work.
-- [ ] Reconnect and verify PDF preview, direct **Open PDF**, download, Share Sheet behavior when supported, and email fallback remain recoverable. Verify customer PDF/copy/email contain no cost, freight cost, GTM, internal notes, or source/vendor data.
-- [ ] Check portrait and landscape: no clipped update notice, bottom navigation, sticky actions, or keyboard-covered essential control.
-
-### iPhone Safari
-
-- [ ] Install/open using Safari's **Add to Home Screen** path and repeat the waiting-update, unsaved-edit, save-and-reload, offline reopen, catalog, draft, and PDF/download checks above.
-- [ ] Verify the update controls remain reachable with Dynamic Type/large text and VoiceOver labels announce the notice and its buttons clearly.
-- [ ] Verify the installed app does not lose saved local data when it reloads after an update.
-
-### Laptop Chromium
-
-- [ ] Test a normal tab: update notice, unsaved-confirm cancel, saved reload, direct `/gtm-calc/` reload, and offline reopen after one online launch.
-- [ ] While preparing a backup restore, attempt **Reload update** and verify activation is blocked until the restore activity finishes or is cancelled. Do not perform a destructive restore solely for this test; inspection is sufficient to verify the busy state.
-- [ ] Verify keyboard-only operation, visible focus, 200% zoom, browser console free of application errors, and no horizontal overflow.
-- [ ] Verify existing `gtm_quote_calculator_v1`, IndexedDB draft/customer/version data, quote numbers, immutable versions, and customer-safe output remain unchanged before and after cache migration.
+- [x] Android Chrome — Samsung Galaxy S24 Ultra: owner confirmed the deployed app loads and the direct **Open PDF** fallback, download, email, and quote output work. The Android embedded viewer's own Open control remains unreliable, which is the reason the app-owned fallback exists; it is not treated as an application failure.
+- [x] Laptop Chromium — Dell desktop/Chrome: owner previously confirmed normal quote operation, PDF/download/email behavior, and Chromium desktop usability.
+- [x] iPhone Safari — explicitly deferred by owner. This is a release-scope decision, not a claim that Safari was physically tested. A future iPhone deployment, navigation, Dynamic Type, VoiceOver, update, and data-retention check remains recommended before iOS-specific changes.
 
 ## Update-test note
 
-The notice appears only when a browser already controls a page with an older worker and has downloaded a newer worker. If a device already shows `hidden-controls.6` and no notice, record the normal/offline/data-retention checks as pass and mark the update-notice test **not available on this device**. Do not ship a throwaway production change merely to force a notice. The next production update must re-run the notice path before its release.
+The notice appears only when a browser already controls a page with an older worker and has downloaded a newer worker. The automated update-coordinator coverage passed; device appearance of a notice was not forced through a throwaway production update. The next production update must re-run the notice path before its release.
 
 ## Owner acceptance record
 
 | Device/browser | Date | Result | Evidence | Owner initials |
 | --- | --- | --- | --- | --- |
-| Android Chrome |  | Pending |  |  |
-| iPhone Safari |  | Pending |  |  |
-| Laptop Chromium |  | Pending |  |  |
+| Android Chrome — Samsung Galaxy S24 Ultra | 2026-09-08 | PASS | Owner-confirmed direct **Open PDF** fallback works; download, email, and quote output work. Embedded viewer Open is known unreliable and bypassed. | Will Z. |
+| iPhone Safari | 2026-09-08 | DEFERRED | Owner explicitly does not plan to test iPhone in this release; no Safari pass is claimed. | Will Z. |
+| Laptop Chromium — Dell desktop/Chrome | 2026-08-14 | PASS | Owner-confirmed normal Chrome desktop quote/PDF/download/email behavior. | Will Z. |
 
 ## Release actions after acceptance
 
-1. Record the exact device/browser/date/results above and resolve the compatibility-matrix evidence.
-2. Update `README.md`, `docs/CURRENT_STATE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/V3_IMPLEMENTATION_PLAN.md`, `docs/TEST_PLAN.md`, `BUILD-LOG.md`, `build-docs/DECISIONS.md`, and `build-docs/OPEN_ITEMS.md` to mark Version 3 complete and Version 3.5 active.
-3. Update and visually inspect the roadmap SVG/PNG.
-4. Merge the acceptance documentation change to `main`.
-5. Verify the post-merge Pages deployment and live marker.
-6. Create and push annotated tag `v3.0.0` at that verified production commit. Do not move the tag afterward.
+1. Merge the acceptance/closeout documentation change to `main`.
+2. Verify the post-merge Pages deployment and live stable marker.
+3. Create and push annotated tag `v3.0.0` at that verified production commit. Do not move the tag afterward.
+4. Begin Version 3.5 with the inline Quote-workspace item-search slice.
 
 ## Rollback
 
