@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 iPhone Safari Acceptance Deferral
+
+**DECISION:** Close Version 3 with recorded Android Chrome and laptop Chromium owner acceptance and an explicit owner deferral of physical iPhone Safari testing. Do not describe the deferral as an iPhone pass.
+**RATIONALE:** The owner reported no planned iPhone test for this release while Android's application-owned PDF fallback, download, email, and quote workflow passed. Emulated iPhone coverage remains automated evidence only. Future iOS-specific behavior or a material PWA change must schedule a physical Safari/Add to Home Screen, large-text, VoiceOver, update, and local-data-retention check.
+**DATE:** 2026-09-08
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Semantic Hidden-Control Rule
 
 **DECISION:** All controls using the existing `.button` class must honor the HTML `hidden` attribute through `.button[hidden] { display: none; }`. This rule is intentionally more specific than the shared inline-flex layout rule.

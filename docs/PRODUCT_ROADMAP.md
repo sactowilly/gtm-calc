@@ -173,7 +173,7 @@ Give users a complete, inspectable escape hatch before PWA/offline expectations 
 
 ## Version 3.0 — Progressive Web App
 
-**Status (2026-09-08): In progress.** The V2.5 backup/restore and export boundary is accepted, verified, and tagged `v2.5.0`. Version 3.0 now has a `/gtm-calc/`-scoped manifest, branded install icons, browser metadata, installation guidance, an explicit connectivity indicator, a versioned public application-shell cache, safe update activation, and an explicit direct-PDF opening path. The `pdf-open.5` merge exposed a CI-only hidden-button regression, now corrected by marker `v3.0.0 · hidden-controls.6`: all application buttons that use `hidden` are reliably removed from visual layout, including the quote-library pagination control. After one successful online launch the calculator, catalog, and existing local quote/library data reopen offline. A waiting update is never activated automatically: the user chooses Reload update, confirms if a quote has unsaved edits, and cannot reload during an active restore transaction. The worker never caches or changes customer data, PDFs, backups, mailto URLs, IndexedDB, or localStorage. Physical device acceptance remains the final Version 3 release gate. Later work follows [`docs/V3_IMPLEMENTATION_PLAN.md`](V3_IMPLEMENTATION_PLAN.md) and must not change persisted quote data without migration evidence.
+**Status (2026-09-08): Complete after owner acceptance; stable tag pending post-merge deployment verification.** The V2.5 backup/restore and export boundary is accepted, verified, and tagged `v2.5.0`. Version 3.0 delivers a `/gtm-calc/`-scoped manifest, branded install icons, browser metadata, installation guidance, an explicit connectivity indicator, a versioned public application-shell cache, deliberate safe update activation, and an explicit direct-PDF opening path. The final `hidden-controls.6` release candidate restored correct visual hiding for shared buttons after a CI-only pagination regression; its complete GitHub Actions matrix and Pages deployment passed. After one successful online launch the calculator, catalog, and existing local quote/library data reopen offline. A waiting update is never activated automatically: the user chooses Reload update, confirms if a quote has unsaved edits, and cannot reload during an active restore transaction. Owner Android Chrome and laptop Chromium acceptance passed; iPhone Safari physical testing is explicitly deferred by the owner, not claimed as passed. The worker never caches or changes customer data, PDFs, backups, mailto URLs, IndexedDB, or localStorage. The exact evidence and rollback boundary remain in [`docs/V3_RELEASE_CHECKLIST.md`](V3_RELEASE_CHECKLIST.md).
 
 ### Objective
 
@@ -205,13 +205,16 @@ Make the already-stable local application installable and reliably usable offlin
 
 ## Version 3.5 — Mobile workflow improvements
 
+**Status (2026-09-08): Active planning.** Version 3.5 begins with the concrete phone-first problem the owner reported: the Quote workspace should search and select catalog/My Items directly from the main Item field so reps do not have to leave the active quote and return. The first implementation slice must preserve editable in-progress line-item values, source/cost/privacy boundaries, local-only storage, keyboard/touch accessibility, and existing Catalog workspace behavior. The staged plan is [`docs/V35_IMPLEMENTATION_PLAN.md`](V35_IMPLEMENTATION_PLAN.md).
+
 ### Objective
 
 Optimize frequent rep workflows after real usage data identifies the highest-friction actions.
 
 ### Included
 
-- Candidate features selected only after usage validation: favorites, recent customers, frequent item combinations, customer pricing history, reorder quotes, one-handed controls, drag/swipe reorder, voice-to-text notes, specification attachments, and dark mode.
+- Inline quote-item search and selection with a safe return to the active line item.
+- Candidate follow-on features selected only after usage validation: favorites, recent customers, frequent item combinations, customer pricing history, reorder quotes, one-handed controls, drag/swipe reorder, voice-to-text notes, specification attachments, and dark mode.
 
 ### Explicitly excluded
 

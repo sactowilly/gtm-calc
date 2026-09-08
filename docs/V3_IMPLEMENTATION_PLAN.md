@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The hidden-control CI-fix slice uses `v3.0.0 · hidden-controls.6` / `3.0.0-alpha.6`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores. Waiting updates require an explicit user action.
+Status: owner acceptance and automated/deployment evidence complete; the stable tag is pending this closeout documentation merge and post-merge Pages verification. Version 3.5 mobile-workflow planning is now active.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -108,4 +108,4 @@ Required evidence:
 
 ## Explicitly deferred
 
-Push notifications, background sync, server data, authentication, shared-device synchronization, automatic email, hosted reporting, permissions, and Version 3.5 workflow enhancements remain out of scope.
+Push notifications, background sync, server data, authentication, shared-device synchronization, automatic email, hosted reporting, and permissions remain out of scope. Version 3.5 workflow enhancements follow [`docs/V35_IMPLEMENTATION_PLAN.md`](V35_IMPLEMENTATION_PLAN.md).
