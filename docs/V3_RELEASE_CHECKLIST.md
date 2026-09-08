@@ -4,8 +4,8 @@ Status: in progress. Version 3 remains a local-only PWA release candidate. Do no
 
 ## Release candidate identity
 
-- Candidate implementation PR: #36, merged to `main` as `4e59a3c` on 2026-08-14.
-- Candidate marker/package: `v3.0.0 · pdf-open.5` / `3.0.0-alpha.5`.
+- Candidate implementation PR: pending `feature/v3-hidden-control-ci-fix`, following merged PR #38 (`745f66a`).
+- Candidate marker/package: `v3.0.0 · hidden-controls.6` / `3.0.0-alpha.6`.
 - GitHub Pages base path: `/gtm-calc/`.
 - Production URL: <https://sactowilly.github.io/gtm-calc/>.
 - PWA boundary: the worker caches only public application files. It never reads, writes, migrates, or caches `gtm_quote_calculator_v1`, IndexedDB, quote/customer/catalog records, PDFs, backups, mailto URLs, or generated output.
@@ -16,9 +16,11 @@ Status: in progress. Version 3 remains a local-only PWA release candidate. Do no
 - [x] PR #36 merged to `main` as `4e59a3c`.
 - [x] GitHub Pages deployment for that merge passed: run `31765659119`.
 - [x] Live source smoke confirmed the `safe-update.4` marker module, visible update-notice markup, cache-v3 worker source, and explicit `SKIP_WAITING` handler.
-- [ ] Confirm the `pdf-open.5` fallback PR's CI, GitHub Pages source smoke, and Android **Open PDF** retest before recording this as the current release-candidate evidence.
-- [x] Local implementation evidence: syntax checks, 174 unit tests, direct-source Pages smoke (2/2), production artifact smoke (2/2), and all 16 customer-PDF visual checks passed.
-- [ ] Record a clean full compatibility-matrix run from GitHub Actions or an explained rerun. The local 225-test run was intentionally stopped after the known unrelated Chromium backup-inspection timing flake; it is not release-pass evidence.
+- [x] PR #38 merged to `main` as `745f66a`; it supplies the direct **Open PDF** fallback but its PR check exposed a visual-hidden regression in the quote-library pagination control.
+- [ ] Confirm the `hidden-controls.6` CI-fix PR's CI, GitHub Pages source smoke, and Android **Open PDF** retest before recording this as the current release-candidate evidence.
+- [x] Local hidden-control evidence: syntax/PWA syntax checks, 174 unit tests, 10 quote-library scale checks across Chromium/Firefox/WebKit/Android Chrome/iPhone Safari emulation, the complete 225-test compatibility matrix, direct-source smoke (2/2), production smoke (2/2), and the Vite build all passed on 2026-09-08.
+- [x] Earlier local implementation evidence: all 16 customer-PDF visual checks passed; the current branch preserves that output code.
+- [ ] GitHub Actions must reproduce a clean full compatibility-matrix run for `hidden-controls.6`; the passed local 225-test run is supporting evidence, not the release-pass gate.
 
 ## Physical acceptance required from owner
 
@@ -28,7 +30,7 @@ Use synthetic customer data and download a complete local backup before testing.
 
 - [ ] Open an installed/previously used copy while online. If a waiting update notice appears, confirm it says to save work before reloading.
 - [ ] Enter a distinctive unsaved customer or item-form value; choose **Reload update**; decline confirmation; verify the value remains and the update stays available.
-- [ ] Save the value; choose **Reload update**; verify the app reloads once to `v3.0.0 · pdf-open.5` and the saved quote/library/catalog data is unchanged.
+- [ ] Save the value; choose **Reload update**; verify the app reloads once to `v3.0.0 · hidden-controls.6` and the saved quote/library/catalog data is unchanged.
 - [ ] Launch the installed app again, then turn on airplane mode and reopen it. Verify the offline message, calculator, catalog search, saved draft reopen, and local draft save work.
 - [ ] Reconnect and verify PDF preview, direct **Open PDF**, download, Share Sheet behavior when supported, and email fallback remain recoverable. Verify customer PDF/copy/email contain no cost, freight cost, GTM, internal notes, or source/vendor data.
 - [ ] Check portrait and landscape: no clipped update notice, bottom navigation, sticky actions, or keyboard-covered essential control.
@@ -48,7 +50,7 @@ Use synthetic customer data and download a complete local backup before testing.
 
 ## Update-test note
 
-The notice appears only when a browser already controls a page with an older worker and has downloaded a newer worker. If a device already shows `pdf-open.5` and no notice, record the normal/offline/data-retention checks as pass and mark the update-notice test **not available on this device**. Do not ship a throwaway production change merely to force a notice. The next production update must re-run the notice path before its release.
+The notice appears only when a browser already controls a page with an older worker and has downloaded a newer worker. If a device already shows `hidden-controls.6` and no notice, record the normal/offline/data-retention checks as pass and mark the update-notice test **not available on this device**. Do not ship a throwaway production change merely to force a notice. The next production update must re-run the notice path before its release.
 
 ## Owner acceptance record
 

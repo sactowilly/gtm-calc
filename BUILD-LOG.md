@@ -1,5 +1,11 @@
 # Build Log
 
+### 2026-09-08 -- Version 3.0 hidden-control CI fix (in progress)
+
+- Reconciled merged PR #38 (`745f66a`) and its failed full compatibility run `31846676117`: 214/225 checks passed and all five browser profiles consistently failed only after the library's final pagination click because the hidden **Show 10 more** button remained visibly rendered.
+- Created `feature/v3-hidden-control-ci-fix` from updated `main`. The root cause is the direct-PDF hotfix's shared `.button { display: inline-flex; }` rule overriding browser `[hidden]` display behavior. Added the scoped `.button[hidden] { display: none; }` correction; no PDF generation, privacy, quote data, customer data, calculations, storage, or PWA cache policy changed.
+- Advanced the marker to `v3.0.0 · hidden-controls.6` / `3.0.0-alpha.6`; reviewed the roadmap infographic, which remains accurate because Version 3 and the physical-acceptance next gate are unchanged. Updated release-facing and verification documentation. Local verification passed: syntax/PWA syntax checks, 174 unit tests, the 10-test quote-library scale suite across all five browser profiles, the complete 225-test compatibility matrix, direct-source smoke (2/2), production smoke (2/2), and the Vite build. The unrelated `.codex/` directory remains untracked and untouched.
+
 ### 2026-08-14 -- Version 3.0 direct PDF open fallback (in progress)
 
 - Created `feature/v3-pdf-open-fallback` from merged `main` commit `68f4a74` after PR #37 passed GitHub Actions and merged; the unrelated `.codex/` directory remains untracked and untouched.

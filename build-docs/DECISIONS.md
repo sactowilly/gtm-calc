@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.0 Semantic Hidden-Control Rule
+
+**DECISION:** All controls using the existing `.button` class must honor the HTML `hidden` attribute through `.button[hidden] { display: none; }`. This rule is intentionally more specific than the shared inline-flex layout rule.
+**RATIONALE:** Browser user-agent `[hidden]` styling can be overridden by any author `display` declaration. The direct-PDF link change introduced shared `display: inline-flex`, which left unrelated hidden library pagination visible. Restoring the visual behavior in CSS preserves semantic hidden state, assistive-technology expectations, and current UI logic without changing stored records.
+**DATE:** 2026-09-08
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 Direct PDF Open Fallback
 
 **DECISION:** Keep the embedded PDF iframe as a preview only. After a customer-safe PDF Blob is generated, expose an application-owned **Open PDF** anchor to that exact Blob in a new browser tab alongside Download and Share. Do not depend on Android Chrome's embedded PDF viewer controls, which can display a non-functioning Open action. Do not create a separate PDF, window-popup-only path, or any new customer-data persistence.
