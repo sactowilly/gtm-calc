@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The PDF-open fallback slice uses `v3.0.0 · pdf-open.5` / `3.0.0-alpha.5`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores. Waiting updates require an explicit user action.
+Status: in progress from the tagged Version 2.5.0 recovery boundary (`7ab4d2e`). The hidden-control CI-fix slice uses `v3.0.0 · hidden-controls.6` / `3.0.0-alpha.6`: after one successful online launch, it reopens a public application shell offline while preserving the existing local quote, catalog, and customer stores. Waiting updates require an explicit user action.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
@@ -92,6 +92,8 @@ Implementation record: `feature/v3-safe-update-activation` adds a non-blocking n
 Acceptance: unit coverage proves no automatic activation, unsaved-work confirmation, restore blocking, explicit skip-waiting, one-time reload, deferred notice handling, and retirement of only owned stale caches. Browser/physical-device evidence remains part of PR 5.
 
 Post-merge release-candidate hotfix: the Android Chrome embedded PDF viewer exposed an unreliable internal Open control for the Blob iframe. `feature/v3-pdf-open-fallback` adds an application-owned **Open PDF** link to the already-generated customer-safe Blob, beside Download and Share. It does not replace PDF generation, email routing, customer privacy projection, or stored data.
+
+Post-merge CI-fix: the direct-PDF link shared the generic `.button` layout rule. That rule overrode the browser stylesheet for other existing buttons marked `hidden`, leaving the library's exhausted **Show 10 more** button visibly rendered. `feature/v3-hidden-control-ci-fix` adds `.button[hidden] { display: none; }`, preserving semantic `hidden` state and the intended pagination behavior without changing quote data or PDF output.
 
 ### PR 5 — V3 production closeout
 
