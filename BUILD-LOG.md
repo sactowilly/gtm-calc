@@ -1,5 +1,12 @@
 # Build Log
 
+### 2026-09-08 -- Version 3.5 inline Item search (in progress)
+
+- Verified the Version 3 stable release: PR #40 merged as `a908398`, Pages deployment `34286988078` passed, the live site served the stable metadata, and immutable annotated tag `v3.0.0` was published at that exact commit.
+- Created `feature/v35-inline-item-search` from updated `main`. The Quote workspace Item field now reuses the local Catalog/My Items search index after two characters and displays up to six accessible results without leaving the quote. Keyboard ArrowDown/ArrowUp/Enter/Escape and touch selection are supported; selecting keeps the established catalog source/SKU projection and editable fields.
+- Existing cost, price, UOM, and lead-time edits still require confirmation before a selected result replaces them. Search text alone is treated as an intentional lookup, not dirty commercial data. No-result state keeps manual item entry available. The Catalog workspace, CSV import, local storage schemas, calculations, customer-facing output/privacy, PWA cache, and email behavior are unchanged.
+- Advanced the marker to `v3.5.0 · inline-search.1` / `3.5.0-alpha.1`. Reviewed the roadmap infographic; it already identifies Version 3.5 Mobile Workflow and inline item search as the active work, so its SVG/PNG remains accurate without an artwork change. Local targeted cross-browser inline-search coverage (10/10) and legacy Catalog coverage (20/20) passed; broader validation remains required before PR closeout. The unrelated `.codex/` directory remains untracked and untouched.
+
 ### 2026-09-08 -- Version 3.0 release closeout (in progress)
 
 - Created `feature/v3-release-closeout` from merged PR #39 commit `0f15230`. PR #39 GitHub Actions run `34266091373` passed the full matrix after fixing the hidden quote-library pagination control, and Pages deployment `34268352795` passed.

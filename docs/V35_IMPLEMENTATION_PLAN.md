@@ -1,12 +1,14 @@
 # Version 3.5 Implementation Plan — Mobile Workflow
 
-Status: active planning from the accepted Version 3 PWA boundary. The first delivery focuses on inline item search in the active Quote workspace; it does not alter storage schemas, customer-facing output, or catalog import rules.
+Status: in progress from stable Version 3 tag `v3.0.0` (`a908398`). The first delivery adds inline item search in the active Quote workspace; it does not alter storage schemas, customer-facing output, or catalog import rules.
 
 ## Objective
 
 Reduce phone quote-entry context switching. A rep should be able to type in the Quote workspace Item field, see relevant standard-catalog and My Item matches, choose one, and continue editing that line item without leaving the quote.
 
 ## First implementation slice — Inline Item Search
+
+Implementation record: `feature/v35-inline-item-search` reuses `searchCatalog` and the existing catalog-selection projection. After two or more characters, the Item field presents up to six local Catalog/My Item matches; touch, keyboard ArrowDown/ArrowUp, Enter, and Escape are supported. Selecting a result retains the existing source/SKU projection and price/cost/UOM/lead-time behavior. Typed search text alone does not trigger an overwrite confirmation; changed UOM, cost, price, or lead time still require confirmation. No-match results keep manual entry available.
 
 ### Scope
 

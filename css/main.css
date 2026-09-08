@@ -883,6 +883,56 @@ h2 {
   font-weight: 600;
 }
 
+.inline-catalog-field {
+  position: relative;
+}
+
+.inline-catalog-results {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+  padding: 8px;
+  border: 1px solid #aeb9ae;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.inline-catalog-results[hidden] {
+  display: none;
+}
+
+.inline-catalog-result {
+  display: flex;
+  min-height: 48px;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 9px 10px;
+  border: 1px solid #c8d1c8;
+  border-radius: 6px;
+  color: var(--ink);
+  background: var(--surface-soft);
+  cursor: pointer;
+  text-align: left;
+}
+
+.inline-catalog-result:hover {
+  border-color: var(--accent);
+  background: #edf8f3;
+}
+
+.inline-catalog-result strong,
+.inline-catalog-result span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.inline-catalog-result span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
 .catalog-import-report {
   margin-top: 8px;
   border: 1px solid var(--line);
