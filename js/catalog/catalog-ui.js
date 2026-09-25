@@ -31,6 +31,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
     reportSummary: document.getElementById('catalogImportSummary'),
     reportList: document.getElementById('catalogImportErrors'),
     results: document.getElementById('catalogResults'),
+    inlineResults: document.getElementById('inlineCatalogResults'),
     selection: document.getElementById('catalogSelection')
   };
 
@@ -57,6 +58,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
       setCatalogStatus('Catalog storage is unavailable. Search and saved My Items may not persist.', true);
     }
     renderResults();
+    renderInlineResults();
   }
 
   function resultById(itemId) {
@@ -117,7 +119,58 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
     });
   }
 
-  function selectItem(item) {
+  function hideInlineResults() {
+    elements.inlineResults.replaceChildren();
+    elements.inlineResults.hidden = true;
+  }
+
+  function renderInlineResults() {
+    const query = fields.itemName.value.trim();
+    if (query.length < 2) {
+      hideInlineResults();
+      return;
+    }
+
+    const results = searchCatalog(allItems(), query, {
+      usageById: catalogState.usageById,
+      limit: 6
+    });
+    elements.inlineResults.replaceChildren();
+    elements.inlineResults.hidden = false;
+
+    if (results.length === 0) {
+      const message = document.createElement('p');
+      message.className = 'catalog-empty';
+      message.textContent = allItems().length > 0
+        ? 'No matching catalog or My Items. You can keep typing a manual item.'
+        : 'No local catalog or My Items yet. You can keep typing a manual item.';
+      elements.inlineResults.appendChild(message);
+      return;
+    }
+
+    results.forEach((item) => {
+      const select = document.createElement('button');
+      select.type = 'button';
+      select.className = 'inline-catalog-result';
+      select.dataset.inlineItemId = item.id;
+      select.setAttribute('aria-label', `Use ${item.name}${item.sku ? `, SKU ${item.sku}` : ''}`);
+
+      const title = document.createElement('strong');
+      title.textContent = item.name;
+      const meta = document.createElement('span');
+      const metaParts = [item.source === 'manual' ? 'MY ITEM' : 'CATALOG'];
+      if (item.sku) metaParts.push(item.sku);
+      if (item.unitOfMeasure) metaParts.push(item.unitOfMeasure);
+      meta.textContent = metaParts.join(' · ');
+      const description = document.createElement('span');
+      description.textContent = item.description || item.dimensionsDisplay || '';
+      select.append(title, meta);
+      if (description.textContent) select.appendChild(description);
+      elements.inlineResults.appendChild(select);
+    });
+  }
+
+  function selectItem(item, { fromInline = false } = {}) {
     const allowedUom = Array.from(fields.uom.options).some((option) => option.value === item.unitOfMeasure);
     const nextValues = {
       itemName: item.name,
@@ -127,7 +180,7 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
       leadTime: item.leadTime || ''
     };
     const hasEnteredItemDetails = Boolean(
-      fields.itemName.value.trim() ||
+      (!fromInline && fields.itemName.value.trim()) ||
       fields.uom.value !== 'EA' ||
       fields.unitCost.value ||
       fields.price.value ||
@@ -143,6 +196,9 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
       !window.confirm(`Replace the current item details with ${item.name}? Quantity and freight will be kept.`)
     ) {
       setCatalogStatus('Catalog selection cancelled. The current item details were kept.');
+      if (fromInline) {
+        elements.selection.textContent = 'Catalog selection cancelled. The current item details were kept.';
+      }
       return;
     }
 
@@ -158,8 +214,11 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
       : '';
     elements.selection.textContent = `${item.source === 'manual' ? 'My Item' : 'Catalog'}${item.sku ? ` ${item.sku}` : ''} selected. Quote values remain editable.${uomNotice}`;
     updateCalculatorPreview();
-    elements.tools.open = false;
-    onItemSelected({ scrollTarget: '.calculator-panel' });
+    hideInlineResults();
+    if (!fromInline) {
+      elements.tools.open = false;
+      onItemSelected({ scrollTarget: '.calculator-panel' });
+    }
     fields.quantity.focus();
   }
 
@@ -258,6 +317,22 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
   }
 
   elements.search.addEventListener('input', renderResults);
+  fields.itemName.addEventListener('input', function () {
+    selectedItem = null;
+    elements.selection.textContent = '';
+    renderInlineResults();
+  });
+  fields.itemName.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      hideInlineResults();
+      return;
+    }
+    if (event.key !== 'ArrowDown' || elements.inlineResults.hidden) return;
+    const firstResult = elements.inlineResults.querySelector('[data-inline-item-id]');
+    if (!firstResult) return;
+    event.preventDefault();
+    firstResult.focus();
+  });
   elements.file.addEventListener('change', importSelectedFile);
   elements.saveManual.addEventListener('click', saveCurrentAsManualItem);
   elements.restore.addEventListener('click', function () {
@@ -291,10 +366,33 @@ export function initializeCatalogUi({ storage, fields, updateCalculatorPreview, 
       setCatalogStatus('My Item could not be deleted.', true);
     }
   });
+  elements.inlineResults.addEventListener('click', function (event) {
+    const selectButton = event.target.closest('[data-inline-item-id]');
+    if (!selectButton) return;
+    const item = resultById(selectButton.dataset.inlineItemId);
+    if (item) selectItem(item, { fromInline: true });
+  });
+  elements.inlineResults.addEventListener('keydown', function (event) {
+    const buttons = Array.from(elements.inlineResults.querySelectorAll('[data-inline-item-id]'));
+    const index = buttons.indexOf(document.activeElement);
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      hideInlineResults();
+      fields.itemName.focus();
+      return;
+    }
+    if (index < 0 || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'ArrowDown'
+      ? Math.min(buttons.length - 1, index + 1)
+      : Math.max(0, index - 1);
+    buttons[nextIndex].focus();
+  });
 
   function clearSelection() {
     selectedItem = null;
     elements.selection.textContent = '';
+    hideInlineResults();
     renderResults();
   }
 

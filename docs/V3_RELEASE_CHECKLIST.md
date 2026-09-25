@@ -1,6 +1,6 @@
 # Version 3.0 Release Closeout Checklist
 
-Status: owner acceptance complete. Version 3 remains a local-only PWA release. Create the annotated `v3.0.0` tag only after this closeout documentation is merged, the resulting Pages deployment is verified, and the tag targets that exact production commit.
+Status: complete. Version 3 remains a local-only PWA release. Annotated tag `v3.0.0` identifies verified production commit `a908398` after the closeout documentation merge and Pages deployment passed.
 
 ## Release candidate identity
 
@@ -48,10 +48,10 @@ The notice appears only when a browser already controls a page with an older wor
 
 ## Release actions after acceptance
 
-1. Merge the acceptance/closeout documentation change to `main`.
-2. Verify the post-merge Pages deployment and live stable marker.
-3. Create and push annotated tag `v3.0.0` at that verified production commit. Do not move the tag afterward.
-4. Begin Version 3.5 with the inline Quote-workspace item-search slice.
+1. Closed: closeout documentation merged to `main` as `a908398`.
+2. Closed: Pages deployment `34286988078` and the live stable marker passed.
+3. Closed: annotated tag `v3.0.0` identifies exact production commit `a908398`; never move it.
+4. In progress: Version 3.5 inline Quote-workspace item search.
 
 ## Rollback
 

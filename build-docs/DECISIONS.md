@@ -1,5 +1,12 @@
 # Decisions
 
+## Version 3.5 Inline Item Search Uses Existing Catalog Selection
+
+**DECISION:** The Quote workspace Item field reuses the existing local `searchCatalog` ranking and catalog-selection projection. It may show up to six matching Catalog/My Item entries after two typed characters. A user must explicitly tap or keyboard-select a match; typing stays manual entry. Existing edited UOM, cost, price, or lead-time values retain the current confirmation guard, while search text alone does not create a needless overwrite prompt.
+**RATIONALE:** This removes the main phone workflow context switch without duplicating catalog logic, changing local schemas, or silently replacing commercial values. It preserves source/SKU linkage, recency tracking after actual add/update, customer-output privacy, and the Catalog workspace as the home for CSV import and maintenance.
+**DATE:** 2026-09-08
+**PARTIES:** Will Z, Goodall program review, Codex
+
 ## Version 3.0 iPhone Safari Acceptance Deferral
 
 **DECISION:** Close Version 3 with recorded Android Chrome and laptop Chromium owner acceptance and an explicit owner deferral of physical iPhone Safari testing. Do not describe the deferral as an iPhone pass.

@@ -1,6 +1,6 @@
 # Version 3.0 Implementation Plan — Progressive Web App
 
-Status: owner acceptance and automated/deployment evidence complete; the stable tag is pending this closeout documentation merge and post-merge Pages verification. Version 3.5 mobile-workflow planning is now active.
+Status: complete. PR #40 merged as `a908398`, Pages deployment `34286988078` passed, and immutable annotated tag `v3.0.0` identifies that verified production commit. Version 3.5 inline-item-search implementation is now in progress.
 
 Version 3 adds installability and offline application behavior only after the Version 2.5 backup/restore and export workflows are stable. The application remains public, static, phone-first, and GitHub Pages-hosted. No backend, authentication, synchronization, push notifications, automatic email, or hosted database is part of this version.
 
